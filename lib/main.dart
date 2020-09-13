@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     //TODO: wrapp with StremaProvider
     return MaterialApp(
-      home: SignupPage(),
+      home: LoginPage(),
     );
   }
 }

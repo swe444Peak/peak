@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:peak/screens/signUp.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 
 class LoginPage extends StatefulWidget {
@@ -57,12 +58,30 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
+    final signUpButton = Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(30.0),
+      color: Color(0xff152a55),
+      child: MaterialButton(
+        minWidth: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => SignupPage()));
+        },
+        child: Text("Signup",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
+
     return Scaffold(
       body: Center(
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/BackGround-signup.png"),
+              image: AssetImage("assets/BackGround-Login.png"),
               fit: BoxFit.cover,
             ),
           ),
@@ -72,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                SizedBox(height: 250.0),
                 emailField,
                 SizedBox(height: 25.0),
                 passwordField,
@@ -79,6 +99,16 @@ class _LoginPageState extends State<LoginPage> {
                   height: 35.0,
                 ),
                 loginButton,
+                SizedBox(
+                  height: 15.0,
+                ),
+                Text('OR',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)
+                        .apply(color: Colors.white)),
+                SizedBox(
+                  height: 15.0,
+                ),
+                signUpButton,
                 SizedBox(
                   height: 15.0,
                 ),

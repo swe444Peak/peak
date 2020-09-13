@@ -2,41 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 
-class SignupPage extends StatefulWidget {
-  SignupPage({Key key, this.title}) : super(key: key);
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-  final String title;
+class LoginPage extends StatefulWidget {
   @override
-  _SignupPageState createState() => _SignupPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _LoginPageState extends State<LoginPage> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-  String password = '';
-  String username = '';
   String email = '';
+  String password = '';
   @override
   Widget build(BuildContext context) {
-    final usernameField = Theme(
-      data: new ThemeData(brightness: Brightness.dark),
-      child: new TextField(
-        obscureText: false,
-        style: style,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            hintText: "Username",
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-        onChanged: (value) => username = value,
-      ),
-    );
-
     final emailField = Theme(
       data: new ThemeData(brightness: Brightness.dark),
       child: new TextField(
@@ -61,14 +37,10 @@ class _SignupPageState extends State<SignupPage> {
             hintText: "Password",
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-        onChanged: (value) {
-          print(value);
-          password = value;
-          print(password);
-        },
+        onChanged: (value) => password = value,
       ),
     );
-    final signUpButton = Material(
+    final loginButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
       color: Color(0xff152a55),
@@ -76,9 +48,9 @@ class _SignupPageState extends State<SignupPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          FirbaseAuthService().signUp(email, username, password);
+          print(FirbaseAuthService().logIn(email, password));
         },
-        child: Text("Sign Up",
+        child: Text("Login",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.white, fontWeight: FontWeight.bold)),
@@ -86,8 +58,6 @@ class _SignupPageState extends State<SignupPage> {
     );
 
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      resizeToAvoidBottomInset: true,
       body: Center(
         child: Container(
           decoration: BoxDecoration(
@@ -102,16 +72,13 @@ class _SignupPageState extends State<SignupPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 100.0),
-                usernameField,
-                SizedBox(height: 25.0),
                 emailField,
                 SizedBox(height: 25.0),
                 passwordField,
                 SizedBox(
                   height: 35.0,
                 ),
-                signUpButton,
+                loginButton,
                 SizedBox(
                   height: 15.0,
                 ),

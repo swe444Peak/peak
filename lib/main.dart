@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:peak/screens/wrapper.dart';
+import 'package:peak/screens/login.dart';
+import 'package:peak/screens/signUp.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  FirebaseApp app = await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -11,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     //TODO: wrapp with StremaProvider
     return MaterialApp(
-      home: Wrapper(),
+      home: SignupPage(),
     );
   }
 }

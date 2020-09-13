@@ -1,17 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-/*
-class SignUp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    //TODO: return either home or auth widget
-    return Container();
-  }
-}
-*/
-class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
+class SignupPage extends StatefulWidget {
+  SignupPage({Key key, this.title}) : super(key: key);
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -21,10 +12,10 @@ class HomePage extends StatefulWidget {
   // always marked "final".
   final String title;
   @override
-  _HomePageState createState() => _HomePageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _SignupPageState extends State<SignupPage> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   @override

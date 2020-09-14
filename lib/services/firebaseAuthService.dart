@@ -7,7 +7,7 @@ class FirbaseAuthService {
     try {
       var result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      return result.user;
+      return result.user != null;
     } catch (e) {
       print(e.message);
       return e.message;
@@ -19,7 +19,7 @@ class FirbaseAuthService {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       print('uid: ${result.user.uid}');
-      return result.user;
+      return result.user != null;
     } catch (e) {
       print(e.toString());
       return e.message;

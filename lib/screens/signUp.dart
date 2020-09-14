@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
+import 'package:peak/screens/shared/customButton.dart';
 import 'package:peak/services/firebaseAuthService.dart';
+import 'package:peak/viewmodels/signup_model.dart';
+import 'package:provider/provider.dart';
+
+import '../locator.dart';
 
 class SignupPage extends StatefulWidget {
   SignupPage({Key key, this.title}) : super(key: key);
@@ -87,75 +92,69 @@ class _SignupPageState extends State<SignupPage> {
       ),
     );
 
-    final signUpButton = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Colors.teal,
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          FirbaseAuthService()
-              .signUp(_emailcontroller.text, _passwordcontroller.text);
-        },
-        child: Text("Sign Up",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Color(0xff152a55), fontWeight: FontWeight.bold)),
-      ),
-    );
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      resizeToAvoidBottomInset: true,
-      body: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/BackGround-signup.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(36.0),
-            child: Form(
-              key: _formkey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 100.0),
-                  usernameField,
-                  SizedBox(height: 25.0),
-                  emailField,
-                  SizedBox(height: 25.0),
-                  passwordField,
-                  SizedBox(
-                    height: 35.0,
+    return ChangeNotifierProvider<SignUpMaodel>(
+        create: (context) => locator<SignUpMaodel>(),
+        child: Consumer<SignUpMaodel>(
+            builder: (context, model, child) => Scaffold(
+                  resizeToAvoidBottomPadding: false,
+                  resizeToAvoidBottomInset: true,
+                  body: Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/BackGround-signup.png"),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(36.0),
+                        child: Form(
+                          key: _formkey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              SizedBox(height: 100.0),
+                              usernameField,
+                              SizedBox(height: 25.0),
+                              emailField,
+                              SizedBox(height: 25.0),
+                              passwordField,
+                              SizedBox(
+                                height: 35.0,
+                              ),
+                              CustomButton(() async {
+                                var success = await model.signUp(
+                                    _emailcontroller.text,
+                                    _passwordcontroller.text);
+                                if (success is bool && success)
+                                  Navigator.pushNamed(context, '/');
+                              }, "Sign Up"),
+                              SizedBox(
+                                height: 15.0,
+                              ),
+                              Text('Already have an account?',
+                                  style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)
+                                      .apply(color: Colors.white)),
+                              GestureDetector(
+                                  child: Text("Sign in",
+                                      style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              decoration:
+                                                  TextDecoration.underline)
+                                          .apply(color: Colors.teal)),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  }),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                  signUpButton,
-                  SizedBox(
-                    height: 15.0,
-                  ),
-                  Text('Already have an account?',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
-                              .apply(color: Colors.white)),
-                  GestureDetector(
-                      child: Text("Sign in",
-                          style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline)
-                              .apply(color: Colors.teal)),
-                      onTap: () {
-                        Navigator.pop(context);
-                      }),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+                )));
   }
 }

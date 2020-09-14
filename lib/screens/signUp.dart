@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 
 class SignupPage extends StatefulWidget {
@@ -24,9 +25,6 @@ class _SignupPageState extends State<SignupPage> {
   final _formkey = GlobalKey<FormState>();
 
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-  String password = '';
-  String username = '';
-  String email = '';
 
   TextEditingController _emailcontroller = TextEditingController();
 
@@ -51,18 +49,12 @@ class _SignupPageState extends State<SignupPage> {
           controller: _usernamecontroller,
           obscureText: false,
           style: style,
-          decoration: InputDecoration(
-              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              hintText: "Username",
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(32.0))),
+          decoration: CommonStyle.textFieldStyle("username"),
           validator: (value) {
             if (value.isEmpty) {
               return 'Please Fill Email Input';
             }
-          }
-          //onChanged: (value) => username = value,
-          ),
+          }),
     );
 
     final emailField = Theme(
@@ -71,17 +63,12 @@ class _SignupPageState extends State<SignupPage> {
         controller: _emailcontroller,
         obscureText: false,
         style: style,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            hintText: "Email",
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+        decoration: CommonStyle.textFieldStyle("email"),
         validator: (value) {
           if (value.isEmpty) {
             return 'Please Fill Email Input';
           }
         },
-        //onChanged: (value) => email = value,
       ),
     );
 
@@ -91,20 +78,11 @@ class _SignupPageState extends State<SignupPage> {
         controller: _passwordcontroller,
         obscureText: true,
         style: style,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            hintText: "Password",
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+        decoration: CommonStyle.textFieldStyle("password"),
         validator: (value) {
           if (value.isEmpty) {
             return 'Please Fill Email Input';
           }
-        },
-        onChanged: (value) {
-          print(value);
-          password = value;
-          print(password);
         },
       ),
     );
@@ -135,7 +113,7 @@ class _SignupPageState extends State<SignupPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.pop(context);
+          if (_formkey.currentState.validate()) Navigator.pop(context);
         },
         child: Text("Back to sign in",
             textAlign: TextAlign.center,
@@ -157,37 +135,28 @@ class _SignupPageState extends State<SignupPage> {
           ),
           child: Padding(
             padding: const EdgeInsets.all(36.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(height: 100.0),
-                usernameField,
-                SizedBox(height: 25.0),
-                emailField,
-                SizedBox(height: 25.0),
-                passwordField,
-                SizedBox(
-                  height: 35.0,
-                ),
-                signUpButton,
-                SizedBox(
-                  height: 25.0,
-                ),
-                Text('Already have an account?',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
-                        .apply(color: Colors.white)),
-                GestureDetector(
-                    child: Text("Sign in",
-                        style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline)
-                            .apply(color: Colors.teal)),
-                    onTap: () {
-                      Navigator.pop(context);
-                    }),
-              ],
+            child: Form(
+              key: _formkey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(height: 100.0),
+                  usernameField,
+                  SizedBox(height: 25.0),
+                  emailField,
+                  SizedBox(height: 25.0),
+                  passwordField,
+                  SizedBox(
+                    height: 35.0,
+                  ),
+                  signUpButton,
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  backtologinButton,
+                ],
+              ),
             ),
           ),
         ),

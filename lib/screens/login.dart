@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:peak/screens/shared/cstomButton.dart';
+import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/screens/signUp.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 
@@ -11,71 +13,44 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-  String email = '';
-  String password = '';
+  TextEditingController _emailcontroller = TextEditingController();
+  TextEditingController _passwordcontroller = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailcontroller.dispose();
+
+    _passwordcontroller.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final emailField = Theme(
       data: new ThemeData(brightness: Brightness.dark),
-      child: new TextField(
+      child: new TextFormField(
+        controller: _emailcontroller,
         obscureText: false,
         style: style,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            hintText: "Email",
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-        onChanged: (value) => email = value,
+        decoration: CommonStyle.textFieldStyle("email"),
       ),
     );
 
     final passwordField = Theme(
       data: new ThemeData(brightness: Brightness.dark),
-      child: new TextField(
+      child: new TextFormField(
+        controller: _passwordcontroller,
         obscureText: true,
         style: style,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            hintText: "Password",
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-        onChanged: (value) => password = value,
-      ),
-    );
-    final loginButton = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Colors.teal,
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          print(FirbaseAuthService().logIn(email, password));
-        },
-        child: Text("Login",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Color(0xff152a55), fontWeight: FontWeight.bold)),
+        decoration: CommonStyle.textFieldStyle("password"),
       ),
     );
 
-    final signUpButton = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Colors.teal,
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => SignupPage()));
-        },
-        child: Text("Signup",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Color(0xff152a55), fontWeight: FontWeight.bold)),
-      ),
-    );
+    final loginButton = CustomButton(() {
+      FirbaseAuthService()
+          .logIn(_emailcontroller.text, _passwordcontroller.text);
+    }, "Log in");
 
     return Scaffold(
       body: Center(

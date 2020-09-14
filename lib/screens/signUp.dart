@@ -136,6 +136,20 @@ class _SignupPageState extends State<SignupPage> {
                   SizedBox(
                     height: 15.0,
                   ),
+                  Text('Already have an account?',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+                              .apply(color: Colors.white)),
+                  GestureDetector(
+                      child: Text("Sign in",
+                          style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline)
+                              .apply(color: Colors.teal)),
+                      onTap: () {
+                        Navigator.pop(context);
+                      }),
                 ],
               ),
             ),

@@ -112,7 +112,7 @@ class _SignupPageState extends State<SignupPage> {
     final signUpButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff152a55),
+      color: Colors.teal,
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -123,27 +123,9 @@ class _SignupPageState extends State<SignupPage> {
         child: Text("Sign Up",
             textAlign: TextAlign.center,
             style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
+                color: Color(0xff152a55), fontWeight: FontWeight.bold)),
       ),
     );
-
-    final backtologinButton = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff152a55),
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: Text("Back to sign in",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
-    );
-
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: true,

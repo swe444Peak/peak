@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:peak/screens/signUp.dart';
@@ -44,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
     final loginButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff152a55),
+      color: Colors.teal,
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -54,14 +55,14 @@ class _LoginPageState extends State<LoginPage> {
         child: Text("Login",
             textAlign: TextAlign.center,
             style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
+                color: Color(0xff152a55), fontWeight: FontWeight.bold)),
       ),
     );
 
     final signUpButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff152a55),
+      color: Colors.teal,
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -72,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Text("Signup",
             textAlign: TextAlign.center,
             style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
+                color: Color(0xff152a55), fontWeight: FontWeight.bold)),
       ),
     );
 
@@ -91,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 250.0),
+                SizedBox(height: 300.0),
                 emailField,
                 SizedBox(height: 25.0),
                 passwordField,
@@ -100,18 +101,24 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 loginButton,
                 SizedBox(
-                  height: 15.0,
+                  height: 50.0,
                 ),
-                Text('OR',
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)
+                Text('Not a member ?',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
                         .apply(color: Colors.white)),
-                SizedBox(
-                  height: 15.0,
-                ),
-                signUpButton,
-                SizedBox(
-                  height: 15.0,
-                ),
+                GestureDetector(
+                    child: Text("SignUp",
+                        style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline)
+                            .apply(color: Colors.teal)),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SignupPage()));
+                    }),
               ],
             ),
           ),

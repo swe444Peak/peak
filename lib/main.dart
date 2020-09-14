@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:peak/screens/login.dart';
-import 'package:peak/screens/signUp.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {

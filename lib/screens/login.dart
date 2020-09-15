@@ -26,85 +26,96 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final emailField = Theme(
-      data: new ThemeData(brightness: Brightness.dark),
-      child: new TextFormField(
-        controller: _emailcontroller,
-        obscureText: false,
-        style: style,
-        decoration: CommonStyle.textFieldStyle("email"),
-      ),
-    );
-
-    final passwordField = Theme(
-      data: new ThemeData(brightness: Brightness.dark),
-      child: new TextFormField(
-        controller: _passwordcontroller,
-        obscureText: true,
-        style: style,
-        decoration: CommonStyle.textFieldStyle("password"),
-      ),
-    );
-
     return ChangeNotifierProvider<LoginMaodel>(
-        create: (context) => locator<LoginMaodel>(),
-        child: Consumer<LoginMaodel>(
-            builder: (context, model, child) => Scaffold(
-                  body: Center(
+      create: (context) => locator<LoginMaodel>(),
+      child: Consumer<LoginMaodel>(
+        builder: (context, model, child) => SafeArea(
+          child: Scaffold(
+            backgroundColor: Color(0xFF22488e),
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView(
+                children: <Widget>[
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Hero(
+                    tag: "logo",
                     child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/BackGround-Login.png"),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(36.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(height: 300.0),
-                            emailField,
-                            SizedBox(height: 25.0),
-                            passwordField,
-                            SizedBox(
-                              height: 35.0,
-                            ),
-                            CustomButton(() async {
-                              var success = await model.login(
-                                  _emailcontroller.text,
-                                  _passwordcontroller.text);
-                              if (success is bool && success)
-                                Navigator.pushNamed(context, '/');
-                            }, "Log in"),
-                            SizedBox(
-                              height: 50.0,
-                            ),
-                            Text('Not a member ?',
-                                style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold)
-                                    .apply(color: Colors.white)),
-                            GestureDetector(
-                                child: Text("SignUp",
-                                    style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                            decoration:
-                                                TextDecoration.underline)
-                                        .apply(color: Colors.teal)),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => SignupPage()));
-                                }),
-                          ],
-                        ),
+                      height: 190.0,
+                      child: Image.asset('assets/logo.png'),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50.0,
+                  ),
+                  Theme(
+                    data: ThemeData(brightness: Brightness.dark),
+                    child: TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _emailcontroller,
+                      decoration: CommonStyle.textFieldStyle("email"),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Theme(
+                    data: ThemeData(brightness: Brightness.dark),
+                    child: TextFormField(
+                      obscureText: true,
+                      controller: _passwordcontroller,
+                      decoration: CommonStyle.textFieldStyle("password"),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 40.0,
+                  ),
+                  CustomButton(() async {
+                    var success = await model.login(
+                        _emailcontroller.text, _passwordcontroller.text);
+                    print(success);
+                    if (success is bool && success) {
+                      Navigator.pushNamed(context, '/');
+                    }
+                  }, "Log in"),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Center(
+                    child: Center(
+                      child: Text(
+                        'Not a member ?',
+                        style:
+                            TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+                                .apply(color: Colors.white),
                       ),
                     ),
                   ),
-                )));
+                  GestureDetector(
+                    child: Center(
+                      child: Text(
+                        "SignUp",
+                        style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline)
+                            .apply(color: Colors.teal),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SignupPage()));
+                    },
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

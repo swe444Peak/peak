@@ -13,10 +13,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   TextEditingController _emailcontroller = TextEditingController();
   TextEditingController _passwordcontroller = TextEditingController();
 
+  final _formKey = new GlobalKey<FormState>();
   @override
   void dispose() {
     _emailcontroller.dispose();
@@ -34,56 +34,43 @@ class _LoginPageState extends State<LoginPage> {
             backgroundColor: Color(0xFF22488e),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ListView(
-                children: <Widget>[
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Hero(
-                    tag: "logo",
-                    child: Container(
-                      height: 190.0,
-                      child: Image.asset('assets/logo.png'),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  SizedBox(
-                    height: 50.0,
-                  ),
-                  Theme(
-                    data: ThemeData(brightness: Brightness.dark),
-                    child: TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      controller: _emailcontroller,
-                      decoration: CommonStyle.textFieldStyle("email"),
+                    Hero(
+                      tag: "logo",
+                      child: Container(
+                        height: 190.0,
+                        child: Image.asset('assets/logo.png'),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  Theme(
-                    data: ThemeData(brightness: Brightness.dark),
-                    child: TextFormField(
-                      obscureText: true,
-                      controller: _passwordcontroller,
-                      decoration: CommonStyle.textFieldStyle("password"),
+                    SizedBox(
+                      height: 40.0,
                     ),
-                  ),
-                  SizedBox(
-                    height: 40.0,
-                  ),
-                  CustomButton(() async {
-                    var success = await model.login(
-                        _emailcontroller.text, _passwordcontroller.text);
-                    print(success);
-                    if (success is bool && success) {
-                      Navigator.pushNamed(context, '/');
-                    }
-                  }, "Log in"),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Center(
-                    child: Center(
+                    _buildEmailTextFiled(),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    _buildPasswordTextFiled(),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    CustomButton(() async {
+                      if (_formKey.currentState.validate()) {
+                        var success = await model.login(
+                            _emailcontroller.text, _passwordcontroller.text);
+                        if (success is bool && success)
+                          Navigator.pushNamed(context, '/');
+                      }
+                    }, "Log in"),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Center(
                       child: Text(
                         'Not a member ?',
                         style:
@@ -91,31 +78,42 @@ class _LoginPageState extends State<LoginPage> {
                                 .apply(color: Colors.white),
                       ),
                     ),
-                  ),
-                  GestureDetector(
-                    child: Center(
-                      child: Text(
-                        "SignUp",
-                        style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline)
-                            .apply(color: Colors.teal),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SignupPage()));
-                    },
-                  )
-                ],
+                    _buildGestureDetector(),
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildEmailTextFiled() {
+    return buildTextFiled(_emailcontroller, false, "emil",
+        (value) => value.isEmpty ? "email field cannot be empty" : null);
+  }
+
+  Widget _buildPasswordTextFiled() {
+    return buildTextFiled(_passwordcontroller, true, "password",
+        (value) => value.isEmpty ? "Password filed cannot be empty" : null);
+  }
+
+  Widget _buildGestureDetector() {
+    return GestureDetector(
+      child: Center(
+        child: Text(
+          "SignUp",
+          style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline)
+              .apply(color: Colors.teal),
+        ),
+      ),
+      onTap: () {
+        Navigator.pushNamed(context, 'signUp');
+      },
     );
   }
 }

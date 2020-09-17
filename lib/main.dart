@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(),
-      initialRoute: 'profile',
+      initialRoute: 'login',
       onGenerateRoute: Router.generateRoute,
     );
   }

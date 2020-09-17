@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:peak/services/authExceptionHandler.dart';
 
 class FirbaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -7,10 +8,13 @@ class FirbaseAuthService {
     try {
       var result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      return result.user != null;
+      if (result.user != null) return true;
+
+      return AuthExceptionHandler.generateExceptionMessage(
+          AuthResultStatus.undefined);
     } catch (e) {
-      print(e.message);
-      return e.message;
+      print('Exception @createAccount: $e');
+      return AuthExceptionHandler.handleException(e);
     }
   }
 
@@ -18,11 +22,13 @@ class FirbaseAuthService {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      print('uid: ${result.user.uid}');
-      return result.user != null;
+      if (result.user != null) return true;
+
+      return AuthExceptionHandler.generateExceptionMessage(
+          AuthResultStatus.undefined);
     } catch (e) {
-      print(e.toString());
-      return e.message;
+      print('Exception @login: $e');
+      return AuthExceptionHandler.handleException(e);
     }
   }
 

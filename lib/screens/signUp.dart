@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:peak/enums/viewState.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/screens/shared/customButton.dart';
 import 'package:peak/viewmodels/signup_model.dart';
@@ -102,55 +104,59 @@ class _SignupPageState extends State<SignupPage> {
         builder: (context, model, child) => SafeArea(
           child: Scaffold(
             backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
-            body: SingleChildScrollView(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Form(
-                    key: _formkey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        showAlert(),
-                        SizedBox(height: size.height * 0.02),
-                        Image.asset(
-                          "assets/logo.png",
-                          height: size.height * 0.28,
-                        ),
-                        SizedBox(height: size.height * 0.06),
-                        usernameField,
-                        SizedBox(height: size.height * 0.01),
-                        emailField,
-                        SizedBox(height: size.height * 0.01),
-                        passwordField,
-                        SizedBox(height: size.height * 0.01),
-                        passwordcheckField,
-                        SizedBox(height: size.height * 0.03),
-                        CustomButton(() async {
-                          if (_formkey.currentState.validate()) {
-                            var success = await model.signUp(
-                                _emailcontroller.text,
-                                _passwordcontroller.text);
-                            if (success is bool && success) {
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc()
-                                  .set({'username': _usernamecontroller.text});
-                              Navigator.pushNamed(context, '/');
-                            } else {
-                              _error = success;
+            body: ModalProgressHUD(
+              inAsyncCall: model.state == ViewState.Busy,
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Form(
+                      key: _formkey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          showAlert(),
+                          SizedBox(height: size.height * 0.02),
+                          Image.asset(
+                            "assets/logo.png",
+                            height: size.height * 0.28,
+                          ),
+                          SizedBox(height: size.height * 0.06),
+                          usernameField,
+                          SizedBox(height: size.height * 0.01),
+                          emailField,
+                          SizedBox(height: size.height * 0.01),
+                          passwordField,
+                          SizedBox(height: size.height * 0.01),
+                          passwordcheckField,
+                          SizedBox(height: size.height * 0.03),
+                          CustomButton(() async {
+                            if (_formkey.currentState.validate()) {
+                              var success = await model.signUp(
+                                  _emailcontroller.text,
+                                  _passwordcontroller.text);
+                              if (success is bool && success) {
+                                FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc()
+                                    .set(
+                                        {'username': _usernamecontroller.text});
+                                Navigator.pushNamed(context, '/');
+                              } else {
+                                _error = success;
+                              }
                             }
-                          }
-                        }, "Sign Up"),
-                        Text(
-                          'Already have an account?',
-                          style: TextStyle(
-                                  fontSize: size.height / 35,
-                                  fontWeight: FontWeight.bold)
-                              .apply(color: Colors.white),
-                        ),
-                        _buildGestureDetector(),
-                      ],
+                          }, "Sign Up"),
+                          Text(
+                            'Already have an account?',
+                            style: TextStyle(
+                                    fontSize: size.height / 35,
+                                    fontWeight: FontWeight.bold)
+                                .apply(color: Colors.white),
+                          ),
+                          _buildGestureDetector(),
+                        ],
+                      ),
                     ),
                   ),
                 ),

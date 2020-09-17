@@ -37,7 +37,7 @@ class AuthExceptionHandler {
       case "email-already-in-use":
         status = AuthResultStatus.emailAlreadyExists;
         break;
-      case "too-many-request":
+      case "too-many-requests":
         status = AuthResultStatus.tooManyRequests;
         break;
       default:

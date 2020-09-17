@@ -16,9 +16,9 @@ class SignUpMaodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future signUp(String email, String password) async {
+  Future signUp(String username, String email, String password) async {
     setState(ViewState.Busy);
-    var result = await _firbaseAuthService.signUp(email, password);
+    var result = await _firbaseAuthService.signUp(username, email, password);
     setState(ViewState.Idle);
     return result;
   }

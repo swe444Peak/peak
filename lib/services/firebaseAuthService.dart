@@ -1,14 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:peak/services/authExceptionHandler.dart';
+import 'package:peak/services/databaseServices.dart';
 
 class FirbaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  
 
-  Future signUp(String email, String password) async {
+  Future signUp(String username, String email, String password) async {
+
     try {
       var result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      if (result.user != null) return true;
+
+      if (result.user != null){ 
+        //creating an instance of database services to create new doc for the user with the uid
+        //final DatabaseServices database = DatabaseServices(result.user);
+        await DatabaseServices(uid: result.user.uid).updateUserData(username: username);
+
+        return true;
+      }
 
       return AuthExceptionHandler.generateExceptionMessage(
           AuthResultStatus.undefined);

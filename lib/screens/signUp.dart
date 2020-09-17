@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/screens/shared/customButton.dart';
 import 'package:peak/viewmodels/signup_model.dart';
@@ -10,33 +11,18 @@ import '../locator.dart';
 
 class SignupPage extends StatefulWidget {
   SignupPage({Key key, this.title}) : super(key: key);
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
   final String title;
   @override
   _SignupPageState createState() => _SignupPageState();
 }
 
 class _SignupPageState extends State<SignupPage> {
-  void initState() {
-    super.initState();
-  }
-
   final _formkey = GlobalKey<FormState>();
-
+  String _error;
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
-
   TextEditingController _emailcontroller = TextEditingController();
-
   TextEditingController _passwordcontroller = TextEditingController();
-
   TextEditingController _usernamecontroller = TextEditingController();
-
   TextEditingController _passwordcheckcontroller = TextEditingController();
 
   @override
@@ -46,17 +32,6 @@ class _SignupPageState extends State<SignupPage> {
     _passwordcontroller.dispose();
 
     super.dispose();
-  }
-
-  bool fillFields() {
-    if (_emailcontroller.text.isEmpty ||
-        _passwordcontroller.text.isEmpty ||
-        _usernamecontroller.text.isEmpty ||
-        _passwordcheckcontroller.text.isEmpty) {
-      showAlertDialog(context, 'Please fill all fields');
-      return false;
-    }
-    return true;
   }
 
   void showAlertDialog(BuildContext context, String error) {
@@ -91,80 +66,93 @@ class _SignupPageState extends State<SignupPage> {
     final usernameField =
         buildTextFiled(_usernamecontroller, false, "username");
 
-    final emailField = buildTextFiled(_emailcontroller, false, "email");
+    final emailField = buildTextFiled(
+        _emailcontroller,
+        false,
+        "email",
+        MultiValidator([
+          RequiredValidator(errorText: 'email is required'),
+          EmailValidator(errorText: 'enter a valid email address')
+        ]));
 
-    final passwordField = buildTextFiled(_passwordcontroller, true, "password");
+    final passwordField = buildTextFiled(
+      _passwordcontroller,
+      true,
+      "password",
+      MultiValidator([
+        RequiredValidator(errorText: 'password is required'),
+        MinLengthValidator(6,
+            errorText: 'password must be at least 6 characters long'),
+      ]),
+    );
 
-    final passwordcheckField =
-        buildTextFiled(_passwordcheckcontroller, true, "confirm password");
+    final passwordcheckField = buildTextFiled(
+        _passwordcheckcontroller, true, "confirm password", (value) {
+      return value.isEmpty
+          ? "confirm password is required"
+          : (value != _passwordcontroller.text
+              ? "passwords don\'t match"
+              : null);
+    });
 
+    Size size = MediaQuery.of(context).size;
     return ChangeNotifierProvider<SignUpMaodel>(
       create: (context) => locator<SignUpMaodel>(),
       child: Consumer<SignUpMaodel>(
         builder: (context, model, child) => SafeArea(
           child: Scaffold(
-            backgroundColor: Color(0xFF22488e),
-            body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Form(
-                key: _formkey,
-                child: ListView(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Hero(
-                      tag: "logo",
-                      child: Container(
-                        height: 190.0,
-                        child: Image.asset('assets/logo.png'),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40.0,
-                    ),
-                    usernameField,
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    emailField,
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    passwordField,
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    passwordcheckField,
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    CustomButton(() async {
-                      if (_passwordcontroller.text !=
-                          _passwordcheckcontroller.text) {
-                        showAlertDialog(context, 'passwords don\'t match');
-                      } else if (fillFields()) {
-                        print(_passwordcontroller.text);
-                        print(_passwordcheckcontroller.text);
-                        var success = await model.signUp(
-                            _emailcontroller.text, _passwordcontroller.text);
-                           FirebaseFirestore.instance.collection('users').doc().set({'username':_usernamecontroller.text});
-                        if (success is bool && success)
-                          Navigator.pushNamed(context, '/');
-
-                      }
-                    }, "Sign Up"),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Center(
-                      child: Text('Already have an account?',
+            backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
+            body: SingleChildScrollView(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Form(
+                    key: _formkey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        showAlert(),
+                        SizedBox(height: size.height * 0.02),
+                        Image.asset(
+                          "assets/logo.png",
+                          height: size.height * 0.28,
+                        ),
+                        SizedBox(height: size.height * 0.06),
+                        usernameField,
+                        SizedBox(height: size.height * 0.01),
+                        emailField,
+                        SizedBox(height: size.height * 0.01),
+                        passwordField,
+                        SizedBox(height: size.height * 0.01),
+                        passwordcheckField,
+                        SizedBox(height: size.height * 0.03),
+                        CustomButton(() async {
+                          if (_formkey.currentState.validate()) {
+                            var success = await model.signUp(
+                                _emailcontroller.text,
+                                _passwordcontroller.text);
+                            if (success is bool && success) {
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc()
+                                  .set({'username': _usernamecontroller.text});
+                              Navigator.pushNamed(context, '/');
+                            } else {
+                              _error = success;
+                            }
+                          }
+                        }, "Sign Up"),
+                        Text(
+                          'Already have an account?',
                           style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)
-                              .apply(color: Colors.white)),
+                                  fontSize: size.height / 35,
+                                  fontWeight: FontWeight.bold)
+                              .apply(color: Colors.white),
+                        ),
+                        _buildGestureDetector(),
+                      ],
                     ),
-                    _buildGestureDetector(),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -187,5 +175,40 @@ class _SignupPageState extends State<SignupPage> {
         onTap: () {
           Navigator.pop(context);
         });
+  }
+
+  Widget showAlert() {
+    if (_error != null) {
+      return Container(
+        color: Colors.amberAccent,
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(Icons.error_outline),
+            ),
+            Expanded(
+              child: Text(_error),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  setState(() {
+                    _error = null;
+                  });
+                },
+              ),
+            )
+          ],
+        ),
+      );
+    }
+    return SizedBox(
+      height: 0,
+    );
   }
 }

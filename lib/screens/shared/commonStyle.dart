@@ -13,9 +13,9 @@ Widget buildTextFiled(
   return Theme(
     data: ThemeData(brightness: Brightness.dark),
     child: TextFormField(
+      autovalidate: true,
       validator: validator,
       obscureText: isObscure,
-      style: style,
       controller: controller,
       decoration: textFieldStyle(hintText),
     ),

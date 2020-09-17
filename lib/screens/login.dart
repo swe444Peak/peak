@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:peak/locator.dart';
-import 'package:peak/screens/shared/customButton.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
-import 'package:peak/screens/signUp.dart';
+import 'package:peak/screens/shared/customButton.dart';
 import 'package:peak/viewmodels/login_model.dart';
 import 'package:provider/provider.dart';
+
+import '../locator.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -13,73 +13,73 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formkey = GlobalKey<FormState>();
+  String _error;
   TextEditingController _emailcontroller = TextEditingController();
   TextEditingController _passwordcontroller = TextEditingController();
 
-  final _formKey = new GlobalKey<FormState>();
   @override
   void dispose() {
     _emailcontroller.dispose();
+
     _passwordcontroller.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return ChangeNotifierProvider<LoginMaodel>(
       create: (context) => locator<LoginMaodel>(),
       child: Consumer<LoginMaodel>(
         builder: (context, model, child) => SafeArea(
           child: Scaffold(
-            backgroundColor: Color(0xFF22488e),
-            body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 20,
+            backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
+            body: SingleChildScrollView(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Form(
+                    key: _formkey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        showAlert(),
+                        SizedBox(height: size.height * 0.02),
+                        Image.asset(
+                          "assets/logo.png",
+                          height: size.height * 0.28,
+                        ),
+                        SizedBox(height: size.height * 0.06),
+                        _buildEmailTextField(),
+                        SizedBox(height: size.height * 0.01),
+                        _buildPasswordTextField(),
+                        SizedBox(height: size.height * 0.03),
+                        CustomButton(() async {
+                          if (_formkey.currentState.validate()) {
+                            var success = await model.login(
+                                _emailcontroller.text,
+                                _passwordcontroller.text);
+                            if (success is bool && success) {
+                              Navigator.pushNamed(context, '/');
+                            } else {
+                              _error = success;
+                            }
+                          }
+                        }, "Log in"),
+                        Text(
+                          'Not a member ?',
+                          style: TextStyle(
+                                  fontSize: size.height / 35,
+                                  fontWeight: FontWeight.bold)
+                              .apply(color: Colors.white),
+                        ),
+                        _buildGestureDetector(),
+                      ],
                     ),
-                    Hero(
-                      tag: "logo",
-                      child: Container(
-                        height: 190.0,
-                        child: Image.asset('assets/logo.png'),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40.0,
-                    ),
-                    _buildEmailTextFiled(),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    _buildPasswordTextFiled(),
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    CustomButton(() async {
-                      if (_formKey.currentState.validate()) {
-                        var success = await model.login(
-                            _emailcontroller.text, _passwordcontroller.text);
-                        if (success is bool && success)
-                          Navigator.pushNamed(context, '/');
-                      }
-                    }, "Log in"),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Center(
-                      child: Text(
-                        'Not a member ?',
-                        style:
-                            TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
-                                .apply(color: Colors.white),
-                      ),
-                    ),
-                    _buildGestureDetector(),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -89,14 +89,20 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildEmailTextFiled() {
-    return buildTextFiled(_emailcontroller, false, "emil",
-        (value) => value.isEmpty ? "email field cannot be empty" : null);
+  Widget _buildEmailTextField() {
+    return buildTextFiled(
+        _emailcontroller,
+        false,
+        "email",
+        MultiValidator([
+          RequiredValidator(errorText: 'Please enter your email address'),
+          EmailValidator(errorText: 'enter a valid email address')
+        ]));
   }
 
-  Widget _buildPasswordTextFiled() {
+  Widget _buildPasswordTextField() {
     return buildTextFiled(_passwordcontroller, true, "password",
-        (value) => value.isEmpty ? "Password filed cannot be empty" : null);
+        RequiredValidator(errorText: "Please enter your password"));
   }
 
   Widget _buildGestureDetector() {
@@ -114,6 +120,41 @@ class _LoginPageState extends State<LoginPage> {
       onTap: () {
         Navigator.pushNamed(context, 'signUp');
       },
+    );
+  }
+
+  Widget showAlert() {
+    if (_error != null) {
+      return Container(
+        color: Colors.amberAccent,
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(Icons.error_outline),
+            ),
+            Expanded(
+              child: Text(_error),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  setState(() {
+                    _error = null;
+                  });
+                },
+              ),
+            )
+          ],
+        ),
+      );
+    }
+    return SizedBox(
+      height: 0,
     );
   }
 }

@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                                   _emailcontroller.text,
                                   _passwordcontroller.text);
                               if (success is bool && success)
-                                Navigator.pushNamed(context, '/');
+                                Navigator.pushNamed(context, 'settings');
                             }, "Log in"),
                             SizedBox(
                               height: 50.0,

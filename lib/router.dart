@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peak/screens/home.dart';
 import 'package:peak/screens/settings.dart';
 import 'package:peak/screens/profile.dart';
+import 'package:peak/screens/signUp.dart';
 
 import 'screens/login.dart';
 
@@ -18,6 +19,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => SettingsPage());
       case 'profile':
         return MaterialPageRoute(builder: (_) => ProfilePage());
+      case 'signUp':
+        return MaterialPageRoute(builder: (_) => SignupPage());
     }
   }
 }

@@ -32,7 +32,10 @@ class FirbaseAuthService {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      if (result.user != null) return true;
+      if (result.user != null) {
+        DatabaseServices(uid: result.user.uid).userData;
+        return true;
+        }
 
       return AuthExceptionHandler.generateExceptionMessage(
           AuthResultStatus.undefined);

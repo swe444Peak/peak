@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:peak/models/user.dart';
 class DatabaseServices {
 
   final String uid;
@@ -16,6 +16,22 @@ class DatabaseServices {
 
   }//end updateUserData
 
-  
+  //creating user data stream to get user doc
+
+  Stream<User> get userData{
+    print("inside userData uid = ${uid}");
+    return userCollection.doc(uid).snapshots()
+    .map((event) => _userDataFromSnapshot(event));
+  }
+
+  //extract user data from snapshot 
+
+  User _userDataFromSnapshot(DocumentSnapshot snapshot){
+    print("inside _userDataFromSnapshot uid = ${uid}, name = ${snapshot.data()['username']}");
+    return User(
+      uid: uid,
+      name: snapshot.data()['username'],
+      );
+  }
 
 }

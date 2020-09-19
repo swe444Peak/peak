@@ -65,8 +65,8 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    final usernameField =
-        buildTextFiled(_usernamecontroller, false, "username");
+    final usernameField = buildTextFiled(_usernamecontroller, false, "name",
+        RequiredValidator(errorText: 'please enter your name'));
 
     final emailField = buildTextFiled(
         _emailcontroller,
@@ -137,7 +137,8 @@ class _SignupPageState extends State<SignupPage> {
                                   _emailcontroller.text,
                                   _passwordcontroller.text);
                               if (success is bool && success) {
-                                Navigator.pushNamed(context, 'profile');          /*EDITED FOR SPRINT #1*/ 
+                                Navigator.pushNamed(context,
+                                    'profile'); /*EDITED FOR SPRINT #1*/
                               } else {
                                 _error = success;
                               }

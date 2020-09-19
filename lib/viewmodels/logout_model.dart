@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:peak/enums/viewState.dart';
+import 'package:peak/locator.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 
-import '../locator.dart';
-
-class SignUpMaodel extends ChangeNotifier {
+class LogoutMaodel extends ChangeNotifier {
   final FirbaseAuthService _firbaseAuthService = locator<FirbaseAuthService>();
 
   ViewState _state = ViewState.Idle;
@@ -16,9 +15,9 @@ class SignUpMaodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future signUp(String username, String email, String password) async {
+  Future logout() async {
     setState(ViewState.Busy);
-    var result = await _firbaseAuthService.signUp(username, email, password);
+    var result = await _firbaseAuthService.logout();
     setState(ViewState.Idle);
     return result;
   }

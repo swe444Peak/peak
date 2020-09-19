@@ -133,15 +133,11 @@ class _SignupPageState extends State<SignupPage> {
                           CustomButton(() async {
                             if (_formkey.currentState.validate()) {
                               var success = await model.signUp(
+                                  _usernamecontroller.text,
                                   _emailcontroller.text,
                                   _passwordcontroller.text);
                               if (success is bool && success) {
-                                FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc()
-                                    .set(
-                                        {'username': _usernamecontroller.text});
-                                Navigator.pushNamed(context, '/');
+                                Navigator.pushNamed(context, 'profile');          /*EDITED FOR SPRINT #1*/ 
                               } else {
                                 _error = success;
                               }

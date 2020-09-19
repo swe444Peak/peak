@@ -27,7 +27,7 @@ class FirbaseAuthService {
       return AuthExceptionHandler.generateExceptionMessage(
           AuthResultStatus.undefined);
     } catch (e) {
-      print('Exception @login: $e');
+      print('Exception: $e');
       return AuthExceptionHandler.handleException(e);
     }
   }

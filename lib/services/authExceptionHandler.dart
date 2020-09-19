@@ -8,7 +8,8 @@ enum AuthResultStatus {
   userDisabled,
   operationNotAllowed,
   undefined,
-  tooManyRequests
+  tooManyRequests,
+  networkRequestFailed
 }
 
 class AuthExceptionHandler {
@@ -40,6 +41,9 @@ class AuthExceptionHandler {
       case "too-many-requests":
         status = AuthResultStatus.tooManyRequests;
         break;
+      case "network-request-failed":
+        status = AuthResultStatus.networkRequestFailed;
+        break;
       default:
         status = AuthResultStatus.undefined;
     }
@@ -70,6 +74,10 @@ class AuthExceptionHandler {
         break;
       case AuthResultStatus.tooManyRequests:
         errorMessage = "Too many requests. Try again later";
+        break;
+      case AuthResultStatus.networkRequestFailed:
+        errorMessage =
+            "Unable to connect please check your internet connection";
         break;
       default:
         errorMessage = "An undefined Error happened.";

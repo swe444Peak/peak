@@ -14,7 +14,7 @@ class ProfilePage extends StatelessWidget {
     var height = screenSize.height;
     //User user;
 
-    return StreamProvider<User>.value(
+    return StreamProvider<PeakUser>.value(
           value: DatabaseServices().userData,
           builder: (context, snapshot){
                       return Scaffold(
@@ -111,7 +111,7 @@ class ProfilePage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("{Provider.of<User>(context).name}",
+                          Text("${Provider.of<PeakUser>(context)?.name}",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 30,

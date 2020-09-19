@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:peak/services/authExceptionHandler.dart';
 import 'package:peak/services/databaseServices.dart';
+import 'package:peak/models/user.dart';
 
 class FirbaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  PeakUser currentUser;
   
 
   Future signUp(String username, String email, String password) async {
@@ -33,7 +35,7 @@ class FirbaseAuthService {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       if (result.user != null) {
-        DatabaseServices(uid: result.user.uid).userData;
+        currentUser = PeakUser(uid: result.user.uid);
         return true;
         }
 

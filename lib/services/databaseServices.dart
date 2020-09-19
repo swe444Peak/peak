@@ -1,7 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peak/models/user.dart';
+import 'package:peak/services/firebaseAuthService.dart';
+import 'package:peak/locator.dart';
+
+
 class DatabaseServices {
 
+  final FirbaseAuthService _firbaseAuthService = locator<FirbaseAuthService>();
   final String uid;
   DatabaseServices({this.uid});
 
@@ -18,18 +23,17 @@ class DatabaseServices {
 
   //creating user data stream to get user doc
 
-  Stream<User> get userData{
-    print("inside userData uid = ${uid}");
-    return userCollection.doc(uid).snapshots()
+  Stream<PeakUser> get userData {
+
+    return userCollection.doc(_firbaseAuthService.currentUser.uid).snapshots()
     .map((event) => _userDataFromSnapshot(event));
   }
 
   //extract user data from snapshot 
 
-  User _userDataFromSnapshot(DocumentSnapshot snapshot){
-    print("inside _userDataFromSnapshot uid = ${uid}, name = ${snapshot.data()['username']}");
-    return User(
-      uid: uid,
+  PeakUser _userDataFromSnapshot(DocumentSnapshot snapshot){
+    return PeakUser(
+      uid: _firbaseAuthService.currentUser.uid,
       name: snapshot.data()['username'],
       );
   }

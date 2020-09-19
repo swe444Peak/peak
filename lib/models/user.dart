@@ -1,11 +1,9 @@
-class User {
+class PeakUser {
 
   final String uid;
   final String name;
 
-  User({this.uid, this.name});
-
-  String get getName{return this.name;}
+  PeakUser({this.uid, this.name});
 
 }
 

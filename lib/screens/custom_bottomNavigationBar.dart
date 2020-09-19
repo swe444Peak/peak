@@ -32,13 +32,13 @@ class CustomNavigationBar extends StatelessWidget {
       onTap: (index) {
     switch(index){
       case 0:
-                              Navigator.pushNamed(context, '/');
+                              //Navigator.pushNamed(context, '/');
                             break;
       case 1:
                               Navigator.pushNamed(context, 'profile');
                             break;
       case 2:
-                              Navigator.pushNamed(context, 'explore');
+                              //Navigator.pushNamed(context, 'explore');
                             break;
     }
   },

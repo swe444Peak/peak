@@ -25,6 +25,7 @@ class ProfilePage extends StatelessWidget {
         appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0.0,
+            leading: Padding(padding: EdgeInsets.only(top: 0.0)),
             actions: [
               IconButton(
                 icon: Icon(

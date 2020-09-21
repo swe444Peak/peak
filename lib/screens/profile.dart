@@ -112,7 +112,7 @@ class ProfilePage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("${Provider.of<PeakUser>(context)?.name}",
+                          Text("${(Provider.of<PeakUser>(context)?.name)??""}",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 30,

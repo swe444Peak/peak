@@ -7,6 +7,6 @@ GetIt locator = GetIt.instance;
 
 void setupLocator() {
   locator.registerLazySingleton(() => FirbaseAuthService());
-  locator.registerFactory(() => LoginMaodel());
-  locator.registerFactory(() => SignUpMaodel());
+  locator.registerFactory(() => LoginModel());
+  locator.registerFactory(() => SignUpModel());
 }

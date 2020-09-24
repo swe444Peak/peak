@@ -33,9 +33,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return ChangeNotifierProvider<LoginMaodel>(
-      create: (context) => locator<LoginMaodel>(),
-      child: Consumer<LoginMaodel>(
+    return ChangeNotifierProvider<LoginModel>(
+      create: (context) => locator<LoginModel>(),
+      child: Consumer<LoginModel>(
         builder: (context, model, child) => SafeArea(
           child: Scaffold(
             backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),

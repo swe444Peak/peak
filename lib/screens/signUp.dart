@@ -5,10 +5,9 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:peak/enums/viewState.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/screens/shared/customButton.dart';
+import 'package:peak/viewmodels/login_model.dart';
 import 'package:peak/viewmodels/signup_model.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../locator.dart';
 
 class SignupPage extends StatefulWidget {

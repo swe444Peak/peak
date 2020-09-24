@@ -3,7 +3,7 @@ import 'package:peak/enums/viewState.dart';
 import 'package:peak/locator.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 
-class LoginMaodel extends ChangeNotifier {
+class LoginModel extends ChangeNotifier {
   final FirbaseAuthService _firbaseAuthService = locator<FirbaseAuthService>();
 
   ViewState _state = ViewState.Idle;

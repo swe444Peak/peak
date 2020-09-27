@@ -25,7 +25,8 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController _passwordcontroller = TextEditingController();
   TextEditingController _usernamecontroller = TextEditingController();
   TextEditingController _passwordcheckcontroller = TextEditingController();
-
+  Pattern passPattern =
+      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
   @override
   void dispose() {
     _emailcontroller.dispose();
@@ -77,15 +78,17 @@ class _SignupPageState extends State<SignupPage> {
         ]));
 
     final passwordField = buildTextFiled(
-      _passwordcontroller,
-      true,
-      "password",
-      MultiValidator([
-        RequiredValidator(errorText: 'password is required'),
-        MinLengthValidator(6,
-            errorText: 'password must be at least 6 characters long'),
-      ]),
-    );
+        _passwordcontroller,
+        true,
+        "password",
+        MultiValidator([
+          RequiredValidator(errorText: 'password is required'),
+          MinLengthValidator(8,
+              errorText: 'password must be at least 8 characters long'),
+          PatternValidator(passPattern,
+              errorText:
+                  'must contain capital and small letters , digits and special characters'),
+        ]));
 
     final passwordcheckField = buildTextFiled(
         _passwordcheckcontroller, true, "confirm password", (value) {
@@ -97,9 +100,9 @@ class _SignupPageState extends State<SignupPage> {
     });
 
     Size size = MediaQuery.of(context).size;
-    return ChangeNotifierProvider<SignUpMaodel>(
-      create: (context) => locator<SignUpMaodel>(),
-      child: Consumer<SignUpMaodel>(
+    return ChangeNotifierProvider<SignUpModel>(
+      create: (context) => locator<SignUpModel>(),
+      child: Consumer<SignUpModel>(
         builder: (context, model, child) => SafeArea(
           child: Scaffold(
             backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),

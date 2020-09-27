@@ -60,7 +60,15 @@ class _LoginPageState extends State<LoginPage> {
                           _buildEmailTextField(),
                           SizedBox(height: size.height * 0.01),
                           _buildPasswordTextField(),
-                          SizedBox(height: size.height * 0.03),
+                          SizedBox(height: size.height * 0.02),
+                          FlatButton(
+                            child: Text("Forgot Password?", 
+                            style: TextStyle(fontFamily: 'Montserrat', fontSize: 16.0,color: Colors.white, decoration: TextDecoration.underline)),
+                            onPressed: (){
+                              Navigator.pushNamed(context, 'forgotPassword');
+                            },
+                          )
+                          ,
                           CustomButton(() async {
                             if (_formkey.currentState.validate()) {
                               var success = await model.login(

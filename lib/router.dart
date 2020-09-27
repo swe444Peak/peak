@@ -3,7 +3,7 @@ import 'package:peak/screens/home.dart';
 import 'package:peak/screens/settings.dart';
 import 'package:peak/screens/profile.dart';
 import 'package:peak/screens/signUp.dart';
-
+import 'package:peak/screens/forgotPassword.dart';
 import 'screens/login.dart';
 
 const String initialRoute = "login";
@@ -21,6 +21,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => ProfilePage());
       case 'signUp':
         return MaterialPageRoute(builder: (_) => SignupPage());
+      case 'forgotPassword':
+        return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
     }
   }
 }

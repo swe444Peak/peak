@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 
 class CustomNavigationBar extends StatelessWidget {
-
   final int Index;
 
   /*void changePage(int index) {
@@ -21,7 +20,7 @@ class CustomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BubbleBottomBar( 
+    return BubbleBottomBar(
       elevation: 50,
       hasNotch: true,
       fabLocation: BubbleBottomBarFabLocation.end,
@@ -30,69 +29,66 @@ class CustomNavigationBar extends StatelessWidget {
       borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       currentIndex: Index,
       onTap: (index) {
-    switch(index){
-      case 0:
-                              //Navigator.pushNamed(context, '/');
-                            break;
-      case 1:
-                              Navigator.pushNamed(context, 'goalsList');
-                            break;
-      case 2:
-                              Navigator.pushNamed(context, 'profile');
-                            break;
-      case 3:
-                              //Navigator.pushNamed(context, 'explore');
-                            break;
-    }
-  },
+        switch (index) {
+          case 0:
+            //Navigator.pushNamed(context, '/');
+            break;
+          case 1:
+            Navigator.pushNamed(context, 'goalsList');
+            break;
+          case 2:
+            Navigator.pushNamed(context, 'profile');
+            break;
+          case 3:
+            //Navigator.pushNamed(context, 'explore');
+            break;
+        }
+      },
       items: <BubbleBottomBarItem>[
-              BubbleBottomBarItem(
-                backgroundColor: Colors.teal,
-                icon: Icon(
-                  Icons.home,
-                  color: Colors.black87,
-                ),
-                activeIcon: Icon(
-                  Icons.home,
-                  color: Colors.teal,
-                ),
-                title: Text("Home")),
-
-                BubbleBottomBarItem(
-              backgroundColor: Colors.indigoAccent,
-              icon: Icon(
-                Icons.storage,
-                color: Colors.black87,
-              ),
-              activeIcon: Icon(
-                Icons.storage,
-                color: Colors.indigoAccent,
-              ),
-              title: Text("Goals List")),
-
-                BubbleBottomBarItem(
-              backgroundColor: Colors.cyan,
-              icon: Icon(
-                Icons.person_pin,
-                color: Colors.black87,
-              ),
-              activeIcon: Icon(
-                Icons.person_pin,
-                color: Colors.cyan,
-              ),
-              title: Text("Profile")),
-
-              BubbleBottomBarItem(
-              backgroundColor: Colors.blue,
-              icon: Icon(
-                Icons.search,
-                color: Colors.black87,
-              ),
-              activeIcon: Icon(
-                Icons.search,
-                color: Colors.blue,
-              ),
-              title: Text("Explore")),
+        BubbleBottomBarItem(
+            backgroundColor: Colors.teal,
+            icon: Icon(
+              Icons.home,
+              color: Colors.black87,
+            ),
+            activeIcon: Icon(
+              Icons.home,
+              color: Colors.teal,
+            ),
+            title: Text("Home")),
+        BubbleBottomBarItem(
+            backgroundColor: Colors.indigoAccent,
+            icon: Icon(
+              Icons.storage,
+              color: Colors.black87,
+            ),
+            activeIcon: Icon(
+              Icons.storage,
+              color: Colors.indigoAccent,
+            ),
+            title: Text("Goals List")),
+        BubbleBottomBarItem(
+            backgroundColor: Colors.cyan,
+            icon: Icon(
+              Icons.person_pin,
+              color: Colors.black87,
+            ),
+            activeIcon: Icon(
+              Icons.person_pin,
+              color: Colors.cyan,
+            ),
+            title: Text("Profile")),
+        BubbleBottomBarItem(
+            backgroundColor: Colors.blue,
+            icon: Icon(
+              Icons.search,
+              color: Colors.black87,
+            ),
+            activeIcon: Icon(
+              Icons.search,
+              color: Colors.blue,
+            ),
+            title: Text("Explore")),
       ],
     );
   }

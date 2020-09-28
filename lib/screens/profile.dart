@@ -42,7 +42,7 @@ class ProfilePage extends StatelessWidget {
         ),
 
         //common
-        bottomNavigationBar: CustomNavigationBar(1),
+        bottomNavigationBar: CustomNavigationBar(2),
         floatingActionButton: FloatingActionButton(
             onPressed: () {},
             child: Icon(Icons.add),

@@ -13,6 +13,7 @@ class SignUpModel extends ChangeNotifier {
   ValidationItem _email = ValidationItem(null, null);
   ValidationItem _password = ValidationItem(null, null);
   ValidationItem _confirmPassword = ValidationItem(null, null);
+
   ViewState _state = ViewState.Idle;
 
   //Getters
@@ -54,19 +55,33 @@ class SignUpModel extends ChangeNotifier {
     if (password.isEmpty) {
       _password = ValidationItem(null, "password is required");
     } else {
-      if (password.length < 6) {
+      if (password.length <= 8) {
         _password =
-            ValidationItem(null, "password must be at least 6 characters long");
+            ValidationItem(null, "password must be at least 8 characters long");
       } else {
-        _password = ValidationItem(password, null);
-        if (_confirmPassword.value != null) {
-          if (_confirmPassword.value != password) {
-            _confirmPassword = ValidationItem(null, "passwords don\'t match");
+        if (!validatePassword(password)) {
+          _password = ValidationItem(null, "invalid");
+        } else {
+          _password = ValidationItem(password, null);
+          if (_confirmPassword.value != null) {
+            if (_confirmPassword.value != password) {
+              _confirmPassword = ValidationItem(null, "passwords don\'t match");
+            }
           }
         }
       }
     }
     notifyListeners();
+  }
+
+  bool validatePassword(String value) {
+    Pattern pattern =
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return false;
+    else
+      return true;
   }
 
   void setConfirmPassword(String confirmPassword) {

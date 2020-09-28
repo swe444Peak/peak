@@ -22,8 +22,7 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController _passwordcontroller = TextEditingController();
   TextEditingController _usernamecontroller = TextEditingController();
   TextEditingController _passwordcheckcontroller = TextEditingController();
-  Pattern passPattern =
-      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+
   @override
   void dispose() {
     _emailcontroller.dispose();

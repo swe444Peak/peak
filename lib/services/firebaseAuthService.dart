@@ -5,6 +5,7 @@ import 'package:peak/models/user.dart';
 
 class FirbaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  PeakUser currentUser;
 
   Future signUp(String username, String email, String password) async {
     try {
@@ -14,6 +15,7 @@ class FirbaseAuthService {
       if (result.user != null) {
         //creating an instance of database services to create new doc for the user with the uid
         //final DatabaseServices database = DatabaseServices(result.user);
+        currentUser = PeakUser(uid: result.user.uid, name: username);
         await DatabaseServices(uid: result.user.uid)
             .updateUserData(username: username);
 
@@ -32,6 +34,7 @@ class FirbaseAuthService {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
+      currentUser = PeakUser(uid: result.user.uid);
       if (result.user != null) {
         return true;
       }

@@ -58,6 +58,14 @@ class _LoginPageState extends State<LoginPage> {
                       buildTextFiled(_passwordcontroller, true, "password",
                           model.password.error, model.setPassword),
                       SizedBox(height: size.height * 0.03),
+                      FlatButton(
+	                            child: Text("Forgot Password?", 
+	                            style: TextStyle(fontFamily: 'Montserrat', fontSize: 16.0,color: Colors.white, decoration: TextDecoration.underline)),
+	                            onPressed: (){
+	                              Navigator.pushNamed(context, 'forgotPassword');
+	                            },
+	                          )
+                      ,
                       CustomButton(() async {
                         if (model.isValid) {
                           var success = await model.login(

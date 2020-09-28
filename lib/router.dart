@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peak/screens/forgoPassword.dart';
 import 'package:peak/screens/home.dart';
 import 'package:peak/screens/settings.dart';
 import 'package:peak/screens/profile.dart';
@@ -24,6 +25,9 @@ class Router {
         return MaterialPageRoute(builder: (_) => GoalsListPage());
       case 'signUp':
         return MaterialPageRoute(builder: (_) => SignupPage());
+      case 'forgotPassword':
+	        return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
+
     }
   }
 }

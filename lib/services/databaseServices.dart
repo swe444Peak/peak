@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peak/models/user.dart';
-import 'package:peak/services/firebaseAuthService.dart';
-import 'package:peak/locator.dart';
+
 
 
 class DatabaseServices {
 
-  final FirbaseAuthService _firbaseAuthService = locator<FirbaseAuthService>();
+
   final String uid;
   DatabaseServices({this.uid});
 
@@ -17,15 +16,16 @@ class DatabaseServices {
 
     return await userCollection.doc(uid).set({
       "username": username,
+      //add goals !!
     });
 
   }//end updateUserData
 
   //creating user data stream to get user doc
 
-  Stream<PeakUser> get userData {
+  Stream<PeakUser> userData(String id) {
 
-    return userCollection.doc(_firbaseAuthService.currentUser.uid).snapshots()
+    return userCollection.doc(id).snapshots()
     .map((event) => _userDataFromSnapshot(event));
   }
 
@@ -33,9 +33,11 @@ class DatabaseServices {
 
   PeakUser _userDataFromSnapshot(DocumentSnapshot snapshot){
     return PeakUser(
-      uid: _firbaseAuthService.currentUser.uid,
+      uid: snapshot.id,
       name: snapshot.data()['username'],
       );
   }
+
+  
 
 }

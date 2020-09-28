@@ -35,9 +35,12 @@ class CustomNavigationBar extends StatelessWidget {
                               //Navigator.pushNamed(context, '/');
                             break;
       case 1:
-                              Navigator.pushNamed(context, 'profile');
+                              Navigator.pushNamed(context, 'goalsList');
                             break;
       case 2:
+                              Navigator.pushNamed(context, 'profile');
+                            break;
+      case 3:
                               //Navigator.pushNamed(context, 'explore');
                             break;
     }
@@ -54,6 +57,18 @@ class CustomNavigationBar extends StatelessWidget {
                   color: Colors.teal,
                 ),
                 title: Text("Home")),
+
+                BubbleBottomBarItem(
+              backgroundColor: Colors.indigoAccent,
+              icon: Icon(
+                Icons.storage,
+                color: Colors.black87,
+              ),
+              activeIcon: Icon(
+                Icons.storage,
+                color: Colors.indigoAccent,
+              ),
+              title: Text("Goals List")),
 
                 BubbleBottomBarItem(
               backgroundColor: Colors.cyan,

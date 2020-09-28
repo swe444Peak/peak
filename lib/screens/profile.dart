@@ -1,6 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:peak/screens/custom_bottomNavigationBar.dart';
+import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/models/user.dart';
 
@@ -9,13 +10,15 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    var user = Provider.of<User>(context);
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
     //User user;
 
     return StreamProvider<PeakUser>.value(
-          value: DatabaseServices().userData,
+          initialData: PeakUser(uid:"", name:""),
+          value:  DatabaseServices().userData(user.uid),
           builder: (context, snapshot){
                       return Scaffold(
 
@@ -65,23 +68,6 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
 
-              /*Container(
-                width: width,
-                height: height-(width*0.5),
-                margin: EdgeInsets.fromLTRB(0.0, (width*0.25), 0.0, 0.0),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    new BoxShadow(
-                      color: Colors.black26,
-                      offset: new Offset(0.0, -8.0),
-                      blurRadius: 40.0,
-                      spreadRadius: 1.0,
-                )
-                  ],
-                  color: Color.fromRGBO(23, 23, 85, 1.0),
-                  borderRadius: BorderRadius.vertical(top:Radius.circular(50)),
-                  ),
-              ),*/
 
 
               Padding(
@@ -112,7 +98,7 @@ class ProfilePage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("${(Provider.of<PeakUser>(context)?.name)??""}",
+                          Text("${Provider.of<PeakUser>(context).name}",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 30,

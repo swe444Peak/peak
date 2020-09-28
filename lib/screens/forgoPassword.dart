@@ -27,6 +27,7 @@ class _ForgotPassword extends State<ForgotPasswordPage> {
             .sendPasswordResetEmail(email: _emailcontroller.text)
             .then((value) => print("Check your mails"));
       }
+      Navigator.pop(context);
     }, "Send email");
 
     Widget _buildGestureDetector() {
@@ -69,8 +70,8 @@ class _ForgotPassword extends State<ForgotPasswordPage> {
                                 fontSize: 22.0,
                                 color: Colors.teal[50])),
                         SizedBox(height: size.height * 0.06),
-                         buildTextFiled(_emailcontroller, false, "email",
-                          model.email.error, model.setEmail),
+                        buildTextFiled(_emailcontroller, false, "email",
+                            model.email.error, model.setEmail),
                         SizedBox(height: size.height * 0.05),
                         submit,
                         SizedBox(height: size.height * 0.08),

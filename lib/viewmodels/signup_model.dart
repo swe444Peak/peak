@@ -60,7 +60,8 @@ class SignUpModel extends ChangeNotifier {
             ValidationItem(null, "password must be at least 8 characters long");
       } else {
         if (!validatePassword(password)) {
-          _password = ValidationItem(null, "invalid");
+          _password = ValidationItem(null,
+              "Password must contain capital letters , small letters , digits \n and special characters");
         } else {
           _password = ValidationItem(password, null);
           if (_confirmPassword.value != null) {

@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:peak/Models/goal.dart';
+import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
 import 'package:peak/models/user.dart';
-//import 'package:peak/models/task.dart';
-import 'package:peak/models/goal.dart';
 
 import 'firebaseAuthService.dart';
 
@@ -30,18 +28,18 @@ class DatabaseServices {
     });
   } //end updateUserData
 
-  Future updateGoal({Goal goal}) async{
-    
+  Future updateGoal({Goal goal}) async {
     var tasks = goal.mapfy();
     var doc;
-    try{
-    doc = await _goalsCollectionReference.add(goal.toMap());
-    tasks.forEach((element) {doc.collection("tasks").add(element);});
-    return doc; 
-    }catch(e){
+    try {
+      doc = await _goalsCollectionReference.add(goal.toMap());
+      tasks.forEach((element) {
+        doc.collection("tasks").add(element);
+      });
+      return doc;
+    } catch (e) {
       print("$e");
     }
-  
   }
 
   //creating user data stream to get user doc

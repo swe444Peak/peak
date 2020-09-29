@@ -1,11 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:peak/models/task.dart';
-<<<<<<< HEAD
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-=======
->>>>>>> ece87168e3060d550be9faa96854da490bda3b1b
 
 class Goal {
   final String goalName;
@@ -22,7 +17,10 @@ class Goal {
       @required this.deadline,
       this.docID,
       this.numberOfTaksPerDay,
-      this.tasks});
+      this.tasks,
+      this.isAchieved = false,});
+
+
 
   Map<String, dynamic> toMap() {
     return {
@@ -32,6 +30,7 @@ class Goal {
           this.deadline.microsecondsSinceEpoch),
       "numberOfTaksPerDay": this.numberOfTaksPerDay,
       //"tasks": this.mapfy(),
+      "isAchieved": this.isAchieved,
     };
   }
 

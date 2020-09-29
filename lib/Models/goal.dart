@@ -1,11 +1,7 @@
 import 'package:flutter/cupertino.dart';
-<<<<<<< HEAD
 import 'package:peak/models/task.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-=======
-import 'package:peak/Models/task.dart';
->>>>>>> e719d86c8e3c27b5b237bcac02087081d734151e
 
 class Goal {
   final String goalName;

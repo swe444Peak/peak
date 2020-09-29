@@ -14,7 +14,7 @@ class FirbaseAuthService {
       if (result.user != null) {
         //creating an instance of database services to create new doc for the user with the uid
         //final DatabaseServices database = DatabaseServices(result.user);
-        await DatabaseServices(uid: result.user.uid)
+        await DatabaseServices( result.user.uid)
             .updateUserData(username: username);
 
         return true;

@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peak/models/user.dart';
+//import 'package:peak/models/task.dart';
+import 'package:peak/models/goal.dart';
 
 
 
@@ -7,10 +9,11 @@ class DatabaseServices {
 
 
   final String uid;
-  DatabaseServices({this.uid});
+  DatabaseServices([this.uid]);
 
   //collection reference
   final CollectionReference userCollection = FirebaseFirestore.instance.collection("users");
+  final CollectionReference goalsCollection = FirebaseFirestore.instance.collection("goals");
   
   Future updateUserData({String username}) async{
 
@@ -20,6 +23,20 @@ class DatabaseServices {
     });
 
   }//end updateUserData
+
+  Future updateGoal({Goal goal}) async{
+    
+    var tasks = goal.mapfy();
+    var doc;
+    try{
+    doc = await goalsCollection.add(goal.toMap());
+    tasks.forEach((element) {doc.collection("tasks").add(element);});
+    return doc; 
+    }catch(e){
+      print("$e");
+    }
+  
+  }
 
   //creating user data stream to get user doc
 

@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                           var success = await model.login(
                               _emailcontroller.text, _passwordcontroller.text);
                           if (success is bool && success) {
-                            Navigator.pushNamed(context, 'profile');
+                            Navigator.pushNamed(context, 'profile');  //****** */
                           } else {
                             _error = success;
                           }

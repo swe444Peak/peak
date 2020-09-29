@@ -5,7 +5,7 @@ import 'package:peak/screens/settings.dart';
 import 'package:peak/screens/profile.dart';
 import 'package:peak/screens/goalsList.dart';
 import 'package:peak/screens/signUp.dart';
-
+import 'screens/goalsList.dart';
 import 'screens/login.dart';
 
 const String initialRoute = "login";
@@ -17,6 +17,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => HomePage());
       case 'login':
         return MaterialPageRoute(builder: (_) => LoginPage());
+        case 'goalsList':
+        return MaterialPageRoute(builder: (_) => GoalsListPage());
       case 'settings':
         return MaterialPageRoute(builder: (_) => SettingsPage());
       case 'profile':

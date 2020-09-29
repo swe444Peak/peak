@@ -29,7 +29,7 @@ class Goal {
       "deadLine": Timestamp.fromMicrosecondsSinceEpoch(
           this.deadline.microsecondsSinceEpoch),
       "numberOfTaksPerDay": this.numberOfTaksPerDay,
-      //"tasks": this.mapfy(),
+      "tasks": this.mapfy(),
       "isAchieved": this.isAchieved,
     };
   }
@@ -46,10 +46,17 @@ class Goal {
     if (map == null) {
       return null;
     }
+    List<dynamic> taskList = map['tasks'];
+    List<Task> newList = List<Task>();
+    taskList.forEach((element) {newList.add(Task.fromJson(element));});
     return Goal(
       goalName: map['goalName'],
       uID: map['uID'],
       deadline: map['deadLine'].toDate(),
+      tasks: newList,
+      //docID: 
+      numberOfTaksPerDay: map['numberOfTaksPerDay'],
+      isAchieved: map["isAchieved"],
     );
   }
 }

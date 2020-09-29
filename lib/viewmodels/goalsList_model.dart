@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:peak/Models/goal.dart';
+import 'package:peak/models/goal.dart';
 import 'package:peak/enums/viewState.dart';
 import 'package:peak/locator.dart';
 import 'package:peak/services/databaseServices.dart';
@@ -22,6 +22,7 @@ class GoalsListModel extends ChangeNotifier {
       List<Goal> updatedGoals = goalData;
       if (updatedGoals != null && updatedGoals.length > 0) {
         _goals = updatedGoals;
+        //print("${_goals[0].goalName}");
         notifyListeners();
       }
       setState(ViewState.Idle);

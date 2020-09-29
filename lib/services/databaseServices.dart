@@ -29,16 +29,13 @@ class DatabaseServices {
   } //end updateUserData
 
   Future updateGoal({Goal goal}) async {
-    var tasks = goal.mapfy();
     var doc;
     try {
       doc = await _goalsCollectionReference.add(goal.toMap());
-      tasks.forEach((element) {
-        doc.collection("tasks").add(element);
-      });
       return doc;
     } catch (e) {
       print("$e");
+      return e;
     }
   }
 

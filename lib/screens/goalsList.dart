@@ -3,18 +3,25 @@ import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:peak/models/task.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:peak/viewmodels/goalsList_model.dart';
+import 'package:stacked/stacked.dart';
+import '../locator.dart';
 
 class GoalsListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<User>(context);
-    List<Task> tasks = List<Task>();
-    for(int i=1 ; i<=3 ; i++){
-    tasks.add(Task("$i", false));
-    }
-    if(user != null){
-    print('it is working !!${CreateGoalModel().createGoal("health", user.uid, DateTime.now(), 3, tasks)}');}
-    return Container(
-      child: Text("Goals List"));
+    return ViewModelBuilder<GoalsListModel>.reactive(
+      viewModelBuilder: () => locator<GoalsListModel>(),
+      onModelReady: (model) => model.readGoals(),
+      builder: (context, model, child) => Scaffold(
+        body: Scaffold(
+          body: (model.goals != null)
+              ? ListView() //here, the list view is just a templete :), use whatever you like
+              : Center(
+                  child: CircularProgressIndicator(),
+                ),
+        ),
+      ),
+    );
   }
 }

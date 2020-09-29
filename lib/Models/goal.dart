@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
+<<<<<<< HEAD
 import 'package:peak/models/task.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+=======
+import 'package:peak/Models/task.dart';
+>>>>>>> e719d86c8e3c27b5b237bcac02087081d734151e
 
 class Goal {
   final String goalName;
   final String uID;
-  final DateTime deadLine;
+  final DateTime deadline;
   final String docID;
   final int numberOfTaksPerDay;
   final List<Task> tasks;
@@ -14,7 +18,7 @@ class Goal {
   Goal(
       {@required this.goalName,
       @required this.uID,
-      @required this.deadLine,
+      @required this.deadline,
       this.docID,
       this.numberOfTaksPerDay,
       this.tasks});
@@ -35,4 +39,14 @@ class Goal {
     return mapfiedTasks;
   }
 
+  static Goal fromJson(Map<String, dynamic> map) {
+    if (map == null) {
+      return null;
+    }
+    return Goal(
+      goalName: map['goalName'],
+      uID: map['uID'],
+      deadline: map['deadLine'].toDate(),
+    );
+  }
 }

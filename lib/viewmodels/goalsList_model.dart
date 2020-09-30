@@ -22,10 +22,15 @@ class GoalsListModel extends ChangeNotifier {
       List<Goal> updatedGoals = goalData;
       if (updatedGoals != null && updatedGoals.length > 0) {
         _goals = updatedGoals;
-        //print("${_goals[0].goalName}");
+        sortGoals();
         notifyListeners();
       }
       setState(ViewState.Idle);
     });
+  }
+
+  void sortGoals() {
+    _goals.sort((a, b) => a.creationDate.compareTo(b.creationDate));
+    _goals = _goals.reversed.toList();
   }
 }

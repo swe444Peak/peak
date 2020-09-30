@@ -17,19 +17,16 @@ class Router {
         return MaterialPageRoute(builder: (_) => HomePage());
       case 'login':
         return MaterialPageRoute(builder: (_) => LoginPage());
-        case 'goalsList':
+      case 'goalsList':
         return MaterialPageRoute(builder: (_) => GoalsListPage());
       case 'settings':
         return MaterialPageRoute(builder: (_) => SettingsPage());
       case 'profile':
         return MaterialPageRoute(builder: (_) => ProfilePage());
-      case 'goalsList':
-        return MaterialPageRoute(builder: (_) => GoalsListPage());
       case 'signUp':
         return MaterialPageRoute(builder: (_) => SignupPage());
       case 'forgotPassword':
-	        return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
-
+        return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
     }
   }
 }

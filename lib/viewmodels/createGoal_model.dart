@@ -21,7 +21,8 @@ class CreateGoalModel extends ChangeNotifier {
         uID: uID,
         deadline: deadLine,
         numberOfTaksPerDay: numberOfTaksPerDay,
-        tasks: tasks,);
+        tasks: tasks,
+        creationDate: DateTime.now());
     setState(ViewState.Busy);
     var result = await DatabaseServices().updateGoal(goal: goal);
     setState(ViewState.Idle);

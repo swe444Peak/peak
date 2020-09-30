@@ -1,16 +1,4 @@
 # peak
 
-A new Flutter project.
+Peak is a mobile application made for those who face difficulties achieving their goals. Peak’s objective is to make this process an easy and enjoyable journey through enabling the users to keep track of the daily tasks needed to achieve the final goal , get encouraged by receiving rewards, users can also compete with friends in a shared goal.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

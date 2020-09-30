@@ -10,17 +10,18 @@ class Goal {
   final int numberOfTaksPerDay;
   final List<Task> tasks;
   final bool isAchieved;
+  final DateTime creationDate;
 
-  Goal(
-      {@required this.goalName,
-      @required this.uID,
-      @required this.deadline,
-      this.docID,
-      this.numberOfTaksPerDay,
-      this.tasks,
-      this.isAchieved = false,});
-
-
+  Goal({
+    @required this.goalName,
+    @required this.uID,
+    @required this.deadline,
+    this.docID,
+    this.numberOfTaksPerDay,
+    this.tasks,
+    this.isAchieved = false,
+    this.creationDate,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -31,6 +32,7 @@ class Goal {
       "numberOfTaksPerDay": this.numberOfTaksPerDay,
       "tasks": this.mapfy(),
       "isAchieved": this.isAchieved,
+      "creationDate": this.creationDate,
     };
   }
 
@@ -42,21 +44,23 @@ class Goal {
     return mapfiedTasks;
   }
 
-  static Goal fromJson(Map<String, dynamic> map) {
-    if (map == null) {
+  static Goal fromJson(Map<String, dynamic> map, String docID) {
+    if (map == null || map['tasks'] == null) {
       return null;
     }
     List<dynamic> taskList = map['tasks'];
     List<Task> newList = List<Task>();
-    taskList.forEach((element) {newList.add(Task.fromJson(element));});
+    taskList.forEach((element) {
+      newList.add(Task.fromJson(element));
+    });
     return Goal(
-      goalName: map['goalName'],
-      uID: map['uID'],
-      deadline: map['deadLine'].toDate(),
-      tasks: newList,
-      //docID: 
-      numberOfTaksPerDay: map['numberOfTaksPerDay'],
-      isAchieved: map["isAchieved"],
-    );
+        goalName: map['goalName'],
+        uID: map['uID'],
+        deadline: map['deadLine'].toDate(),
+        tasks: newList,
+        docID: docID,
+        numberOfTaksPerDay: map['numberOfTaksPerDay'],
+        isAchieved: map["isAchieved"],
+        creationDate: map['creationDate'].toDate());
   }
 }

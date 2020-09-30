@@ -33,12 +33,12 @@ class CreateGoalModel extends ChangeNotifier {
   Future createGoal(String goalName, String uID, DateTime deadLine,
       int numberOfTaksPerDay, List<Task> tasks) async {
     Goal goal = Goal(
-      goalName: goalName,
-      uID: uID,
-      deadline: deadLine,
-      numberOfTaksPerDay: numberOfTaksPerDay,
-      tasks: tasks,
-    );
+        goalName: goalName,
+        uID: uID,
+        deadline: deadLine,
+        numberOfTaksPerDay: numberOfTaksPerDay,
+        tasks: tasks,
+        creationDate: DateTime.now());
     setState(ViewState.Busy);
     var result = await DatabaseServices().updateGoal(goal: goal);
     setState(ViewState.Idle);

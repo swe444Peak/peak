@@ -21,3 +21,17 @@ Widget buildTextFiled(TextEditingController controller, bool isObscure,
     ),
   );
 }
+
+Widget specialTextField(TextEditingController controller, bool isObscure,
+    String hintText, String errorText, void Function(String value) onChanged) {
+  return TextField(
+    controller: controller,
+    obscureText: isObscure,
+    decoration: textFieldStyle(hintText, errorText),
+    style: TextStyle(
+        color: Color.fromRGBO(23, 23, 85, 1.0),
+        fontFamily: 'Montserrat',
+        fontSize: 20.0),
+    onChanged: (value) => onChanged(value),
+  );
+}

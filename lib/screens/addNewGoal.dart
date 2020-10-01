@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:peak/enums/viewState.dart';
 import 'package:peak/models/user.dart';
+import 'package:peak/screens/addNewTasks.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/screens/shared/customButton.dart';
 import 'package:peak/services/databaseServices.dart';
@@ -11,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import '../locator.dart';
-import 'DynamicTasks.dart';
 
 class NewGoalPage extends StatefulWidget {
   @override
@@ -22,11 +22,6 @@ class _NewGoalPageState extends State<NewGoalPage> {
   String _error;
   TextEditingController _goalnamecontroller = TextEditingController();
   DateTime _dateTime;
-  List<String> numbers = ['1', '2', '3', '4', '5'];
-  String _selectedNum;
-
-  //List<DynamicTasks> dynamicList = [];
-  //List<String> tasks = [];
 
   @override
   void dispose() {
@@ -101,7 +96,7 @@ class _NewGoalPageState extends State<NewGoalPage> {
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.white70,
+                                  color: Colors.white,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20)),
                                 ),
@@ -111,47 +106,42 @@ class _NewGoalPageState extends State<NewGoalPage> {
                                     children: [
                                       showAlert(),
                                       SizedBox(height: size.height * 0.06),
-                                      buildTextFiled(
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text("Goal\'s name :",
+                                            style: TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 25.0,
+                                                color: Color.fromRGBO(
+                                                    23, 23, 85, 1.0)),
+                                            textAlign: TextAlign.left),
+                                      ),
+                                      SizedBox(height: size.height * 0.03),
+                                      specialTextField(
                                           _goalnamecontroller,
                                           false,
                                           "Goal name",
                                           model.goalName.error,
                                           model.setGoalName),
                                       SizedBox(height: size.height * 0.03),
-                                      Row(
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text("Goal\'s deadline:   ",
-                                                style: TextStyle(
-                                                    fontFamily: 'Montserrat',
-                                                    fontSize: 20.0,
-                                                    color: Color.fromRGBO(
-                                                        23, 23, 85, 1.0)),
-                                                textAlign: TextAlign.left),
-                                          ),
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                                _dateTime == null
-                                                    ? '  '
-                                                    : DateFormat('dd-MM-yyyy')
-                                                        .format(_dateTime),
-                                                style: TextStyle(
-                                                    fontFamily: 'Montserrat',
-                                                    fontSize: 20.0,
-                                                    color: Color.fromRGBO(
-                                                        23, 23, 85, 1.0)),
-                                                textAlign: TextAlign.left),
-                                          ),
-                                        ],
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text("Goal\'s deadline :",
+                                            style: TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 25.0,
+                                                color: Color.fromRGBO(
+                                                    23, 23, 85, 1.0)),
+                                            textAlign: TextAlign.left),
                                       ),
                                       SizedBox(height: size.height * 0.02),
                                       Padding(
                                         padding:
                                             EdgeInsets.fromLTRB(50, 0, 50, 0),
                                         child: Card(
-                                          elevation: 10,
+                                          color:
+                                              Color.fromRGBO(23, 23, 85, 1.0),
+                                          elevation: 0,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(20.0),
@@ -159,18 +149,21 @@ class _NewGoalPageState extends State<NewGoalPage> {
                                           child: ListTile(
                                             leading: Icon(
                                               Icons.calendar_today,
-                                              color: Color.fromRGBO(
-                                                  23, 23, 85, 1.0),
+                                              color: Colors.white,
                                               size: 30,
                                             ),
-                                            title: Text(
-                                              "Pick a date",
-                                              style: TextStyle(
-                                                color: Color.fromRGBO(
-                                                    23, 23, 85, 1.0),
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 19,
-                                              ),
+                                            title: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                  _dateTime == null
+                                                      ? 'No picked date'
+                                                      : DateFormat('dd-MM-yyyy')
+                                                          .format(_dateTime),
+                                                  style: TextStyle(
+                                                      fontFamily: 'Montserrat',
+                                                      fontSize: 20.0,
+                                                      color: Colors.white),
+                                                  textAlign: TextAlign.left),
                                             ),
                                             onTap: () async {
                                               showDatePicker(
@@ -191,67 +184,6 @@ class _NewGoalPageState extends State<NewGoalPage> {
                                         ),
                                       ),
                                       SizedBox(height: size.height * 0.04),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.teal[300],
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20)),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              20, 10, 20, 10),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "Tasks :",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 30,
-                                                    ),
-                                                  ),
-                                                  ClipOval(
-                                                    child: Material(
-                                                      color: Colors
-                                                          .white, // button color
-                                                      child: InkWell(
-                                                        splashColor: Colors
-                                                            .teal, // inkwell color
-                                                        child: SizedBox(
-                                                            width: 56,
-                                                            height: 56,
-                                                            child: Icon(
-                                                                Icons.add)),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: size.height * 0.03),
-                                      DropdownButton(
-                                        hint: Text('Number of tasks per day'),
-                                        value: _selectedNum,
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            _selectedNum = newValue;
-                                          });
-                                        },
-                                        items: numbers.map((number) {
-                                          return DropdownMenuItem(
-                                            child: new Text(number,
-                                                textAlign: TextAlign.center),
-                                            value: number,
-                                          );
-                                        }).toList(),
-                                      ),
                                       SizedBox(height: size.height * 0.03),
                                       ButtonTheme(
                                         minWidth: 100.0,
@@ -264,9 +196,15 @@ class _NewGoalPageState extends State<NewGoalPage> {
                                           ),
                                           color:
                                               Color.fromRGBO(23, 23, 85, 1.0),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                new MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        new NewTaskPage()));
+                                          },
                                           textColor: Colors.white,
-                                          child: Text('Add',
+                                          child: Text('Next',
                                               style: TextStyle(fontSize: 19.0)),
                                         ),
                                       ),

@@ -3,6 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class NotificationManager {
   var flutterLocalNotificationsPlugin;
 
+
   NotificationManager() {
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     initalizNotifications();
@@ -43,17 +44,17 @@ class NotificationManager {
   }
 
 
-  void showNotificationDaily(  int id, String title, String body, Time timeSelected) async {
-    var time = timeSelected;
+  void showNotificationDaily(  int id, String title, String body) async {
+    var time =  new Time(9,0,0);
     flutterLocalNotificationsPlugin.showDailyAtTime(
         id, title, body, time, getPlatformChannelSpecfics());
     print('Notification Succesfully Scheduled at the Selected time');
   }
 
 
-  void showDeadlineNotification(int id , String title , String body ){
+  void showDeadlineNotification(int id , String title , String body, Time slectedTime ){
   
-  var time = new Time(9,0,0);
+  var time = slectedTime;
 
     flutterLocalNotificationsPlugin.schedule(id, title, body ,time , getPlatformChannelSpecfics());
   }
@@ -63,4 +64,5 @@ class NotificationManager {
   void removeReminder(int id) {
     flutterLocalNotificationsPlugin.cancel(id);
   }
+
 }

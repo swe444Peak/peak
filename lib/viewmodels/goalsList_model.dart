@@ -22,7 +22,7 @@ class GoalsListModel extends ChangeNotifier {
       List<Goal> updatedGoals = goalData;
       if (updatedGoals != null && updatedGoals.length > 0) {
         _goals = updatedGoals;
-        //print("${_goals[0].goalName}");
+        //print("it works !!!${_goals[0].goalName}");
         notifyListeners();
       }
       setState(ViewState.Idle);

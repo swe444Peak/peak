@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
 import 'package:peak/models/user.dart';
-
 import 'firebaseAuthService.dart';
 
 class DatabaseServices {
@@ -35,7 +34,7 @@ class DatabaseServices {
       return doc;
     } catch (e) {
       print("$e");
-      return e;
+      return e.toString();
     }
   }
 

@@ -55,22 +55,25 @@ class SignUpModel extends ChangeNotifier {
     if (password.isEmpty) {
       _password = ValidationItem(null, "password is required");
     } else {
-      if (password.length <= 8) {
-        _password =
-            ValidationItem(null, "password must be at least 8 characters long");
+      // if (password.length <= 8) {
+      //   _password =
+      //       ValidationItem(null, "password must be at least 8 characters long");
+      // } else {
+      if (!validatePassword(password)) {
+        password.length < 8
+            ? _password = ValidationItem(
+                null, "password must be at least 8 characters long")
+            : _password = ValidationItem(null,
+                "Password must contain capital letters , small letters , digits \n and special characters");
       } else {
-        if (!validatePassword(password)) {
-          _password = ValidationItem(null,
-              "Password must contain capital letters , small letters , digits \n and special characters");
-        } else {
-          _password = ValidationItem(password, null);
-          if (_confirmPassword.value != null) {
-            if (_confirmPassword.value != password) {
-              _confirmPassword = ValidationItem(null, "passwords don\'t match");
-            }
+        _password = ValidationItem(password, null);
+        if (_confirmPassword.value != null) {
+          if (_confirmPassword.value != password) {
+            _confirmPassword = ValidationItem(null, "passwords don\'t match");
           }
         }
       }
+      //}
     }
     notifyListeners();
   }

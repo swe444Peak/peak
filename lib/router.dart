@@ -26,13 +26,10 @@ class Router {
         return MaterialPageRoute(builder: (_) => SettingsPage());
       case 'profile':
         return MaterialPageRoute(builder: (_) => ProfilePage());
-      case 'goalsList':
-        return MaterialPageRoute(builder: (_) => GoalsListPage());
       case 'signUp':
         return MaterialPageRoute(builder: (_) => SignupPage());
       case 'forgotPassword':
-	        return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
-
+        return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
     }
   }
 }

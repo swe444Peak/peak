@@ -23,7 +23,6 @@ class DatabaseServices {
   Future updateUserData({String username}) async {
     return await userCollection.doc(uid).set({
       "username": username,
-      //add goals !!
     });
   } //end updateUserData
 
@@ -64,7 +63,7 @@ class DatabaseServices {
           .listen((goalsSnapshots) {
         if (goalsSnapshots.docs.isNotEmpty) {
           var goals = goalsSnapshots.docs
-              .map((snapshot) => Goal.fromJson(snapshot.data()))
+              .map((snapshot) => Goal.fromJson(snapshot.data(), snapshot.id))
               .toList();
           _goalController.add(goals);
         }

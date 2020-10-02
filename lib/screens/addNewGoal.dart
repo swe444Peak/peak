@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import '../locator.dart';
+import '../services/notification.dart';
 
 class NewGoalPage extends StatefulWidget {
   @override
@@ -19,6 +20,8 @@ class NewGoalPage extends StatefulWidget {
 }
 
 class _NewGoalPageState extends State<NewGoalPage> {
+  var goalsCounter =0;
+  NotificationManager notifyManeger =  new NotificationManager();
   String _error;
   TextEditingController _goalnamecontroller = TextEditingController();
   DateTime _dateTime;
@@ -197,11 +200,14 @@ class _NewGoalPageState extends State<NewGoalPage> {
                                           color:
                                               Color.fromRGBO(23, 23, 85, 1.0),
                                           onPressed: () {
+                                            notifyManeger.showDeadlineNotification('Deadline Reminder'
+                                            ,'The deadline for'+_goalnamecontroller.text+ 'goal is Tomorrow' , _dateTime);
                                             Navigator.push(
                                                 context,
                                                 new MaterialPageRoute(
                                                     builder: (context) =>
                                                         new NewTaskPage()));
+                                                        
                                           },
                                           textColor: Colors.white,
                                           child: Text('Next',

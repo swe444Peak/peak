@@ -1,12 +1,14 @@
 class Task {
   final String taskName;
   final bool done;
-  Task({this.taskName, this.done});
+  final String taskType;
+  Task({this.taskName, this.done,this.taskType});
 
   Map<String, dynamic> toMap(){
     return {
       "taskName": this.taskName,
-      "done": this.done
+      "done": this.done,
+      "taskType":this.taskType
     };
   }
 
@@ -17,6 +19,7 @@ class Task {
     return Task(
       taskName: map['taskName'],
       done: map['done'],
+      taskType: map ['taskType']
     );
   }
 

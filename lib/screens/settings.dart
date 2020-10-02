@@ -1,16 +1,24 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/services/notification.dart';
 import 'package:peak/viewmodels/settings_model.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
+import '../models/goal.dart';
+import '../models/task.dart';
+
 class SettingsPage extends StatelessWidget {
   final NotificationManager manger = new NotificationManager();
-  final userRef = FirebaseFirestore.instance.collection('goals');
-
+  final userRef = FirebaseFirestore.instance.collection('goals').get();
+  List<Task> _taskList =[];
+   UnmodifiableListView<Task> get taslList => UnmodifiableListView(_taskList);
+    List<Goal> _goalList =[];
+  UnmodifiableListView<Goal> get goalList => UnmodifiableListView(_goalList);
   @override
   Widget build(BuildContext context) {
-    //final QuerySnapshot listTas = userRef.where('done', 'true') as QuerySnapshot;
+   // final QuerySnapshot listTas = userRef.
    bool _state = true;
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
@@ -162,8 +170,17 @@ class SettingsPage extends StatelessWidget {
                            onChanged: (state){
                             _state= state;
                             if (state == false )
-                            manger.removeReminder(1);
+                            manger.removeReminder();
                             else if(state == true)
+                            for (var task in _taskList) {
+                            //add task type to DB
+                              if (!task.done)
+                              manger.showNotificationDaily( "Remember To",task.taskName, task.taskType);
+                            }
+                            for (var goal in _goalList) {
+                              if (!goal.isAchieved)
+                              manger.showDeadlineNotification("Deadline Reminder", 'The deadline for'+goal.goalName+ 'goal is Tomorrow', goal.deadline);
+                            }
                             print("");
                             
                           }),

@@ -8,12 +8,16 @@ import 'package:peak/services/databaseServices.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:provider/provider.dart';
 
+import '../services/notification.dart';
+
 class NewTaskPage extends StatefulWidget {
   @override
   _NewTaskPageState createState() => _NewTaskPageState();
 }
 
 class _NewTaskPageState extends State<NewTaskPage> {
+  var taskCounter=0;
+  NotificationManager notifyManeger =  new NotificationManager();
   TextEditingController _taskcontroller = TextEditingController();
   int _count = 1;
   String dropdownValue;
@@ -172,11 +176,13 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                         ),
                                         color: Color.fromRGBO(23, 23, 85, 1.0),
                                         onPressed: () {
+                                        notifyManeger.showNotificationDaily(taskCounter++, 'Remember To ', _taskcontroller.text,dropdownValue);
                                           Navigator.push(
                                               context,
                                               new MaterialPageRoute(
                                                   builder: (context) =>
                                                       new NewTaskPage()));
+                                     
                                         }, // sucess message
                                         textColor: Colors.white,
                                         child: Text('Add',

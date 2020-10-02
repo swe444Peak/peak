@@ -4,12 +4,14 @@ class NotificationManager {
   var flutterLocalNotificationsPlugin;
   DateTime goalDeadline;
 
+  
+ 
   NotificationManager() {
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     initalizNotifications();
   }
-
-
+  
+ 
 
  // initiate Notification setting 
   void initalizNotifications() {
@@ -43,16 +45,20 @@ class NotificationManager {
 
 
 
-  void showNotificationDaily(  String title, String body, String taskType) async {
-  var updateHours = 7;
-   Time timedaily = new Time(updateHours++,0,0);
+  void showTaskNotification(  String title, String body, String taskType) async {
+  
+  
    Duration sinceDeadline = goalDeadline.difference(DateTime.now());
-   var indays = sinceDeadline.inDays;
+   int indays = sinceDeadline.inDays;
    switch(taskType){
 
    case 'Daily':
-   flutterLocalNotificationsPlugin.showDailyAtTime(
-         title, body, timedaily, getPlatformChannelSpecfics());
+   var addDay=1;
+   for(var i=1; i<=indays;i++ ){
+    DateTime timeDaily = DateTime.utc(DateTime.now().year,DateTime.now().month,DateTime.now().day+addDay++);
+  await flutterLocalNotificationsPlugin.schedule(
+         title, body, timeDaily, getPlatformChannelSpecfics());
+   }
    break;
 
    case 'Weekly':
@@ -62,7 +68,7 @@ class NotificationManager {
    for (var i=1  ;i <= inWeeks ;i++ ){
    DateTime timeweekly = DateTime.utc(DateTime.now().year,DateTime.now().month,DateTime.now().day+addWeek);
    addWeek=addWeek+7;
-  flutterLocalNotificationsPlugin.schedule( title, body ,timeweekly , getPlatformChannelSpecfics());
+  await flutterLocalNotificationsPlugin.schedule( title, body ,timeweekly , getPlatformChannelSpecfics());
    }
 
    break;
@@ -73,7 +79,7 @@ class NotificationManager {
    for (var i=1  ;i <= inMonths ;i++ ){
    DateTime timeweekly = DateTime.utc(DateTime.now().year,DateTime.now().month+addMoth,DateTime.now().day);
    addMoth++;
-  flutterLocalNotificationsPlugin.schedule( title, body ,timeweekly , getPlatformChannelSpecfics());
+  await flutterLocalNotificationsPlugin.schedule( title, body ,timeweekly , getPlatformChannelSpecfics());
    }
    break;
    default:
@@ -86,22 +92,22 @@ class NotificationManager {
 
 
 
-  void showDeadlineNotification( String title , String body, DateTime slectedTime ){
+  void showDeadlineNotification( String title , String body, DateTime slectedTime ) async {
   goalDeadline=slectedTime;
   var day= slectedTime.day-1;
   var month = slectedTime.month;
   var year =slectedTime.year;
  
   DateTime time = DateTime.utc(year,month,day);
-    flutterLocalNotificationsPlugin.schedule( title, body ,time , getPlatformChannelSpecfics());
+  await flutterLocalNotificationsPlugin.schedule( title, body ,time , getPlatformChannelSpecfics());
   }
 
 
 
  
   //turn off notification by id
-  void removeReminder() {
-    flutterLocalNotificationsPlugin..cancelAll();
+  Future<void> removeReminder() async {
+  await  flutterLocalNotificationsPlugin.cancelAll();
   }
 
 }

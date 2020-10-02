@@ -1,9 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:peak/services/notification.dart';
 import 'package:peak/viewmodels/settings_model.dart';
+import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 class SettingsPage extends StatelessWidget {
+  final NotificationManager manger = new NotificationManager();
+  final userRef = FirebaseFirestore.instance.collection('goals');
+
   @override
   Widget build(BuildContext context) {
+    //final QuerySnapshot listTas = userRef.where('done', 'true') as QuerySnapshot;
+   bool _state = true;
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
@@ -122,6 +130,47 @@ class SettingsPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  ///////////SETTING 
+                   Padding(
+                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
+                    child: Card(
+                      //card Property
+                      //color: Colors.deepPurple[900],
+                      elevation: 20,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+
+                      child: ListTile(
+                        leading:Text(
+                          "Notification         ",
+                          style: TextStyle(
+                            color: Color.fromRGBO(23, 23, 85, 1.0),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                          ),
+                        ), 
+                         trailing : LiteRollingSwitch(
+                           textSize: 14,
+                           textOn: 'ON',
+                          textOff: 'OFF',
+                          colorOn: Colors.greenAccent,
+                          colorOff: Colors.redAccent,
+                          iconOn: Icons.done,
+                           iconOff: Icons.alarm_off,
+                          value: true,
+                           onChanged: (state){
+                            _state= state;
+                            if (state == false )
+                            manger.removeReminder(1);
+                            else if(state == true)
+                            print("");
+                            
+                          }),
+                        onTap: () {},
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),

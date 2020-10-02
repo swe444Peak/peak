@@ -17,7 +17,7 @@ class Goal {
     @required this.uID,
     @required this.deadline,
     this.docID,
-    this.numberOfTaksPerDay,
+    this.numberOfTaksPerDay = 1,
     this.tasks,
     this.isAchieved = false,
     this.creationDate,
@@ -31,7 +31,7 @@ class Goal {
           this.deadline.microsecondsSinceEpoch),
       "numberOfTaksPerDay": this.numberOfTaksPerDay,
       "tasks": this.mapfy(),
-      "isAchieved": this.isAchieved,
+      "isAchieved": (this.isAchieved? true :this.checkAchieved()),
       "creationDate": this.creationDate,
     };
   }
@@ -44,6 +44,23 @@ class Goal {
     return mapfiedTasks;
   }
 
+  bool checkAchieved(){
+    this.tasks.forEach((element) {
+      if(!element.done)
+        return false;     //not all tasks are achived 
+    }); //end forEach
+    return true;          //all tasks are achived 
+  }// end checkAchieved()
+
+  double calcProgress(){
+    int totalTasks = this.tasks.length ;
+    double achivedTasks = 0.0;
+    this.tasks.forEach((element) {if(element.done) achivedTasks++ ;});
+    return (totalTasks/achivedTasks)*100 ;
+  } //end calcProgress()
+
+  static Goal fromJson(Map<String, dynamic> map) {
+    if (map == null) {
   static Goal fromJson(Map<String, dynamic> map, String docID) {
     if (map == null || map['tasks'] == null) {
       return null;

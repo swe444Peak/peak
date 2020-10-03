@@ -16,8 +16,8 @@ class NewTaskPage extends StatefulWidget {
 }
 
 class _NewTaskPageState extends State<NewTaskPage> {
-  var taskCounter=0;
-  NotificationManager notifyManeger =  new NotificationManager();
+  var taskCounter = 0;
+  NotificationManager notifyManeger = new NotificationManager();
   TextEditingController _taskcontroller = TextEditingController();
   int _count = 1;
   String dropdownValue;
@@ -176,13 +176,15 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                         ),
                                         color: Color.fromRGBO(23, 23, 85, 1.0),
                                         onPressed: () {
-                                        notifyManeger.showNotificationDaily(taskCounter++, 'Remember To ', _taskcontroller.text,dropdownValue);
+                                          notifyManeger.showTaskNotification(
+                                              'Remember To ',
+                                              _taskcontroller.text,
+                                              dropdownValue);
                                           Navigator.push(
                                               context,
                                               new MaterialPageRoute(
                                                   builder: (context) =>
                                                       new NewTaskPage()));
-                                     
                                         }, // sucess message
                                         textColor: Colors.white,
                                         child: Text('Add',

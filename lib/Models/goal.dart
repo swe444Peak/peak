@@ -55,7 +55,7 @@ class Goal {
     this.tasks.forEach((element) {
       if (element.done) achivedTasks++;
     });
-    return (totalTasks / achivedTasks) ;
+    return (achivedTasks/totalTasks) ;
   } //end calcProgress()
 
   static Task getTask(var element) {

@@ -30,13 +30,12 @@ class CreateGoalModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future createGoal(String goalName, String uID, DateTime deadLine,
-      int numberOfTaksPerDay, List<Task> tasks) async {
+  Future createGoal(
+      String goalName, String uID, DateTime deadLine, List<Task> tasks) async {
     Goal goal = Goal(
         goalName: goalName,
         uID: uID,
         deadline: deadLine,
-        numberOfTaksPerDay: numberOfTaksPerDay,
         tasks: tasks,
         creationDate: DateTime.now());
     setState(ViewState.Busy);

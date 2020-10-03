@@ -56,11 +56,13 @@ class Goal {
     int totalTasks = this.tasks.length ;
     double achivedTasks = 0.0;
     this.tasks.forEach((element) {if(element.done) achivedTasks++ ;});
-    return (totalTasks/achivedTasks)*100 ;
+    if(achivedTasks == 0){
+      return 0.0;
+    }
+    return (achivedTasks/totalTasks) ;
   } //end calcProgress()
 
-  static Goal fromJson(Map<String, dynamic> map) {
-    if (map == null) {
+  
   static Goal fromJson(Map<String, dynamic> map, String docID) {
     if (map == null || map['tasks'] == null) {
       return null;

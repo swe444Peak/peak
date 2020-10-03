@@ -4,6 +4,7 @@ import 'package:peak/viewmodels/goalsList_model.dart';
 import 'package:stacked/stacked.dart';
 import '../locator.dart';
 import 'addNewGoal.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class GoalsListPage extends StatelessWidget {
   @override
@@ -96,7 +97,22 @@ class GoalsListPage extends StatelessWidget {
                                     ),
                                   ),
                                   subtitle: Column(
-                                    children: [],
+                                    children: [
+                                      Row(
+                                        children: [
+                                          new LinearPercentIndicator(
+                                            width: 140.0,
+                                            lineHeight: 14.0,
+                                            percent: goal.calcProgress(),
+                                            backgroundColor: Colors.grey,
+                                            progressColor: Colors.blue,
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+
+                                      ),
+                                    ],
                                   ),
                                   onTap: () {},
                                 ),

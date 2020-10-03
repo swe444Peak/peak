@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+
 import 'package:peak/models/task.dart';
 
 class Goal {
@@ -7,7 +8,6 @@ class Goal {
   final String uID;
   final DateTime deadline;
   final String docID;
-  final int numberOfTaksPerDay;
   final List<Task> tasks;
   final bool isAchieved;
   final DateTime creationDate;
@@ -17,9 +17,8 @@ class Goal {
     @required this.uID,
     @required this.deadline,
     this.docID,
-    this.numberOfTaksPerDay = 1,
     this.tasks,
-    this.isAchieved = false,
+    this.isAchieved: false,
     this.creationDate,
   });
 
@@ -29,7 +28,6 @@ class Goal {
       "uID": this.uID,
       "deadLine": Timestamp.fromMicrosecondsSinceEpoch(
           this.deadline.microsecondsSinceEpoch),
-      "numberOfTaksPerDay": this.numberOfTaksPerDay,
       "tasks": this.mapfy(),
       "isAchieved": (this.isAchieved ? true : this.checkAchieved()),
       "creationDate": this.creationDate,
@@ -60,6 +58,23 @@ class Goal {
     return (totalTasks / achivedTasks) * 100;
   } //end calcProgress()
 
+  static Task getTask(var element) {
+    final type = element['taskType'];
+    if (type == "daily") {
+      return DailyTask.fromJson(element);
+    }
+    if (type == "once") {
+      return OnceTask.fromJson(element);
+    }
+    if (type == "weekly") {
+      return WeeklyTask.fromJson(element);
+    }
+    if (type == "monthly") {
+      return MonthlyTask.fromJson(element);
+    }
+    return null;
+  }
+
   static Goal fromJson(Map<String, dynamic> map, String docID) {
     if (map == null || map['tasks'] == null) {
       return null;
@@ -67,7 +82,8 @@ class Goal {
     List<dynamic> taskList = map['tasks'];
     List<Task> newList = List<Task>();
     taskList.forEach((element) {
-      newList.add(Task.fromJson(element));
+      var task = getTask(element);
+      newList.add(task);
     });
     return Goal(
         goalName: map['goalName'],
@@ -75,7 +91,6 @@ class Goal {
         deadline: map['deadLine'].toDate(),
         tasks: newList,
         docID: docID,
-        numberOfTaksPerDay: map['numberOfTaksPerDay'],
         isAchieved: map["isAchieved"],
         creationDate: map['creationDate'].toDate());
   }

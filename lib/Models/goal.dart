@@ -4,23 +4,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:peak/models/task.dart';
 
 class Goal {
-  final String goalName;
-  final String uID;
-  final DateTime deadline;
-  final String docID;
-  final List<Task> tasks;
-  final bool isAchieved;
-  final DateTime creationDate;
+  String goalName;
+  String uID;
+  DateTime deadline;
+  String docID;
+  List<Task> tasks;
+  bool isAchieved;
+  DateTime creationDate;
+  int numOfTasks;
 
-  Goal({
-    @required this.goalName,
-    @required this.uID,
-    @required this.deadline,
-    this.docID,
-    this.tasks,
-    this.isAchieved: false,
-    this.creationDate,
-  });
+  Goal({@required goalName, @required uID, @required deadline, docID, tasks, isAchieved: false, creationDate,}){
+
+    this.goalName = goalName;
+    this.uID = uID;
+    this.deadline = deadline;
+    this.docID = docID;
+    this.tasks = tasks;
+    this.isAchieved = isAchieved;
+    this.creationDate = creationDate;
+    this.numOfTasks = clacTasks();
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -93,5 +96,13 @@ class Goal {
         docID: docID,
         isAchieved: map["isAchieved"],
         creationDate: map['creationDate'].toDate());
+  }
+
+  int clacTasks(){
+    int totalTasks = 0;
+    this.tasks.forEach((element) {
+      totalTasks += element.calcRepetation(deadline, creationDate);
+     });  //end forEach
+    return totalTasks;
   }
 }

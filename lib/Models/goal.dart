@@ -14,28 +14,36 @@ class Goal {
   int numOfTasks;
   int achievedTasks;
 
-  Goal({@required String goalName, @required String uID, @required DateTime deadline, String docID, List<Task>tasks,
-  bool isAchieved = false, DateTime creationDate, int numOfTasks=0}){
-
+  Goal(
+      {@required String goalName,
+      @required String uID,
+      @required DateTime deadline,
+      String docID,
+      List<Task> tasks,
+      bool isAchieved = false,
+      DateTime creationDate,
+      int numOfTasks = 0}) {
     this.goalName = goalName;
     this.uID = uID;
     this.deadline = DateTime(deadline.year, deadline.month, deadline.day);
     this.docID = docID;
     this.tasks = tasks;
-    this.isAchieved = (isAchieved? isAchieved : checkAchieved());
-    this.creationDate = DateTime(creationDate.year, creationDate.month, creationDate.day);
-    this.numOfTasks = (numOfTasks==0? clacTasks() : numOfTasks);
+    this.creationDate =
+        DateTime(creationDate.year, creationDate.month, creationDate.day);
+    this.numOfTasks = (numOfTasks == 0 ? clacTasks() : numOfTasks);
+    this.isAchieved = (isAchieved ? isAchieved : checkAchieved());
   }
 
   Map<String, dynamic> toMap() {
     return {
       "goalName": this.goalName,
       "uID": this.uID,
-      "deadLine": Timestamp.fromMicrosecondsSinceEpoch(
+      "deadline": Timestamp.fromMicrosecondsSinceEpoch(
           this.deadline.microsecondsSinceEpoch),
       "tasks": this.mapfy(),
       "isAchieved": (this.isAchieved ? true : this.checkAchieved()),
       "creationDate": this.creationDate,
+      "numOfTasks": this.numOfTasks,
     };
   }
 
@@ -47,20 +55,25 @@ class Goal {
     return mapfiedTasks;
   }
 
-  bool checkAchieved() {      //Rewirte
+  bool checkAchieved() {
+    bool checkAchieved = true;
     this.tasks.forEach((element) {
-      if (!(element.achievedTasks == element.taskRepetition)) return false; //not all tasks are achived
+      if (element.achievedTasks != element.taskRepetition) {
+        //not all tasks are achived
+        checkAchieved = false;
+      }
     }); //end forEach
-    return true; //all tasks are achived
+    return checkAchieved; //all tasks are achived
   } // end checkAchieved()
 
-  double calcProgress() {       //Rewrite 
+  double calcProgress() {
+    //Rewrite
     int totalTasks = this.numOfTasks;
     double achivedTasks = 0.0;
     this.tasks.forEach((element) {
       achivedTasks += element.achievedTasks;
     });
-    return (achivedTasks/totalTasks) ;
+    return (achivedTasks / totalTasks);
   } //end calcProgress()
 
   static Task getTask(var element) {
@@ -91,20 +104,23 @@ class Goal {
       newList.add(task);
     });
     return Goal(
-        goalName: map['goalName'],
-        uID: map['uID'],
-        deadline: map['deadLine'].toDate(),
-        tasks: newList,
-        docID: docID,
-        isAchieved: map["isAchieved"],
-        creationDate: map['creationDate'].toDate());
+      goalName: map['goalName'],
+      uID: map['uID'],
+      deadline: map['deadline'].toDate(),
+      tasks: newList,
+      docID: docID,
+      isAchieved: map["isAchieved"],
+      creationDate: map['creationDate'].toDate(),
+      numOfTasks: map['numOfTasks'],
+    );
   }
 
-  int clacTasks(){
+  int clacTasks() {
     int totalTasks = 0;
     this.tasks.forEach((element) {
       totalTasks += element.calcRepetition(deadline, creationDate);
-     });  //end forEach
+    }); //end forEach
+
     return totalTasks;
   }
 }

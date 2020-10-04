@@ -50,12 +50,16 @@ class NotificationManager {
   
    Duration sinceDeadline = goalDeadline.difference(DateTime.now());
    int indays = sinceDeadline.inDays;
+   var incMins= 30;
+   var hour =0;
+   var min =0;
    switch(taskType){
 
    case 'Daily':
    var addDay=1;
    for(var i=1; i<=indays;i++ ){
-    DateTime timeDaily = DateTime.utc(DateTime.now().year,DateTime.now().month,DateTime.now().day+addDay++);
+    DateTime timeDaily = DateTime.utc(DateTime.now().year,DateTime.now().month,DateTime.now().day+addDay++,hour,min+incMins);
+     incMins = incMins+30;
   await flutterLocalNotificationsPlugin.schedule(
          title, body, timeDaily, getPlatformChannelSpecfics());
    }
@@ -64,10 +68,11 @@ class NotificationManager {
    case 'Weekly':
     var inWeeks = indays/7;
     var addWeek=7; 
-
+    
    for (var i=1  ;i <= inWeeks ;i++ ){
-   DateTime timeweekly = DateTime.utc(DateTime.now().year,DateTime.now().month,DateTime.now().day+addWeek);
+   DateTime timeweekly = DateTime.utc(DateTime.now().year,DateTime.now().month,DateTime.now().day+addWeek,hour,min+incMins);
    addWeek=addWeek+7;
+   incMins = incMins+30;
   await flutterLocalNotificationsPlugin.schedule( title, body ,timeweekly , getPlatformChannelSpecfics());
    }
 
@@ -77,8 +82,9 @@ class NotificationManager {
    var addMoth=1; 
 
    for (var i=1  ;i <= inMonths ;i++ ){
-   DateTime timeweekly = DateTime.utc(DateTime.now().year,DateTime.now().month+addMoth,DateTime.now().day);
+   DateTime timeweekly = DateTime.utc(DateTime.now().year,DateTime.now().month+addMoth,DateTime.now().day,hour,min+incMins);
    addMoth++;
+   incMins = incMins+30;
   await flutterLocalNotificationsPlugin.schedule( title, body ,timeweekly , getPlatformChannelSpecfics());
    }
    break;

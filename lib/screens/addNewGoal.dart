@@ -1,11 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:peak/enums/viewState.dart';
+import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/screens/addNewTasks.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
-import 'package:peak/screens/shared/customButton.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:provider/provider.dart';
@@ -20,8 +18,8 @@ class NewGoalPage extends StatefulWidget {
 }
 
 class _NewGoalPageState extends State<NewGoalPage> {
-  var goalsCounter =0;
-  NotificationManager notifyManeger =  new NotificationManager();
+  var goalsCounter = 0;
+  NotificationManager notifyManeger = new NotificationManager();
   String _error;
   TextEditingController _goalnamecontroller = TextEditingController();
   DateTime _dateTime;
@@ -175,7 +173,7 @@ class _NewGoalPageState extends State<NewGoalPage> {
                                                           _dateTime == null
                                                               ? DateTime.now()
                                                               : _dateTime,
-                                                      firstDate: DateTime(2020),
+                                                      firstDate: DateTime.now(),
                                                       lastDate: DateTime(2120))
                                                   .then((date) {
                                                 setState(() {
@@ -200,14 +198,19 @@ class _NewGoalPageState extends State<NewGoalPage> {
                                           color:
                                               Color.fromRGBO(23, 23, 85, 1.0),
                                           onPressed: () {
-                                            notifyManeger.showDeadlineNotification('Deadline Reminder'
-                                            ,'The deadline for'+_goalnamecontroller.text+ 'goal is Tomorrow' , _dateTime);
+                                            notifyManeger
+                                                .showDeadlineNotification(
+                                                    'Deadline Reminder',
+                                                    'The deadline for' +
+                                                        _goalnamecontroller
+                                                            .text +
+                                                        'goal is Tomorrow',
+                                                    _dateTime);
                                             Navigator.push(
                                                 context,
                                                 new MaterialPageRoute(
                                                     builder: (context) =>
                                                         new NewTaskPage()));
-                                                        
                                           },
                                           textColor: Colors.white,
                                           child: Text('Next',

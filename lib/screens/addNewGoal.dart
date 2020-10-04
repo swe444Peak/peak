@@ -198,14 +198,6 @@ class _NewGoalPageState extends State<NewGoalPage> {
                                           color:
                                               Color.fromRGBO(23, 23, 85, 1.0),
                                           onPressed: () {
-                                            var tasks = [
-                                              WeeklyTask(
-                                                  taskName: "some task",
-                                                  weekday: 3)
-                                            ];
-                                            locator<CreateGoalModel>()
-                                                .createGoal("study", user.uid,
-                                                    DateTime.now(), tasks);
                                             notifyManeger
                                                 .showDeadlineNotification(
                                                     'Deadline Reminder',

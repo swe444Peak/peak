@@ -15,14 +15,14 @@ class Goal {
   int achievedTasks;
 
   Goal({@required String goalName, @required String uID, @required DateTime deadline, String docID, List<Task>tasks,
-  bool isAchieved: false, DateTime creationDate, int numOfTasks=0}){
+  bool isAchieved = false, DateTime creationDate, int numOfTasks=0}){
 
     this.goalName = goalName;
     this.uID = uID;
     this.deadline = DateTime(deadline.year, deadline.month, deadline.day);
     this.docID = docID;
     this.tasks = tasks;
-    this.isAchieved = checkAchieved();
+    this.isAchieved = (isAchieved? isAchieved : checkAchieved());
     this.creationDate = DateTime(creationDate.year, creationDate.month, creationDate.day);
     this.numOfTasks = (numOfTasks==0? clacTasks() : numOfTasks);
   }
@@ -49,16 +49,16 @@ class Goal {
 
   bool checkAchieved() {      //Rewirte
     this.tasks.forEach((element) {
-      if (!element.done) return false; //not all tasks are achived
+      if (!(element.achievedTasks == element.taskRepetition)) return false; //not all tasks are achived
     }); //end forEach
     return true; //all tasks are achived
   } // end checkAchieved()
 
   double calcProgress() {       //Rewrite 
-    int totalTasks = this.tasks.length;
+    int totalTasks = this.numOfTasks;
     double achivedTasks = 0.0;
     this.tasks.forEach((element) {
-      if (element.done) achivedTasks++;
+      achivedTasks += element.achievedTasks;
     });
     return (achivedTasks/totalTasks) ;
   } //end calcProgress()

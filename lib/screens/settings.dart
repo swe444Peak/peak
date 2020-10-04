@@ -174,7 +174,7 @@ class SettingsPage extends StatelessWidget {
                               else if (state == true)
                                 for (var task in _taskList) {
                                   //add task type to DB
-                                  if (!task.done)
+                                  if (!task.isDone())
                                     manger.showTaskNotification(
                                       "Remember To",
                                       task.taskName,

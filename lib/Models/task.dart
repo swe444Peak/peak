@@ -17,6 +17,10 @@ abstract class Task {
     };
   }
 
+  bool isDone(){
+    return (this.taskRepetition == this.achievedTasks);
+  }
+
   bool isAtSameDate(DateTime dat1, DateTime date2){
     if(dat1.day == date2.day){
       if(dat1.month == date2.month)

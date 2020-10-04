@@ -12,17 +12,19 @@ class Goal {
   bool isAchieved;
   DateTime creationDate;
   int numOfTasks;
+  int achievedTasks;
 
-  Goal({@required goalName, @required uID, @required deadline, docID, tasks, isAchieved: false, creationDate,}){
+  Goal({@required String goalName, @required String uID, @required DateTime deadline, String docID, List<Task>tasks,
+  bool isAchieved: false, DateTime creationDate, int numOfTasks=0}){
 
     this.goalName = goalName;
     this.uID = uID;
-    this.deadline = deadline;
+    this.deadline = DateTime(deadline.year, deadline.month, deadline.day);
     this.docID = docID;
     this.tasks = tasks;
-    this.isAchieved = isAchieved;
-    this.creationDate = creationDate;
-    this.numOfTasks = clacTasks();
+    this.isAchieved = checkAchieved();
+    this.creationDate = DateTime(creationDate.year, creationDate.month, creationDate.day);
+    this.numOfTasks = (numOfTasks==0? clacTasks() : numOfTasks);
   }
 
   Map<String, dynamic> toMap() {
@@ -45,14 +47,14 @@ class Goal {
     return mapfiedTasks;
   }
 
-  bool checkAchieved() {
+  bool checkAchieved() {      //Rewirte
     this.tasks.forEach((element) {
       if (!element.done) return false; //not all tasks are achived
     }); //end forEach
     return true; //all tasks are achived
   } // end checkAchieved()
 
-  double calcProgress() {
+  double calcProgress() {       //Rewrite 
     int totalTasks = this.tasks.length;
     double achivedTasks = 0.0;
     this.tasks.forEach((element) {
@@ -101,7 +103,7 @@ class Goal {
   int clacTasks(){
     int totalTasks = 0;
     this.tasks.forEach((element) {
-      totalTasks += element.calcRepetation(deadline, creationDate);
+      totalTasks += element.calcRepetition(deadline, creationDate);
      });  //end forEach
     return totalTasks;
   }

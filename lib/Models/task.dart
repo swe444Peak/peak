@@ -22,7 +22,6 @@ abstract class Task {
     };
   }
 
-<<<<<<< HEAD
   bool isDone(){
     return (this.taskRepetition == this.achievedTasks);
   }
@@ -33,12 +32,6 @@ abstract class Task {
         if(dat1.year == date2.year)
           return true;
     }//end if
-=======
-  bool isAtSameDate(DateTime dat1, DateTime date2) {
-    if (dat1.day == date2.day) {
-      if (dat1.month == date2.month) if (dat1.year == date2.year) return true;
-    } //end if
->>>>>>> 5c2f25608626841c6dac86cc18d409f041992272
     return false;
   }
 

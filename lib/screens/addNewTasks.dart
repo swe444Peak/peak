@@ -22,6 +22,19 @@ class _NewTaskPageState extends State<NewTaskPage> {
   int _count = 1;
   String dropdownValue;
   String currentValue;
+
+     Widget repeatDate(){
+
+       if(currentValue == "Weekly"){
+      return Container(
+       child : Text("hiiii"),
+      );
+    }
+    return SizedBox(
+      height: 0,
+    );
+    }
+
   @override
   Widget build(BuildContext context) {
     CreateGoalModel model = CreateGoalModel();
@@ -30,6 +43,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
+
 
     return StreamProvider<PeakUser>.value(
         initialData: PeakUser(uid: "", name: ""),
@@ -131,12 +145,15 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                         },
                                         items: [
                                           'Daily',
-                                          'Weekly',
+                                          'Weekly', 
                                           'Monthly',
                                           'Once'
                                         ].map<DropdownMenuItem<String>>(
                                             (value) {
-                                          currentValue = value;
+                                              setState(() {
+                                                currentValue = value;
+                                              });
+                                          //currentValue = value;
                                           return DropdownMenuItem<String>(
                                             value: value,
                                             child: Text(value),
@@ -145,6 +162,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                       ),
                                     ]),
                                 SizedBox(height: 20),
+                                 repeatDate(),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,

@@ -49,7 +49,8 @@ class Goal {
 
   bool checkAchieved() {      //Rewirte
     this.tasks.forEach((element) {
-      if (!(element.achievedTasks == element.taskRepetition)) return false; //not all tasks are achived
+      if (!(element.achievedTasks == element.taskRepetition)) 
+       return false; //not all tasks are achived
     }); //end forEach
     return true; //all tasks are achived
   } // end checkAchieved()

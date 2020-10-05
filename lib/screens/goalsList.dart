@@ -104,12 +104,54 @@ class GoalsListPage extends StatelessWidget {
                                               width: 140.0,
                                               lineHeight: 14.0,
                                               percent: goal.calcProgress(),
-                                              backgroundColor: Colors.grey,
-                                              progressColor: Colors.blue,
+                                              backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
+                                              progressColor: Colors.lightBlueAccent,
                                             ),
                                           ],
                                         ),
-                                        Row(),
+                                        Row(
+                                          children: [
+
+                                            Container(         //due date
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.assistant_photo
+                                                  ),
+                                                  Text(
+                                                    "${goal.deadline.toString()}"
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            Container(         //Tasks
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.assignment_turned_in
+                                                  ),
+                                                  Text(
+                                                    "${goal.numOfTasks}"
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            Container(         //status
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.brightness_1
+                                                  ),
+                                                  Text(
+                                                    "${goal.numOfTasks}"
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                     onTap: () {},

@@ -17,7 +17,7 @@ class ProfilePage extends StatelessWidget {
 
     return StreamProvider<PeakUser>.value(
         initialData: PeakUser(uid: "", name: ""),
-        value: DatabaseServices().userData(user.uid),
+        value: DatabaseServices().userData(user?.uid),
         builder: (context, snapshot) {
           return Scaffold(
             extendBodyBehindAppBar: true,

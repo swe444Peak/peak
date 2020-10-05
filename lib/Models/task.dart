@@ -22,16 +22,14 @@ abstract class Task {
     };
   }
 
-  bool isDone(){
+  bool isDone() {
     return (this.taskRepetition == this.achievedTasks);
   }
 
-  bool isAtSameDate(DateTime dat1, DateTime date2){
-    if(dat1.day == date2.day){
-      if(dat1.month == date2.month)
-        if(dat1.year == date2.year)
-          return true;
-    }//end if
+  bool isAtSameDate(DateTime date1, DateTime date2) {
+    if (date1.day == date2.day) {
+      if (date1.month == date2.month) if (date1.year == date2.year) return true;
+    } //end if
     return false;
   }
 
@@ -47,7 +45,6 @@ class DailyTask extends Task {
             achievedTasks: achievedTasks);
   @override
   Map<String, dynamic> toMap() {
-    //TO DO add repetition
     return {
       "taskName": this.taskName,
       "taskType": this.taskType.toShortString(),
@@ -69,7 +66,7 @@ class DailyTask extends Task {
 
   @override
   int calcRepetition(DateTime dueDate, DateTime creation) {
-    this.taskRepetition = (creation.difference(dueDate)).inDays;
+    this.taskRepetition = (dueDate.difference(creation)).inDays;
     return taskRepetition;
   }
 }
@@ -132,7 +129,7 @@ class WeeklyTask extends Task {
     saturday:6
     sunday:7
   */
-  List<int> weekdays; /*The day of the week monday..sunday*/
+  List<int> weekdays = List<int>(); /*The day of the week monday..sunday*/
   WeeklyTask(
       {@required taskName,
       @required this.weekdays,
@@ -159,9 +156,10 @@ class WeeklyTask extends Task {
     if (map == null) {
       return null;
     }
+
     return WeeklyTask(
       taskName: map['taskName'],
-      weekdays: map['weekdays'],
+      weekdays: List.castFrom(map['weekdays']),
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
     );
@@ -171,7 +169,6 @@ class WeeklyTask extends Task {
   int calcRepetition(DateTime dueDate, DateTime creation) {
     int repetition = 0;
     if (this.isAtSameDate(dueDate, creation)) {
-      //if creation == dueDate
       weekdays.forEach((element) {
         if (creation.weekday == element) repetition++;
       }); //end forEach
@@ -179,15 +176,17 @@ class WeeklyTask extends Task {
       return repetition;
     }
 
-    int duration = creation.difference(dueDate).inDays;
+    int duration = (dueDate.difference(creation)).inDays;
+
     for (int i = 0; i < duration; i++) {
-      //if creation != dueDate
-      creation.add(Duration(days: 1));
       weekdays.forEach((element) {
         if (creation.weekday == element) repetition++;
       }); //end forEach
-      if (this.isAtSameDate(dueDate, creation)) taskRepetition = repetition;
-      return repetition;
+      if (this.isAtSameDate(dueDate, creation)) {
+        taskRepetition = repetition;
+        return repetition;
+      }
+      creation = creation.add(Duration(days: 1));
     } //end for
     taskRepetition = repetition;
     return repetition;
@@ -243,13 +242,17 @@ class MonthlyTask extends Task {
       }
     } //end if
 
-    int duration = creation.difference(dueDate).inDays;
+    int duration = dueDate.difference(creation).inDays;
     for (int i = 0; i < duration; i++) {
       //if creation != dueDate
-      creation.add(Duration(days: 1));
+
       if (creation.day == day) repetition++;
-      if (this.isAtSameDate(dueDate, creation)) taskRepetition = repetition;
-      return repetition;
+
+      if (this.isAtSameDate(dueDate, creation)) {
+        taskRepetition = repetition;
+        return repetition;
+      }
+      creation = creation.add(Duration(days: 1));
     } //end for
     taskRepetition = repetition;
     return repetition;

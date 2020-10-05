@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/screens/shared/p.dart';
+import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:peak/viewmodels/goalsList_model.dart';
 import 'package:stacked/stacked.dart';
 import '../locator.dart';
@@ -88,11 +89,12 @@ class GoalsListPage extends StatelessWidget {
                                     //   color: Color.fromRGBO(23, 23, 85, 1.0),
                                     //   size: 32,
                                     // ),
+                                    contentPadding: EdgeInsets.fromLTRB(width*0.05, height*0.02, 0.0, height*0.01),
                                     title: Text(
                                       goal.goalName,
                                       style: TextStyle(
-                                        color: Color.fromRGBO(23, 23, 85, 1.0),
-                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w400,
                                         fontSize: 18,
                                       ),
                                     ),
@@ -100,57 +102,86 @@ class GoalsListPage extends StatelessWidget {
                                       children: [
                                         Row(
                                           children: [
-                                            new LinearPercentIndicator(
-                                              width: 140.0,
-                                              lineHeight: 14.0,
-                                              percent: goal.calcProgress(),
-                                              backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
-                                              progressColor: Colors.lightBlueAccent,
+                                            // Container(
+                                            //   padding: EdgeInsets.fromLTRB(0.0, height*0.008, 0.0, height*0.008),
+                                            //   child: new LinearPercentIndicator(
+                                            //     width: width*0.7,
+                                            //     lineHeight: 14.0,
+                                            //     percent: 0.5,
+                                            //     backgroundColor: Colors.indigo[900],
+                                            //     progressColor: Colors.blue ,
+                                            //     center: Text(
+                                            //       "50.0%",
+                                            //       style: new TextStyle(
+                                            //         color: Colors.white,
+                                            //         fontSize: 12.0),
+                                            //     ),
+                                            //   ),
+                                            // ),
+
+                                            Container(
+                                              padding: EdgeInsets.fromLTRB(0.0, height*0.02, 0.0, height*0.01),
+                                              width: width*0.7,
+                                              height: width*0.08,
+                                              child: GradientProgressIndicator(
+                                               gradient: Gradients.buildGradient(Alignment(-1.0, -1.0), Alignment(1.0, 1.0), [Colors.indigo[900], Colors.blue]),
+                                               value: 0.5,
+                                           ),
                                             ),
+
                                           ],
                                         ),
-                                        Row(
-                                          children: [
+                                        Container(
+                                          padding: EdgeInsets.fromLTRB(0.0, height*0.01, 0.0, height*0.01),
+                                          child: Row(
+                                            children: [
 
-                                            Container(         //due date
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.assistant_photo
-                                                  ),
-                                                  Text(
-                                                    "${goal.deadline.toString()}"
-                                                  ),
-                                                ],
+                                              Container(         //due date
+                                                padding: EdgeInsets.symmetric(horizontal: width*0.008),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.assistant_photo,
+                                                      color: Colors.amber,
+                                                    ),
+                                                    Text(
+                                                      "${goal.deadline.day}/${goal.deadline.month}/${goal.deadline.year}"
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
 
-                                            Container(         //Tasks
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.assignment_turned_in
-                                                  ),
-                                                  Text(
-                                                    "${goal.numOfTasks}"
-                                                  ),
-                                                ],
+                                              Container(         //Tasks
+                                              padding: EdgeInsets.symmetric(horizontal: width*0.008),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.assignment_turned_in,
+                                                      color: Colors.teal,
+                                                    ),
+                                                    Text(
+                                                      "${goal.calcAchievedTasks()}/${goal.numOfTasks}"
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
 
-                                            Container(         //status
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.brightness_1
-                                                  ),
-                                                  Text(
-                                                    "${goal.numOfTasks}"
-                                                  ),
-                                                ],
+                                              Container(         //status
+                                                padding: EdgeInsets.symmetric(horizontal: width*0.01),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.brightness_1,
+                                                      color: (goal.isAchieved? Colors.green : Colors.red[600]),
+                                                    ),
+                                                    Text(
+                                                      "${goal.isAchieved? "Completed" : "Incomplete"}"
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),

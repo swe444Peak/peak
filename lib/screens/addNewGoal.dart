@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/screens/addNewTasks.dart';
 import 'package:peak/screens/shared/commonStyle.dart';

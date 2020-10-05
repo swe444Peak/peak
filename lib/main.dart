@@ -18,14 +18,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-
-        providers: [
-          StreamProvider<User>.value(
-            value: FirebaseAuth.instance.authStateChanges(),
-            ),
-        ],
-
-          child: MaterialApp(
+      providers: [
+        StreamProvider<User>.value(
+          value: FirebaseAuth.instance.authStateChanges(),
+        ),
+      ],
+      child: MaterialApp(
         theme: ThemeData(),
         initialRoute: 'login',
         onGenerateRoute: Router.generateRoute,

@@ -1,14 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/models/user.dart';
-import 'package:peak/screens/addNewGoal.dart';
-import 'package:peak/screens/profile.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:provider/provider.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import '../services/notification.dart';
+import 'goalConfirmation.dart';
 
 class NewTaskPage extends StatefulWidget {
   @override
@@ -19,7 +18,6 @@ class _NewTaskPageState extends State<NewTaskPage> {
   var taskCounter = 0;
   NotificationManager notifyManeger = new NotificationManager();
   TextEditingController _taskcontroller = TextEditingController();
-  int _count = 1;
   String dropdownValue;
   String currentValue;
   int lastTapped;
@@ -43,16 +41,29 @@ class _NewTaskPageState extends State<NewTaskPage> {
   }
 
   Widget repeatDate() {
-    if (currentValue == "Weekly") {
-      return WeekdaySelector(
-        selectedFillColor: Colors.indigo,
-        onChanged: (v) {
-          printIntAsDay(v);
-          setState(() {
-            values[v % 7] = !values[v % 7];
-          });
-        },
-        values: values,
+    if (currentValue == "Daily") {
+      return Text("*This task will repeat daily",
+          style: TextStyle(
+              fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
+          textAlign: TextAlign.center);
+    } else if (currentValue == "Weekly") {
+      return Column(
+        children: [
+          Text("*This task will repeat weekly on the days you pick",
+              style: TextStyle(
+                  fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
+              textAlign: TextAlign.center),
+          WeekdaySelector(
+            selectedFillColor: Colors.lightBlue[600],
+            onChanged: (v) {
+              printIntAsDay(v);
+              setState(() {
+                values[v % 7] = !values[v % 7];
+              });
+            },
+            values: values,
+          )
+        ],
       );
     } else if (currentValue == "Monthly") {
       return Column(
@@ -71,13 +82,19 @@ class _NewTaskPageState extends State<NewTaskPage> {
         ],
       );
     } else if (currentValue == "Once") {
-      return CalendarDatePicker(
-          initialDate: _dateTime == null ? DateTime.now() : _dateTime,
-          firstDate: DateTime.now(),
-          lastDate: DateTime(2120),
-          onDateChanged: (d) {
-            _dateTime = d;
-          });
+      return Column(children: [
+        Text("*Pick the starting day for your monthly task",
+            style: TextStyle(
+                fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
+            textAlign: TextAlign.center),
+        CalendarDatePicker(
+            initialDate: _dateTime == null ? DateTime.now() : _dateTime,
+            firstDate: DateTime.now(),
+            lastDate: DateTime(2120),
+            onDateChanged: (d) {
+              _dateTime = d;
+            }),
+      ]);
     }
     return SizedBox(
       height: 0,
@@ -229,7 +246,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                               context,
                                               new MaterialPageRoute(
                                                   builder: (context) =>
-                                                      new ProfilePage()));
+                                                      new GoalConfirmationPage()));
                                         },
                                         textColor: Colors.white,
                                         child: Text('Done',

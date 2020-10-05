@@ -21,6 +21,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
   TextEditingController _taskcontroller = TextEditingController();
   int _count = 1;
   String dropdownValue;
+  String currentValue;
   @override
   Widget build(BuildContext context) {
     CreateGoalModel model = CreateGoalModel();
@@ -128,9 +129,14 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                             dropdownValue = newValue;
                                           });
                                         },
-                                        items: ['Daily', 'Weekly', 'Monthly']
-                                            .map<DropdownMenuItem<String>>(
-                                                (value) {
+                                        items: [
+                                          'Daily',
+                                          'Weekly',
+                                          'Monthly',
+                                          'Once'
+                                        ].map<DropdownMenuItem<String>>(
+                                            (value) {
+                                          currentValue = value;
                                           return DropdownMenuItem<String>(
                                             value: value,
                                             child: Text(value),
@@ -187,7 +193,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                                       new NewTaskPage()));
                                         }, // sucess message
                                         textColor: Colors.white,
-                                        child: Text('Add',
+                                        child: Text('Add task',
                                             style: TextStyle(fontSize: 19.0)),
                                       ),
                                     ),

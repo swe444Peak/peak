@@ -7,7 +7,7 @@ import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:provider/provider.dart';
-
+import 'package:weekday_selector/weekday_selector.dart';
 import '../services/notification.dart';
 
 class NewTaskPage extends StatefulWidget {
@@ -22,18 +22,67 @@ class _NewTaskPageState extends State<NewTaskPage> {
   int _count = 1;
   String dropdownValue;
   String currentValue;
+  int lastTapped;
+  final values = List.filled(7, false);
+  DateTime _dateTime;
+  DateTime now = DateTime.now();
+  printIntAsDay(int day) {
+    print(
+        'Received integer: $day. Corresponds to day: ${intDayToEnglish(day)}');
+  }
 
-     Widget repeatDate(){
+  String intDayToEnglish(int day) {
+    if (day % 7 == DateTime.monday % 7) return 'Monday';
+    if (day % 7 == DateTime.tuesday % 7) return 'Tueday';
+    if (day % 7 == DateTime.wednesday % 7) return 'Wednesday';
+    if (day % 7 == DateTime.thursday % 7) return 'Thursday';
+    if (day % 7 == DateTime.friday % 7) return 'Friday';
+    if (day % 7 == DateTime.saturday % 7) return 'Saturday';
+    if (day % 7 == DateTime.sunday % 7) return 'Sunday';
+    throw '🐞 This should never have happened: $day';
+  }
 
-       if(currentValue == "Weekly"){
-      return Container(
-       child : Text("hiiii"),
+  Widget repeatDate() {
+    if (currentValue == "Weekly") {
+      return WeekdaySelector(
+        selectedFillColor: Colors.indigo,
+        onChanged: (v) {
+          printIntAsDay(v);
+          setState(() {
+            values[v % 7] = !values[v % 7];
+          });
+        },
+        values: values,
       );
+    } else if (currentValue == "Monthly") {
+      return Column(
+        children: [
+          Text("*Pick the starting day for your monthly task",
+              style: TextStyle(
+                  fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
+              textAlign: TextAlign.center),
+          CalendarDatePicker(
+              initialDate: _dateTime == null ? DateTime.now() : _dateTime,
+              firstDate: DateTime.now(),
+              lastDate: now.add(new Duration(days: 30)),
+              onDateChanged: (d) {
+                _dateTime = d;
+              })
+        ],
+      );
+    } else if (currentValue == "Once") {
+      return CalendarDatePicker(
+          initialDate: _dateTime == null ? DateTime.now() : _dateTime,
+          firstDate: DateTime.now(),
+          lastDate: DateTime(2120),
+          onDateChanged: (d) {
+            _dateTime = d;
+          });
     }
     return SizedBox(
       height: 0,
     );
-    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +92,6 @@ class _NewTaskPageState extends State<NewTaskPage> {
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
-
 
     return StreamProvider<PeakUser>.value(
         initialData: PeakUser(uid: "", name: ""),
@@ -141,18 +189,16 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                         onChanged: (newValue) {
                                           setState(() {
                                             dropdownValue = newValue;
+                                            currentValue = newValue;
                                           });
                                         },
                                         items: [
                                           'Daily',
-                                          'Weekly', 
+                                          'Weekly',
                                           'Monthly',
                                           'Once'
                                         ].map<DropdownMenuItem<String>>(
                                             (value) {
-                                              setState(() {
-                                                currentValue = value;
-                                              });
                                           //currentValue = value;
                                           return DropdownMenuItem<String>(
                                             value: value,
@@ -162,7 +208,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                       ),
                                     ]),
                                 SizedBox(height: 20),
-                                 repeatDate(),
+                                repeatDate(),
+                                SizedBox(height: 20),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,

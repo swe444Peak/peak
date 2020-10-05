@@ -123,4 +123,12 @@ class Goal {
 
     return totalTasks;
   }
+
+  int calcAchievedTasks(){
+    int count =0;
+    this.tasks.forEach((element) {
+      count += element.achievedTasks;
+    }); //end forEach
+    return count;
+  }
 }

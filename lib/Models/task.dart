@@ -129,6 +129,7 @@ class WeeklyTask extends Task {
     saturday:6
     sunday:7
   */
+  List<DateTime> dates = List<DateTime>();
   List<int> weekdays = List<int>(); /*The day of the week monday..sunday*/
   WeeklyTask(
       {@required taskName,
@@ -170,7 +171,10 @@ class WeeklyTask extends Task {
     int repetition = 0;
     if (this.isAtSameDate(dueDate, creation)) {
       weekdays.forEach((element) {
-        if (creation.weekday == element) repetition++;
+        if (creation.weekday == element) {
+          repetition++;
+          dates.add(creation);
+        }
       }); //end forEach
       taskRepetition = repetition;
       return repetition;
@@ -180,7 +184,10 @@ class WeeklyTask extends Task {
 
     for (int i = 0; i < duration; i++) {
       weekdays.forEach((element) {
-        if (creation.weekday == element) repetition++;
+        if (creation.weekday == element) {
+          repetition++;
+          dates.add(creation);
+        }
       }); //end forEach
       if (this.isAtSameDate(dueDate, creation)) {
         taskRepetition = repetition;
@@ -195,6 +202,7 @@ class WeeklyTask extends Task {
 
 class MonthlyTask extends Task {
   int day; /*The day of the month 1..31*/
+  List<DateTime> dates = List<DateTime>();
 
   MonthlyTask(
       {@required taskName,
@@ -237,6 +245,7 @@ class MonthlyTask extends Task {
       //if creation == dueDate
       if (creation.day == day) {
         repetition++;
+        dates.add(creation);
         taskRepetition = repetition;
         return repetition;
       }
@@ -246,8 +255,10 @@ class MonthlyTask extends Task {
     for (int i = 0; i < duration; i++) {
       //if creation != dueDate
 
-      if (creation.day == day) repetition++;
-
+      if (creation.day == day) {
+        dates.add(creation);
+        repetition++;
+      }
       if (this.isAtSameDate(dueDate, creation)) {
         taskRepetition = repetition;
         return repetition;

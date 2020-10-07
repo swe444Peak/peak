@@ -205,6 +205,7 @@ class _NewGoalPageState extends State<NewGoalPage> {
                                                             .text +
                                                         'goal is Tomorrow',
                                                     _dateTime);
+                                                  
                                             Navigator.push(
                                                 context,
                                                 new MaterialPageRoute(

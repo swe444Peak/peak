@@ -264,10 +264,16 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                         ),
                                         color: Color.fromRGBO(23, 23, 85, 1.0),
                                         onPressed: () {
+                                        if(currentValue == 'Once')
+                                        notifyManeger.showNotificationOnce( 'Remember To ',
+                                              _taskcontroller.text,_dateTime);
+                                           else
                                           notifyManeger.showTaskNotification(
                                               'Remember To ',
                                               _taskcontroller.text,
                                               dropdownValue);
+
+
                                           Navigator.push(
                                               context,
                                               new MaterialPageRoute(

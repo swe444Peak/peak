@@ -43,7 +43,11 @@ class NotificationManager {
   }
 
 
+ Future<void> showNotificationOnce(String title, String body,DateTime date ) async {
+   await flutterLocalNotificationsPlugin.schedule(
+         title, body, date, getPlatformChannelSpecfics());
 
+ }
 
   void showTaskNotification(  String title, String body, String taskType) async {
   
@@ -54,7 +58,6 @@ class NotificationManager {
    var hour =0;
    var min =0;
    switch(taskType){
-
    case 'Daily':
    var addDay=1;
    for(var i=1; i<=indays;i++ ){

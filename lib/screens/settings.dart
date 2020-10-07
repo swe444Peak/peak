@@ -1,24 +1,33 @@
 import 'dart:collection';
+import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/services/notification.dart';
 import 'package:peak/viewmodels/settings_model.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:peak/enums/taskType.dart';
+import 'package:provider/provider.dart';
 import '../models/goal.dart';
 import '../models/task.dart';
+import '../models/User.dart';
+import '../services/databaseServices.dart';
 
 class SettingsPage extends StatelessWidget {
+ final DatabaseServices dBS = new DatabaseServices();
   final NotificationManager manger = new NotificationManager();
   final userRef = FirebaseFirestore.instance.collection('goals').get();
   List<Task> _taskList = [];
-  UnmodifiableListView<Task> get taslList => UnmodifiableListView(_taskList);
+  UnmodifiableListView<Task> get taskList => UnmodifiableListView(_taskList);
   List<Goal> _goalList = [];
   UnmodifiableListView<Goal> get goalList => UnmodifiableListView(_goalList);
   @override
+
   Widget build(BuildContext context) {
     // final QuerySnapshot listTas = userRef.
+    var userId = Provider.of<User>(context);
+    PeakUser user = new PeakUser(uid: "", name: "",notificationStatus: true);
     bool _state = true;
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
@@ -168,6 +177,7 @@ class SettingsPage extends StatelessWidget {
                             iconOff: Icons.alarm_off,
                             value: true,
                             onChanged: (state) {
+                            dBS.updateNotificationStatus(status:state);
                               _state = state;
                               if (state == false)
                                 manger.removeReminder();

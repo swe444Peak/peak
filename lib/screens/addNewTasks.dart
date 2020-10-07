@@ -21,9 +21,10 @@ class _NewTaskPageState extends State<NewTaskPage> {
   String dropdownValue;
   String currentValue;
   int lastTapped;
-  final values = List.filled(7, false);
+  final values = [true, false, false, false, false, false, false];
   DateTime _dateTime;
   DateTime now = DateTime.now();
+  /*
   printIntAsDay(int day) {
     print(
         'Received integer: $day. Corresponds to day: ${intDayToEnglish(day)}');
@@ -38,6 +39,17 @@ class _NewTaskPageState extends State<NewTaskPage> {
     if (day % 7 == DateTime.saturday % 7) return 'Saturday';
     if (day % 7 == DateTime.sunday % 7) return 'Sunday';
     throw '🐞 This should never have happened: $day';
+  }
+*/
+  bool onlyOneDay(List<bool> values) {
+    int counter = 0;
+    for (int i = 0; i < values.length; i++) {
+      if (values[i] == true) counter++;
+    }
+    if (counter == 1) {
+      return true;
+    }
+    return false;
   }
 
   Widget repeatDate() {
@@ -56,9 +68,12 @@ class _NewTaskPageState extends State<NewTaskPage> {
           WeekdaySelector(
             selectedFillColor: Colors.lightBlue[600],
             onChanged: (v) {
-              printIntAsDay(v);
+              //printIntAsDay(v);
               setState(() {
-                values[v % 7] = !values[v % 7];
+                if (onlyOneDay(values) && values[v % 7] == true) {
+                } else {
+                  values[v % 7] = !values[v % 7];
+                }
               });
             },
             values: values,

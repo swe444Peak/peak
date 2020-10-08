@@ -8,11 +8,12 @@ abstract class Task {
   int taskRepetition;
   int achievedTasks;
 
-  Task(
-      {@required this.taskName,
-      @required this.taskType,
-      this.taskRepetition,
-      this.achievedTasks = 0,});
+  Task({
+    @required this.taskName,
+    @required this.taskType,
+    this.taskRepetition,
+    this.achievedTasks = 0,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -166,7 +167,7 @@ class WeeklyTask extends Task {
       weekdays: List.castFrom(map['weekdays']),
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
-      dates: map['dates'],
+      dates: List.castFrom(map['dates']),
     );
   }
 
@@ -208,13 +209,13 @@ class MonthlyTask extends Task {
   int day; /*The day of the month 1..31*/
   List<DateTime> dates = List<DateTime>();
 
-  MonthlyTask(
-      {@required taskName,
-      @required this.day,
-      this.dates,
-      taskRepetition,
-      achievedTasks = 0})
-      : super(
+  MonthlyTask({
+    @required taskName,
+    @required this.day,
+    this.dates,
+    taskRepetition,
+    achievedTasks = 0,
+  }) : super(
           taskName: taskName,
           taskType: TaskType.monthly,
           taskRepetition: taskRepetition,
@@ -226,7 +227,7 @@ class MonthlyTask extends Task {
       "taskName": this.taskName,
       "taskType": this.taskType.toShortString(),
       "day": this.day,
-      "dates":this.dates,
+      "dates": this.dates,
       "taskRepetition": this.taskRepetition,
       "achievedTasks": this.achievedTasks,
     };
@@ -239,7 +240,7 @@ class MonthlyTask extends Task {
     return MonthlyTask(
       taskName: map['taskName'],
       day: map['day'],
-      dates: map['dates'],
+      dates: List.castFrom(map['dates']),
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
     );

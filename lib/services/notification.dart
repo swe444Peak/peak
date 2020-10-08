@@ -49,8 +49,8 @@ class NotificationManager {
          title, body, date, getPlatformChannelSpecfics());
 
  }
- Future<void> showDailyNotification(String title, String body ) async {
-    Duration sinceDeadline = goalDeadline.difference(DateTime.now());
+ Future<void> showDailyNotification(String title, String body ,DateTime deadline) async {
+    Duration sinceDeadline = deadline.difference(DateTime.now());
    int indays = sinceDeadline.inDays;
    var incMins= 30;
    var hour =0;

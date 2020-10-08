@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
-
-import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:peak/viewmodels/goalsList_model.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:stacked/stacked.dart';
 import '../locator.dart';
 import 'addNewGoal.dart';
@@ -119,45 +117,52 @@ class GoalsListPage extends StatelessWidget {
                                           children: [
                                             Row(
                                               children: [
-                                                // Container(
-                                                //   padding: EdgeInsets.fromLTRB(0.0, height*0.008, 0.0, height*0.008),
-                                                //   child: new LinearPercentIndicator(
-                                                //     width: width*0.7,
-                                                //     lineHeight: 14.0,
-                                                //     percent: 0.5,
-                                                //     backgroundColor: Colors.indigo[900],
-                                                //     progressColor: Colors.blue ,
-                                                //     center: Text(
-                                                //       "50.0%",
-                                                //       style: new TextStyle(
-                                                //         color: Colors.white,
-                                                //         fontSize: 12.0),
-                                                //     ),
-                                                //   ),
-                                                // ),
-
                                                 Container(
                                                   padding: EdgeInsets.fromLTRB(
                                                       0.0,
-                                                      height * 0.02,
+                                                      height * 0.008,
                                                       0.0,
-                                                      height * 0.01),
-                                                  width: width * 0.7,
-                                                  height: width * 0.08,
+                                                      height * 0.008),
                                                   child:
-                                                      GradientProgressIndicator(
-                                                    gradient:
-                                                        Gradients.buildGradient(
-                                                            Alignment(
-                                                                -1.0, -1.0),
-                                                            Alignment(1.0, 1.0),
-                                                            [
-                                                          Colors.indigo[900],
-                                                          Colors.blue
-                                                        ]),
-                                                    value: 0.5,
+                                                      new LinearPercentIndicator(
+                                                    width: width * 0.7,
+                                                    lineHeight: 14.0,
+                                                    percent:
+                                                        goal.calcProgress(),
+                                                    backgroundColor:
+                                                        Colors.indigo[900],
+                                                    progressColor: Colors.blue,
+                                                    center: Text(
+                                                      "${goal.calcProgress() * 100}%",
+                                                      style: new TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 12.0),
+                                                    ),
                                                   ),
                                                 ),
+
+                                                // Container(
+                                                //   padding: EdgeInsets.fromLTRB(
+                                                //       0.0,
+                                                //       height * 0.02,
+                                                //       0.0,
+                                                //       height * 0.01),
+                                                //   width: width * 0.7,
+                                                //   height: width * 0.08,
+                                                //   child:
+                                                //       GradientProgressIndicator(
+                                                //     gradient:
+                                                //         Gradients.buildGradient(
+                                                //             Alignment(
+                                                //                 -1.0, -1.0),
+                                                //             Alignment(1.0, 1.0),
+                                                //             [
+                                                //           Colors.indigo[900],
+                                                //           Colors.blue
+                                                //         ]),
+                                                //     value: 0.5,
+                                                //   ),
+                                                // ),
                                               ],
                                             ),
                                             Container(

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/services/databaseServices.dart';
@@ -10,13 +11,20 @@ import '../services/notification.dart';
 import 'goalConfirmation.dart';
 
 class NewTaskPage extends StatefulWidget {
+  NotificationManager notifyManeger ;
+  NewTaskPage({this.notifyManeger});
   @override
-  _NewTaskPageState createState() => _NewTaskPageState();
+  _NewTaskPageState createState() => _NewTaskPageState(notifyManeger);
 }
 
 class _NewTaskPageState extends State<NewTaskPage> {
+NotificationManager notifyManeger ;
+  _NewTaskPageState(this.notifyManeger);
+
+ // MonthlyTask mTask = new MonthlyTask();
   var taskCounter = 0;
-  NotificationManager notifyManeger = new NotificationManager();
+ 
+
   TextEditingController _taskcontroller = TextEditingController();
   String dropdownValue;
   String currentValue;
@@ -105,7 +113,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
         CalendarDatePicker(
             initialDate: _dateTime == null ? DateTime.now() : _dateTime,
             firstDate: DateTime.now(),
-            lastDate: DateTime(2120),
+            lastDate: notifyManeger.goalDeadline,
+            //DateTime(2120),
             onDateChanged: (d) {
               _dateTime = d;
             }),
@@ -279,16 +288,33 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                         ),
                                         color: Color.fromRGBO(23, 23, 85, 1.0),
                                         onPressed: () {
-                                        if(currentValue == 'Once')
-                                        notifyManeger.showNotificationOnce( 'Remember To ',
-                                              _taskcontroller.text,_dateTime);
-                                           else
-                                          notifyManeger.showTaskNotification(
-                                              'Remember To ',
-                                              _taskcontroller.text,
-                                              dropdownValue);
-
-
+                                          //set Notification
+                                          switch (currentValue) {
+                                            case 'Once':
+                                              notifyManeger
+                                                  .showNotificationOnce(
+                                                      'Reminder To',
+                                                      _taskcontroller.text,
+                                                      _dateTime);
+                                              break;
+                                            case 'Daily':
+                                              notifyManeger
+                                                  .showDailyNotification(
+                                                      'Daily Reminder',
+                                                      _taskcontroller.text);
+                                              break;
+                                            case 'Weekly':
+                                              //add dates list
+                                              // notifyManeger.showTaskNotification('Weekly Reminder',_taskcontroller.text,);
+                                              break;
+                                            case 'Monthly':
+                                             //add dates list
+                                               //mTask.calcRepetition(notifyManeger.goalDeadline, _dateTime);
+                                               //notifyManeger.showTaskNotification('Monthly Reminder',_taskcontroller.text,mTask.dates);
+                                              break;
+                                               default:
+                                               print('Somthing went WRONG in set notification');
+                                          }
                                           Navigator.push(
                                               context,
                                               new MaterialPageRoute(

@@ -1,6 +1,4 @@
 import 'dart:collection';
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +16,24 @@ class SettingsPage extends StatelessWidget {
  final DatabaseServices dBS = new DatabaseServices();
   final NotificationManager manger = new NotificationManager();
   final userRef = FirebaseFirestore.instance.collection('goals').get();
+
   List<Task> _taskList = [];
   UnmodifiableListView<Task> get taskList => UnmodifiableListView(_taskList);
+
   List<Goal> _goalList = [];
   UnmodifiableListView<Goal> get goalList => UnmodifiableListView(_goalList);
+   
+   List<OnceTask> _otaskList = [];
+  UnmodifiableListView<Task> get otaskList => UnmodifiableListView(_otaskList);
+  List<DailyTask> _dtaskList = [];
+  UnmodifiableListView<Task> get dtaskList => UnmodifiableListView(_dtaskList);
+  List<WeeklyTask> _wtaskList = [];
+  UnmodifiableListView<Task> get wtaskList => UnmodifiableListView(_wtaskList);
+   List<MonthlyTask> _mtaskList = [];
+  UnmodifiableListView<Task> get mtaskList => UnmodifiableListView(_mtaskList);
+
+
+
   @override
 
   Widget build(BuildContext context) {
@@ -182,15 +194,34 @@ class SettingsPage extends StatelessWidget {
                               if (state == false)
                                 manger.removeReminder();
                               else if (state == true)
-                                for (var task in _taskList) {
+                              for (var task in _otaskList) {
+                                manger.showNotificationOnce("Remember To", task.taskName , task.date);
+                              }
+
+                              for (var task in _dtaskList) {
+                                  manger.showDailyNotification("Daily Reminder", task.taskName);
+                              }
+                              
+                               for (var task in _wtaskList) {
+                                 manger.showTaskNotification("Weekly Reminder", task.taskName,task.dates );
+                              }
+
+                               for (var task in _mtaskList) {
+                                 manger.showTaskNotification("Monthly Reminder", task.taskName,task.dates );
+                              }
+
+                               /* for (var task in _taskList) {
                                   //add task type to DB
                                   if (!task.isDone())
+                                    if (task.taskType.toShortString() =='once')
+                                    manger.showNotificationOnce("Remember To", task.taskName, task.date)
+                                    else{
                                     manger.showTaskNotification(
                                       "Remember To",
                                       task.taskName,
                                       task.taskType.toShortString(),
-                                    );
-                                }
+                                    task.dates);}
+                                }*/
                               for (var goal in _goalList) {
                                 if (!goal.isAchieved)
                                   manger.showDeadlineNotification(

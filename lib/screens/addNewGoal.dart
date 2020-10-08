@@ -210,7 +210,7 @@ class _NewGoalPageState extends State<NewGoalPage> {
                                                 context,
                                                 new MaterialPageRoute(
                                                     builder: (context) =>
-                                                        new NewTaskPage()));
+                                                        new NewTaskPage(notifyManeger: notifyManeger)));
                                           },
                                           textColor: Colors.white,
                                           child: Text('Next',

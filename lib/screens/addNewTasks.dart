@@ -266,6 +266,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                         ),
                                         color: Color.fromRGBO(23, 23, 85, 1.0),
                                         onPressed: () {
+                                          notifyManeger.showNotification("PEAK", 'HOOLLA');
+                                          notifyManeger.showNotification("hi", 'HOOLLA');
                                           Navigator.push(
                                               context,
                                               new MaterialPageRoute(
@@ -288,6 +290,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                         ),
                                         color: Color.fromRGBO(23, 23, 85, 1.0),
                                         onPressed: () {
+                                          
                                           //set Notification
                                           switch (currentValue) {
                                             case 'Once':

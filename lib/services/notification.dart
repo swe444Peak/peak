@@ -2,13 +2,14 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:peak/enums/taskType.dart';
 
 class NotificationManager {
-  var flutterLocalNotificationsPlugin;
+  final flutterLocalNotificationsPlugin= FlutterLocalNotificationsPlugin();
   DateTime goalDeadline = new DateTime(2020);
+  int countNoti= 0;
 
   
  
   NotificationManager() {
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    
     initalizNotifications();
   }
   
@@ -45,7 +46,7 @@ class NotificationManager {
 
 
  Future<void> showNotificationOnce(String title, String body,DateTime date ) async {
-   await flutterLocalNotificationsPlugin.schedule(
+   await flutterLocalNotificationsPlugin.schedule(countNoti++,
          title, body, date, getPlatformChannelSpecfics());
 
  }
@@ -59,14 +60,20 @@ class NotificationManager {
    for(var i=1; i<=indays;i++ ){
     DateTime timeDaily = DateTime.utc(DateTime.now().year,DateTime.now().month,DateTime.now().day+addDay++,hour,min+incMins);
      incMins = incMins+30;
-     await flutterLocalNotificationsPlugin.schedule(
+     await flutterLocalNotificationsPlugin.schedule(countNoti++,
          title, body, timeDaily, getPlatformChannelSpecfics());
  }}
+ void showNotification(  String title, String body) async {
+    
+    DateTime now = DateTime.now().add(Duration(seconds: 6));
+     await flutterLocalNotificationsPlugin.schedule(countNoti++,title, body ,now, getPlatformChannelSpecfics());
+   
+ }
 
   void showTaskNotification(  String title, String body, List<DateTime> dates) async {
     
     for (var item in dates) {
-     await flutterLocalNotificationsPlugin.schedule( title, body ,item , getPlatformChannelSpecfics());
+     await flutterLocalNotificationsPlugin.schedule( countNoti++,title, body ,item , getPlatformChannelSpecfics());
    }
 
     print('Notification Succesfully Scheduled at the Selected time');
@@ -126,7 +133,7 @@ class NotificationManager {
   var year =slectedTime.year;
  
   DateTime time = DateTime.utc(year,month,day);
-  await flutterLocalNotificationsPlugin.schedule( title, body ,time , getPlatformChannelSpecfics());
+  await flutterLocalNotificationsPlugin.schedule( countNoti++,title, body ,time , getPlatformChannelSpecfics());
   }
 
 

@@ -197,11 +197,6 @@ class SettingsPage extends StatelessWidget {
                               for (var task in _otaskList) {
                                 manger.showNotificationOnce("Remember To", task.taskName , task.date);
                               }
-
-                              for (var task in _dtaskList) {
-                                  manger.showDailyNotification("Daily Reminder", task.taskName);
-                              }
-                              
                                for (var task in _wtaskList) {
                                  manger.showTaskNotification("Weekly Reminder", task.taskName,task.dates );
                               }
@@ -223,13 +218,18 @@ class SettingsPage extends StatelessWidget {
                                     task.dates);}
                                 }*/
                               for (var goal in _goalList) {
-                                if (!goal.isAchieved)
+                                if (!goal.isAchieved){
+
                                   manger.showDeadlineNotification(
                                       "Deadline Reminder",
                                       'The deadline for' +
                                           goal.goalName +
                                           'goal is Tomorrow',
                                       goal.deadline);
+                                        for (var task in _dtaskList) {
+                                  manger.showDailyNotification("Daily Reminder", task.taskName,goal.deadline);
+                              }
+                                      }
                               }
                               print("");
                             }),

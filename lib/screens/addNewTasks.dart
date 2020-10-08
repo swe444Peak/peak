@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/services/databaseServices.dart';
@@ -20,7 +21,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
   NotificationManager notifyManeger;
   _NewTaskPageState(this.notifyManeger);
 
-  // MonthlyTask mTask = new MonthlyTask();
+  MonthlyTask mTask = new MonthlyTask(day: null, taskName: null);
+  WeeklyTask wTask = new WeeklyTask(taskName: null, weekdays: []);
   var taskCounter = 0;
 
   TextEditingController _taskcontroller = TextEditingController();
@@ -96,7 +98,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
           CalendarDatePicker(
               initialDate: _dateTime == null ? DateTime.now() : _dateTime,
               firstDate: DateTime.now(),
-              lastDate: now.add(new Duration(days: 30)),
+              lastDate: notifyManeger.goalDeadline,
               onDateChanged: (d) {
                 _dateTime = d;
               })
@@ -299,15 +301,21 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                               notifyManeger
                                                   .showDailyNotification(
                                                       'Daily Reminder',
-                                                      _taskcontroller.text);
+                                                      _taskcontroller.text,
+                                                      notifyManeger
+                                                          .goalDeadline);
                                               break;
                                             case 'Weekly':
-                                              //add dates list
+                                              mTask.calcRepetition(
+                                                  notifyManeger.goalDeadline,
+                                                  _dateTime);
                                               // notifyManeger.showTaskNotification('Weekly Reminder',_taskcontroller.text,);
                                               break;
                                             case 'Monthly':
                                               //add dates list
-                                              //mTask.calcRepetition(notifyManeger.goalDeadline, _dateTime);
+                                              mTask.calcRepetition(
+                                                  notifyManeger.goalDeadline,
+                                                  _dateTime);
                                               //notifyManeger.showTaskNotification('Monthly Reminder',_taskcontroller.text,mTask.dates);
                                               break;
                                             default:

@@ -77,9 +77,12 @@ class DatabaseServices {
               .map((snapshot) => Goal.fromJson(snapshot.data(), snapshot.id))
               .toList();
           _goalController.add(goals);
+        } else {
+          _goalController.add(List<Goal>());
         }
       });
     }
+
     return _goalController.stream;
   }
 }

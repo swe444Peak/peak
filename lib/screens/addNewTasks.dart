@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/services/databaseServices.dart';
@@ -11,19 +10,18 @@ import '../services/notification.dart';
 import 'goalConfirmation.dart';
 
 class NewTaskPage extends StatefulWidget {
-  NotificationManager notifyManeger ;
+  NotificationManager notifyManeger;
   NewTaskPage({this.notifyManeger});
   @override
   _NewTaskPageState createState() => _NewTaskPageState(notifyManeger);
 }
 
 class _NewTaskPageState extends State<NewTaskPage> {
-NotificationManager notifyManeger ;
+  NotificationManager notifyManeger;
   _NewTaskPageState(this.notifyManeger);
 
- // MonthlyTask mTask = new MonthlyTask();
+  // MonthlyTask mTask = new MonthlyTask();
   var taskCounter = 0;
- 
 
   TextEditingController _taskcontroller = TextEditingController();
   String dropdownValue;
@@ -308,12 +306,13 @@ NotificationManager notifyManeger ;
                                               // notifyManeger.showTaskNotification('Weekly Reminder',_taskcontroller.text,);
                                               break;
                                             case 'Monthly':
-                                             //add dates list
-                                               //mTask.calcRepetition(notifyManeger.goalDeadline, _dateTime);
-                                               //notifyManeger.showTaskNotification('Monthly Reminder',_taskcontroller.text,mTask.dates);
+                                              //add dates list
+                                              //mTask.calcRepetition(notifyManeger.goalDeadline, _dateTime);
+                                              //notifyManeger.showTaskNotification('Monthly Reminder',_taskcontroller.text,mTask.dates);
                                               break;
-                                               default:
-                                               print('Somthing went WRONG in set notification');
+                                            default:
+                                              print(
+                                                  'Somthing went WRONG in set notification');
                                           }
                                           Navigator.push(
                                               context,

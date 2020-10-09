@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peak/screens/addGoal.dart';
 import 'package:peak/screens/forgoPassword.dart';
 import 'package:peak/screens/home.dart';
 import 'package:peak/screens/settings.dart';
@@ -21,7 +22,7 @@ class Router {
       case 'goalsList':
         return MaterialPageRoute(builder: (_) => GoalsListPage());
       case 'addNewGoal':
-        return MaterialPageRoute(builder: (_) => NewGoalPage());
+        return MaterialPageRoute(builder: (_) => NewGoal());
       case 'settings':
         return MaterialPageRoute(builder: (_) => SettingsPage());
       case 'profile':

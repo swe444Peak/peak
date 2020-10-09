@@ -3,15 +3,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:peak/enums/taskType.dart';
 
 abstract class Task {
+<<<<<<< HEAD
    String taskName;
+=======
+  String taskName;
+>>>>>>> a8d13a4ec9061bf9a3a39fff89a5b7bf795a5a2f
   final TaskType taskType;
   int taskRepetition;
   int achievedTasks;
-  Task(
-      {@required this.taskName,
-      @required this.taskType,
-      this.taskRepetition,
-      this.achievedTasks = 0});
+
+  Task({
+    @required this.taskName,
+    @required this.taskType,
+    this.taskRepetition,
+    this.achievedTasks = 0,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -129,10 +135,23 @@ class WeeklyTask extends Task {
     saturday:6
     sunday:7
   */
+  List<DateTime> dates = List<DateTime>();
   List<int> weekdays = List<int>(); /*The day of the week monday..sunday*/
   WeeklyTask(
       {@required taskName,
       @required this.weekdays,
+      taskRepetition,
+      achievedTasks = 0})
+      : super(
+            taskName: taskName,
+            taskType: TaskType.weekly,
+            taskRepetition: taskRepetition,
+            achievedTasks: achievedTasks);
+
+  WeeklyTask.withDates(
+      {@required taskName,
+      @required this.weekdays,
+      this.dates,
       taskRepetition,
       achievedTasks = 0})
       : super(
@@ -147,6 +166,7 @@ class WeeklyTask extends Task {
       "taskName": this.taskName,
       "taskType": this.taskType.toShortString(),
       "weekdays": this.weekdays,
+      "dates": this.dates,
       "taskRepetition": this.taskRepetition,
       "achievedTasks": this.achievedTasks,
     };
@@ -157,12 +177,45 @@ class WeeklyTask extends Task {
       return null;
     }
 
-    return WeeklyTask(
+    return WeeklyTask.withDates(
       taskName: map['taskName'],
       weekdays: List.castFrom(map['weekdays']),
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
+      dates: List.castFrom(map['dates']),
     );
+  }
+
+  String weekdaysList() {
+    String days = "";
+    this.weekdays.forEach((element) {
+      switch (element) {
+        case 1:
+          days = days + "monday ";
+          break;
+        case 2:
+          days = days + "tuesday ";
+          break;
+        case 3:
+          days = days + "wednesday ";
+          break;
+        case 4:
+          days = days + "thursday ";
+          break;
+        case 5:
+          days = days + "friday ";
+          break;
+        case 6:
+          days = days + "saturday ";
+          break;
+        case 7:
+          days = days + "sunday ";
+          break;
+      }
+    });
+    days = days.trimRight();
+    days.replaceAll(" ", ", ");
+    return days;
   }
 
   @override
@@ -170,7 +223,10 @@ class WeeklyTask extends Task {
     int repetition = 0;
     if (this.isAtSameDate(dueDate, creation)) {
       weekdays.forEach((element) {
-        if (creation.weekday == element) repetition++;
+        if (creation.weekday == element) {
+          repetition++;
+          dates.add(creation);
+        }
       }); //end forEach
       taskRepetition = repetition;
       return repetition;
@@ -180,7 +236,10 @@ class WeeklyTask extends Task {
 
     for (int i = 0; i < duration; i++) {
       weekdays.forEach((element) {
-        if (creation.weekday == element) repetition++;
+        if (creation.weekday == element) {
+          repetition++;
+          dates.add(creation);
+        }
       }); //end forEach
       if (this.isAtSameDate(dueDate, creation)) {
         taskRepetition = repetition;
@@ -195,13 +254,27 @@ class WeeklyTask extends Task {
 
 class MonthlyTask extends Task {
   int day; /*The day of the month 1..31*/
+  List<DateTime> dates = List<DateTime>();
 
-  MonthlyTask(
-      {@required taskName,
-      @required this.day,
-      taskRepetition,
-      achievedTasks = 0})
-      : super(
+  MonthlyTask({
+    @required taskName,
+    @required this.day,
+    taskRepetition,
+    achievedTasks = 0,
+  }) : super(
+          taskName: taskName,
+          taskType: TaskType.monthly,
+          taskRepetition: taskRepetition,
+          achievedTasks: achievedTasks,
+        );
+
+  MonthlyTask.withDates({
+    @required taskName,
+    @required this.day,
+    this.dates,
+    taskRepetition,
+    achievedTasks = 0,
+  }) : super(
           taskName: taskName,
           taskType: TaskType.monthly,
           taskRepetition: taskRepetition,
@@ -213,6 +286,7 @@ class MonthlyTask extends Task {
       "taskName": this.taskName,
       "taskType": this.taskType.toShortString(),
       "day": this.day,
+      "dates": this.dates,
       "taskRepetition": this.taskRepetition,
       "achievedTasks": this.achievedTasks,
     };
@@ -222,9 +296,10 @@ class MonthlyTask extends Task {
     if (map == null) {
       return null;
     }
-    return MonthlyTask(
+    return MonthlyTask.withDates(
       taskName: map['taskName'],
       day: map['day'],
+      dates: List.castFrom(map['dates']),
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
     );
@@ -237,6 +312,7 @@ class MonthlyTask extends Task {
       //if creation == dueDate
       if (creation.day == day) {
         repetition++;
+        dates.add(creation);
         taskRepetition = repetition;
         return repetition;
       }
@@ -246,8 +322,10 @@ class MonthlyTask extends Task {
     for (int i = 0; i < duration; i++) {
       //if creation != dueDate
 
-      if (creation.day == day) repetition++;
-
+      if (creation.day == day) {
+        dates.add(creation);
+        repetition++;
+      }
       if (this.isAtSameDate(dueDate, creation)) {
         taskRepetition = repetition;
         return repetition;

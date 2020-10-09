@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/screens/addNewTasks.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
@@ -206,11 +205,12 @@ class _NewGoalPageState extends State<NewGoalPage> {
                                                             .text +
                                                         'goal is Tomorrow',
                                                     _dateTime);
+                                                  
                                             Navigator.push(
                                                 context,
                                                 new MaterialPageRoute(
                                                     builder: (context) =>
-                                                        new NewTaskPage()));
+                                                        new NewTaskPage(notifyManeger: notifyManeger)));
                                           },
                                           textColor: Colors.white,
                                           child: Text('Next',

@@ -1,31 +1,38 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
-import 'package:peak/screens/addNewGoal.dart';
-import 'package:peak/screens/profile.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:provider/provider.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import '../services/notification.dart';
+import 'goalConfirmation.dart';
 
 class NewTaskPage extends StatefulWidget {
+  NotificationManager notifyManeger;
+  NewTaskPage({this.notifyManeger});
   @override
-  _NewTaskPageState createState() => _NewTaskPageState();
+  _NewTaskPageState createState() => _NewTaskPageState(notifyManeger);
 }
 
 class _NewTaskPageState extends State<NewTaskPage> {
+  NotificationManager notifyManeger;
+  _NewTaskPageState(this.notifyManeger);
+
+  MonthlyTask mTask = new MonthlyTask(day: null, taskName: null);
+  WeeklyTask wTask = new WeeklyTask(taskName: null, weekdays: []);
   var taskCounter = 0;
-  NotificationManager notifyManeger = new NotificationManager();
+
   TextEditingController _taskcontroller = TextEditingController();
-  int _count = 1;
   String dropdownValue;
   String currentValue;
   int lastTapped;
-  final values = List.filled(7, false);
+  final values = [true, false, false, false, false, false, false];
   DateTime _dateTime;
   DateTime now = DateTime.now();
+  /*
   printIntAsDay(int day) {
     print(
         'Received integer: $day. Corresponds to day: ${intDayToEnglish(day)}');
@@ -41,18 +48,45 @@ class _NewTaskPageState extends State<NewTaskPage> {
     if (day % 7 == DateTime.sunday % 7) return 'Sunday';
     throw '🐞 This should never have happened: $day';
   }
+*/
+  bool onlyOneDay(List<bool> values) {
+    int counter = 0;
+    for (int i = 0; i < values.length; i++) {
+      if (values[i] == true) counter++;
+    }
+    if (counter == 1) {
+      return true;
+    }
+    return false;
+  }
 
   Widget repeatDate() {
-    if (currentValue == "Weekly") {
-      return WeekdaySelector(
-        selectedFillColor: Colors.indigo,
-        onChanged: (v) {
-          printIntAsDay(v);
-          setState(() {
-            values[v % 7] = !values[v % 7];
-          });
-        },
-        values: values,
+    if (currentValue == "Daily") {
+      return Text("*This task will repeat daily",
+          style: TextStyle(
+              fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
+          textAlign: TextAlign.center);
+    } else if (currentValue == "Weekly") {
+      return Column(
+        children: [
+          Text("*This task will repeat weekly on the days you pick",
+              style: TextStyle(
+                  fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
+              textAlign: TextAlign.center),
+          WeekdaySelector(
+            selectedFillColor: Colors.lightBlue[600],
+            onChanged: (v) {
+              //printIntAsDay(v);
+              setState(() {
+                if (onlyOneDay(values) && values[v % 7] == true) {
+                } else {
+                  values[v % 7] = !values[v % 7];
+                }
+              });
+            },
+            values: values,
+          )
+        ],
       );
     } else if (currentValue == "Monthly") {
       return Column(
@@ -64,20 +98,27 @@ class _NewTaskPageState extends State<NewTaskPage> {
           CalendarDatePicker(
               initialDate: _dateTime == null ? DateTime.now() : _dateTime,
               firstDate: DateTime.now(),
-              lastDate: now.add(new Duration(days: 30)),
+              lastDate: notifyManeger.goalDeadline,
               onDateChanged: (d) {
                 _dateTime = d;
               })
         ],
       );
     } else if (currentValue == "Once") {
-      return CalendarDatePicker(
-          initialDate: _dateTime == null ? DateTime.now() : _dateTime,
-          firstDate: DateTime.now(),
-          lastDate: DateTime(2120),
-          onDateChanged: (d) {
-            _dateTime = d;
-          });
+      return Column(children: [
+        Text("*Pick the starting day for your monthly task",
+            style: TextStyle(
+                fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
+            textAlign: TextAlign.center),
+        CalendarDatePicker(
+            initialDate: _dateTime == null ? DateTime.now() : _dateTime,
+            firstDate: DateTime.now(),
+            lastDate: notifyManeger.goalDeadline,
+            //DateTime(2120),
+            onDateChanged: (d) {
+              _dateTime = d;
+            }),
+      ]);
     }
     return SizedBox(
       height: 0,
@@ -225,11 +266,13 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                         ),
                                         color: Color.fromRGBO(23, 23, 85, 1.0),
                                         onPressed: () {
+                                          notifyManeger.showNotification("PEAK", 'HOOLLA');
+                                          notifyManeger.showNotification("hi", 'HOOLLA');
                                           Navigator.push(
                                               context,
                                               new MaterialPageRoute(
                                                   builder: (context) =>
-                                                      new ProfilePage()));
+                                                      new GoalConfirmationPage()));
                                         },
                                         textColor: Colors.white,
                                         child: Text('Done',
@@ -247,10 +290,41 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                         ),
                                         color: Color.fromRGBO(23, 23, 85, 1.0),
                                         onPressed: () {
-                                          notifyManeger.showTaskNotification(
-                                              'Remember To ',
-                                              _taskcontroller.text,
-                                              dropdownValue);
+                                          
+                                          //set Notification
+                                          switch (currentValue) {
+                                            case 'Once':
+                                              notifyManeger
+                                                  .showNotificationOnce(
+                                                      'Reminder To',
+                                                      _taskcontroller.text,
+                                                      _dateTime);
+                                              break;
+                                            case 'Daily':
+                                              notifyManeger
+                                                  .showDailyNotification(
+                                                      'Daily Reminder',
+                                                      _taskcontroller.text,
+                                                      notifyManeger
+                                                          .goalDeadline);
+                                              break;
+                                            case 'Weekly':
+                                              mTask.calcRepetition(
+                                                  notifyManeger.goalDeadline,
+                                                  _dateTime);
+                                              // notifyManeger.showTaskNotification('Weekly Reminder',_taskcontroller.text,);
+                                              break;
+                                            case 'Monthly':
+                                              //add dates list
+                                              mTask.calcRepetition(
+                                                  notifyManeger.goalDeadline,
+                                                  _dateTime);
+                                              //notifyManeger.showTaskNotification('Monthly Reminder',_taskcontroller.text,mTask.dates);
+                                              break;
+                                            default:
+                                              print(
+                                                  'Somthing went WRONG in set notification');
+                                          }
                                           Navigator.push(
                                               context,
                                               new MaterialPageRoute(

@@ -182,6 +182,38 @@ class WeeklyTask extends Task {
     );
   }
 
+  String weekdaysList() {
+    String days = "";
+    this.weekdays.forEach((element) {
+      switch (element) {
+        case 1:
+          days = days + "monday ";
+          break;
+        case 2:
+          days = days + "tuesday ";
+          break;
+        case 3:
+          days = days + "wednesday ";
+          break;
+        case 4:
+          days = days + "thursday ";
+          break;
+        case 5:
+          days = days + "friday ";
+          break;
+        case 6:
+          days = days + "saturday ";
+          break;
+        case 7:
+          days = days + "sunday ";
+          break;
+      }
+    });
+    days = days.trimRight();
+    days.replaceAll(" ", ", ");
+    return days;
+  }
+
   @override
   int calcRepetition(DateTime dueDate, DateTime creation) {
     int repetition = 0;

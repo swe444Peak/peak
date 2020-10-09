@@ -43,10 +43,7 @@ class ProfilePage extends StatelessWidget {
             bottomNavigationBar: CustomNavigationBar(2),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (context) => new NewGoalPage()));
+                Navigator.pushNamed(context, 'addNewGoal');
               },
               child: Icon(Icons.add),
               backgroundColor: Colors.teal[400],

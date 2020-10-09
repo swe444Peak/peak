@@ -7,6 +7,5 @@ class PeakUser {
   final String name;
   bool notificationStatus;
 
-  PeakUser({@required this.uid, this.name, this.notificationStatus = true});
+  PeakUser({@required this.uid, this.name, this.notificationStatus});
 }
- 

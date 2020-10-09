@@ -9,8 +9,8 @@ class AddTask extends StatefulWidget {
   var height;
   Function showError;
   List<Task> tasks;
-  NotificationManager notifyManeger;
-  AddTask(this.tasks, this.width, this.height, this.showError,this.notifyManeger);
+  DateTime deadline;
+  AddTask(this.tasks, this.width, this.height, this.showError, this.deadline);
   @override
   State<StatefulWidget> createState() => new AddTaskState();
 }
@@ -18,7 +18,7 @@ class AddTask extends StatefulWidget {
 class AddTaskState extends State<AddTask> {
   String repetitionError;
   final values = [true, false, false, false, false, false, false];
-  
+
   DateTime _dateTime;
   DateTime now = DateTime.now();
   String dropdownValue;
@@ -426,7 +426,7 @@ class AddTaskState extends State<AddTask> {
           CalendarDatePicker(
               initialDate: _dateTime == null ? DateTime.now() : _dateTime,
               firstDate: DateTime.now(),
-              lastDate: widget.notifyManeger.goalDeadline,
+              lastDate: widget.deadline.subtract(Duration(days: 1)),
               onDateChanged: (d) {
                 _dateTime = d;
               })
@@ -436,7 +436,7 @@ class AddTaskState extends State<AddTask> {
       return CalendarDatePicker(
           initialDate: _dateTime == null ? DateTime.now() : _dateTime,
           firstDate: DateTime.now(),
-          lastDate: widget.notifyManeger.goalDeadline,
+          lastDate: widget.deadline.subtract(Duration(days: 1)),
           onDateChanged: (d) {
             _dateTime = d;
           });

@@ -142,7 +142,8 @@ class _NewGoalState extends State<NewGoal> {
                                     ),
                                   ),
                                 ),
-                                AddTask(tasks, width, height, setError,notifyManeger),
+                                AddTask(
+                                    tasks, width, height, setError, _dateTime),
                                 RaisedButton(
                                   splashColor: Colors.teal,
                                   shape: RoundedRectangleBorder(
@@ -158,7 +159,8 @@ class _NewGoalState extends State<NewGoal> {
                                             _dateTime,
                                             tasks);
                                         for (var item in tasks) {
-                                           switch (item.taskType.toShortString()) {
+                                          switch (
+                                              item.taskType.toShortString()) {
                                             case 'once':
                                               notifyManeger
                                                   .showNotificationOnce(
@@ -175,14 +177,23 @@ class _NewGoalState extends State<NewGoal> {
                                                           .goalDeadline);
                                               break;
                                             case 'weekly':
-                                             
-                                            WeeklyTask wTask = item as WeeklyTask;
-                                            notifyManeger.showTaskNotification('Weekly Reminder',item.taskName,wTask.dates);
+                                              WeeklyTask wTask =
+                                                  item as WeeklyTask;
+                                              notifyManeger
+                                                  .showTaskNotification(
+                                                      'Weekly Reminder',
+                                                      item.taskName,
+                                                      wTask.dates);
                                               break;
                                             case 'monthly':
                                               //add dates list
-                                              MonthlyTask mTask = item as MonthlyTask;
-                                              notifyManeger.showTaskNotification('Monthly Reminder',item.taskName,mTask.dates);
+                                              MonthlyTask mTask =
+                                                  item as MonthlyTask;
+                                              notifyManeger
+                                                  .showTaskNotification(
+                                                      'Monthly Reminder',
+                                                      item.taskName,
+                                                      mTask.dates);
                                               break;
                                             default:
                                               print(

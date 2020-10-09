@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peak/enums/taskType.dart';
+import 'package:peak/services/notification.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:peak/models/task.dart';
 
@@ -8,7 +9,8 @@ class AddTask extends StatefulWidget {
   var height;
   Function showError;
   List<Task> tasks;
-  AddTask(this.tasks, this.width, this.height, this.showError);
+  NotificationManager notifyManeger;
+  AddTask(this.tasks, this.width, this.height, this.showError,this.notifyManeger);
   @override
   State<StatefulWidget> createState() => new AddTaskState();
 }
@@ -16,7 +18,7 @@ class AddTask extends StatefulWidget {
 class AddTaskState extends State<AddTask> {
   String repetitionError;
   final values = [true, false, false, false, false, false, false];
-
+  
   DateTime _dateTime;
   DateTime now = DateTime.now();
   String dropdownValue;
@@ -424,7 +426,7 @@ class AddTaskState extends State<AddTask> {
           CalendarDatePicker(
               initialDate: _dateTime == null ? DateTime.now() : _dateTime,
               firstDate: DateTime.now(),
-              lastDate: now.add(new Duration(days: 30)),
+              lastDate: widget.notifyManeger.goalDeadline,
               onDateChanged: (d) {
                 _dateTime = d;
               })
@@ -434,7 +436,7 @@ class AddTaskState extends State<AddTask> {
       return CalendarDatePicker(
           initialDate: _dateTime == null ? DateTime.now() : _dateTime,
           firstDate: DateTime.now(),
-          lastDate: DateTime(2120),
+          lastDate: widget.notifyManeger.goalDeadline,
           onDateChanged: (d) {
             _dateTime = d;
           });

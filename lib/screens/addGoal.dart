@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
+import 'package:peak/enums/taskType.dart';
 
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
@@ -156,6 +157,38 @@ class _NewGoalState extends State<NewGoal> {
                                             user?.uid,
                                             _dateTime,
                                             tasks);
+                                        for (var item in tasks) {
+                                           switch (item.taskType.toShortString()) {
+                                            case 'once':
+                                              notifyManeger
+                                                  .showNotificationOnce(
+                                                      'Reminder To',
+                                                      item.taskName,
+                                                      _dateTime);
+                                              break;
+                                            case 'daily':
+                                              notifyManeger
+                                                  .showDailyNotification(
+                                                      'Daily Reminder',
+                                                      item.taskName,
+                                                      notifyManeger
+                                                          .goalDeadline);
+                                              break;
+                                            case 'weekly':
+                                             
+                                            WeeklyTask wTask = item as WeeklyTask;
+                                            notifyManeger.showTaskNotification('Weekly Reminder',item.taskName,wTask.dates);
+                                              break;
+                                            case 'monthly':
+                                              //add dates list
+                                              MonthlyTask mTask = item as MonthlyTask;
+                                              notifyManeger.showTaskNotification('Monthly Reminder',item.taskName,mTask.dates);
+                                              break;
+                                            default:
+                                              print(
+                                                  'Somthing went WRONG in set notification');
+                                          }
+                                        }
                                         Navigator.pushNamed(
                                             context, 'goalsList');
                                         notifyManeger.showDeadlineNotification(

@@ -6,7 +6,7 @@ import 'package:peak/services/firebaseAuthService.dart';
 
 import '../locator.dart';
 
-class SignUpMaodel extends ChangeNotifier {
+class SignUpModel extends ChangeNotifier {
   final FirbaseAuthService _firbaseAuthService = locator<FirbaseAuthService>();
 
   ValidationItem _name = ValidationItem(null, null);

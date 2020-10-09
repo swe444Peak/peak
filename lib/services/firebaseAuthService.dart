@@ -18,7 +18,7 @@ class FirbaseAuthService {
         currentUser = PeakUser(uid: result.user.uid, name: username);
         await DatabaseServices(uid: result.user.uid)
             .updateUserData(username: username);
-
+             
         return true;
       }
 

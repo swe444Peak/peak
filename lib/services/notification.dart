@@ -53,7 +53,7 @@ class NotificationManager {
  Future<void> showDailyNotification(String title, String body ,DateTime deadline) async {
     Duration sinceDeadline = deadline.difference(DateTime.now());
    int indays = sinceDeadline.inDays;
-   var incMins= 30;
+   var incMins= 0;
    var hour =0;
    var min =0;
    var addDay=1;
@@ -71,13 +71,30 @@ class NotificationManager {
  }
 
   void showTaskNotification(  String title, String body, List<DateTime> dates) async {
-    
+    var incHour = 0;
     for (var item in dates) {
+     item.add(Duration(minutes:incHour));
      await flutterLocalNotificationsPlugin.schedule( countNoti++,title, body ,item , getPlatformChannelSpecfics());
+     incHour=incHour+60;
    }
 
     print('Notification Succesfully Scheduled at the Selected time');
   }
+
+  void showDeadlineNotification( String title , String body, DateTime slectedTime ) async {
+  goalDeadline = slectedTime;
+  var day= slectedTime.day-1;
+  var month = slectedTime.month;
+  var year =slectedTime.year;
+ 
+  DateTime time = DateTime.utc(year,month,day);
+  await flutterLocalNotificationsPlugin.schedule( countNoti++,title, body ,time , getPlatformChannelSpecfics());
+  }
+
+  Future<void> removeReminder() async {
+  await  flutterLocalNotificationsPlugin.cancelAll();
+  }
+
    /*Duration sinceDeadline = goalDeadline.difference(DateTime.now());
    int indays = sinceDeadline.inDays;
    var incMins= 30;
@@ -126,23 +143,12 @@ class NotificationManager {
 
 
 
-  void showDeadlineNotification( String title , String body, DateTime slectedTime ) async {
-  goalDeadline = slectedTime;
-  var day= slectedTime.day-1;
-  var month = slectedTime.month;
-  var year =slectedTime.year;
- 
-  DateTime time = DateTime.utc(year,month,day);
-  await flutterLocalNotificationsPlugin.schedule( countNoti++,title, body ,time , getPlatformChannelSpecfics());
-  }
+  
 
 
 
  
-  //turn off notification by id
-  Future<void> removeReminder() async {
-  await  flutterLocalNotificationsPlugin.cancelAll();
-  }
+ 
 
   
 

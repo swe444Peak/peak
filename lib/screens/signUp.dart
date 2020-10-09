@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:peak/enums/viewState.dart';
 import 'package:peak/screens/shared/commonStyle.dart';
 import 'package:peak/screens/shared/customButton.dart';
-import 'package:peak/viewmodels/login_model.dart';
 import 'package:peak/viewmodels/signup_model.dart';
 import 'package:provider/provider.dart';
 import '../locator.dart';
@@ -18,7 +16,6 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final _formkey = GlobalKey<FormState>();
   String _error;
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   TextEditingController _emailcontroller = TextEditingController();
@@ -29,77 +26,16 @@ class _SignupPageState extends State<SignupPage> {
   @override
   void dispose() {
     _emailcontroller.dispose();
-
     _passwordcontroller.dispose();
-
     super.dispose();
-  }
-
-  void showAlertDialog(BuildContext context, String error) {
-    // set up the button
-    Widget okButton = FlatButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Error"),
-      content: Text(error),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final usernameField = buildTextFiled(_usernamecontroller, false, "name",
-        RequiredValidator(errorText: 'please enter your name'));
-
-    final emailField = buildTextFiled(
-        _emailcontroller,
-        false,
-        "email",
-        MultiValidator([
-          RequiredValidator(errorText: 'email is required'),
-          EmailValidator(errorText: 'enter a valid email address')
-        ]));
-
-    final passwordField = buildTextFiled(
-      _passwordcontroller,
-      true,
-      "password",
-      MultiValidator([
-        RequiredValidator(errorText: 'password is required'),
-        MinLengthValidator(6,
-            errorText: 'password must be at least 6 characters long'),
-      ]),
-    );
-
-    final passwordcheckField = buildTextFiled(
-        _passwordcheckcontroller, true, "confirm password", (value) {
-      return value.isEmpty
-          ? "confirm password is required"
-          : (value != _passwordcontroller.text
-              ? "passwords don\'t match"
-              : null);
-    });
-
     Size size = MediaQuery.of(context).size;
-    return ChangeNotifierProvider<SignUpMaodel>(
-      create: (context) => locator<SignUpMaodel>(),
-      child: Consumer<SignUpMaodel>(
+    return ChangeNotifierProvider<SignUpModel>(
+      create: (context) => locator<SignUpModel>(),
+      child: Consumer<SignUpModel>(
         builder: (context, model, child) => SafeArea(
           child: Scaffold(
             backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
@@ -109,50 +45,78 @@ class _SignupPageState extends State<SignupPage> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Form(
-                      key: _formkey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          showAlert(),
-                          SizedBox(height: size.height * 0.02),
-                          Image.asset(
-                            "assets/logo.png",
-                            height: size.height * 0.28,
-                          ),
-                          SizedBox(height: size.height * 0.06),
-                          usernameField,
-                          SizedBox(height: size.height * 0.01),
-                          emailField,
-                          SizedBox(height: size.height * 0.01),
-                          passwordField,
-                          SizedBox(height: size.height * 0.01),
-                          passwordcheckField,
-                          SizedBox(height: size.height * 0.03),
-                          CustomButton(() async {
-                            if (_formkey.currentState.validate()) {
-                              var success = await model.signUp(
-                                  _usernamecontroller.text,
-                                  _emailcontroller.text,
-                                  _passwordcontroller.text);
-                              if (success is bool && success) {
-                                Navigator.pushNamed(context,
-                                    'profile'); /*EDITED FOR SPRINT #1*/
-                              } else {
-                                _error = success;
-                              }
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        showAlert(),
+                        SizedBox(height: size.height * 0.02),
+                        Image.asset(
+                          "assets/logo.png",
+                          height: size.height * 0.28,
+                        ),
+                        SizedBox(height: size.height * 0.06),
+                        buildTextFiled(_usernamecontroller, false, "name",
+                            model.name.error, model.setName),
+                        SizedBox(height: size.height * 0.01),
+                        buildTextFiled(_emailcontroller, false, "email",
+                            model.email.error, model.setEmail),
+                        SizedBox(height: size.height * 0.01),
+                        buildTextFiled(_passwordcontroller, true, "password",
+                            model.password.error, model.setPassword),
+                        SizedBox(height: size.height * 0.01),
+                        buildTextFiled(
+                            _passwordcheckcontroller,
+                            true,
+                            "confirm password",
+                            model.confirmPassword.error,
+                            model.setConfirmPassword),
+                        SizedBox(height: size.height * 0.03),
+                        CustomButton(() async {
+                          if (model.isValid) {
+                            var success = await model.signUp(
+                                _usernamecontroller.text,
+                                _emailcontroller.text,
+                                _passwordcontroller.text);
+                            if (success is bool && success) {
+                              Navigator.pushNamed(
+                                  context, 'profile'); /*EDITED FOR SPRINT #1*/
+                            } else {
+                              _error = success;
                             }
-                          }, "Sign Up"),
-                          Text(
-                            'Already have an account?',
-                            style: TextStyle(
-                                    fontSize: size.height / 35,
-                                    fontWeight: FontWeight.bold)
-                                .apply(color: Colors.white),
-                          ),
-                          _buildGestureDetector(),
-                        ],
-                      ),
+                          } else {
+                            if (model.name.error == null &&
+                                model.name.value == null) {
+                              model.setName("");
+                            }
+                            if (model.email.error == null &&
+                                model.email.value == null) {
+                              model.setEmail("");
+                            }
+                            if (model.password.error == null &&
+                                model.password.value == null) {
+                              model.setPassword("");
+                            }
+                            if (model.confirmPassword.error == null &&
+                                model.confirmPassword.value == null) {
+                              model.setConfirmPassword("");
+                            }
+                          }
+                        }, "Sign Up"),
+                        SizedBox(height: size.height * 0.02),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Already have an account?',
+                              style: TextStyle(
+                                      fontSize: size.height / 35,
+                                      fontWeight: FontWeight.bold)
+                                  .apply(color: Colors.white),
+                            ),
+                            _buildGestureDetector(),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -166,14 +130,12 @@ class _SignupPageState extends State<SignupPage> {
 
   Widget _buildGestureDetector() {
     return GestureDetector(
-        child: Center(
-          child: Text("Sign in",
-              style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline)
-                  .apply(color: Colors.teal)),
-        ),
+        child: Text("Sign in",
+            style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline)
+                .apply(color: Colors.teal)),
         onTap: () {
           Navigator.pop(context);
         });

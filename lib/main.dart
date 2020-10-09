@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/router.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 
 import 'locator.dart';
 
@@ -15,10 +17,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(),
-      initialRoute: 'login',
-      onGenerateRoute: Router.generateRoute,
+    return MultiProvider(
+      providers: [
+        StreamProvider<User>.value(
+          value: FirebaseAuth.instance.authStateChanges(),
+        ),
+      ],
+      child: MaterialApp(
+        theme: ThemeData(),
+        initialRoute: 'login',
+        onGenerateRoute: Router.generateRoute,
+      ),
     );
   }
 }

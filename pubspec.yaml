@@ -21,9 +21,15 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  lite_rolling_switch: ^0.1.1
+  flutter_local_notifications: ^1.4.4+4
   bubble_bottom_bar: ^1.2.0
+  gradient_widgets: ^0.5.1
+  percent_indicator: "^2.1.7+2"
+  weekday_selector: ^0.4.0
   flutter:
     sdk: flutter
+  flutter_rounded_date_picker: 1.0.5
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -34,8 +40,10 @@ dependencies:
   cloud_firestore: ^0.14.0+2
   provider: ^4.3.2+2
   get_it: ^4.0.4
-  form_field_validator: ^1.0.1
   modal_progress_hud: ^0.1.3
+  email_validator: ^1.0.5
+  stacked_services: ^0.5.4+4
+  stacked: ^1.7.6
 
 dev_dependencies:
   flutter_test:

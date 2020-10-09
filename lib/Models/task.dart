@@ -3,11 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:peak/enums/taskType.dart';
 
 abstract class Task {
-<<<<<<< HEAD
-   String taskName;
-=======
   String taskName;
->>>>>>> a8d13a4ec9061bf9a3a39fff89a5b7bf795a5a2f
   final TaskType taskType;
   int taskRepetition;
   int achievedTasks;

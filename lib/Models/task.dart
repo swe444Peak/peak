@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:peak/enums/taskType.dart';
 
 abstract class Task {
-  final String taskName;
+  String taskName;
   final TaskType taskType;
   int taskRepetition;
   int achievedTasks;
@@ -136,6 +136,17 @@ class WeeklyTask extends Task {
   WeeklyTask(
       {@required taskName,
       @required this.weekdays,
+      taskRepetition,
+      achievedTasks = 0})
+      : super(
+            taskName: taskName,
+            taskType: TaskType.weekly,
+            taskRepetition: taskRepetition,
+            achievedTasks: achievedTasks);
+
+  WeeklyTask.withDates(
+      {@required taskName,
+      @required this.weekdays,
       this.dates,
       taskRepetition,
       achievedTasks = 0})
@@ -162,7 +173,7 @@ class WeeklyTask extends Task {
       return null;
     }
 
-    return WeeklyTask(
+    return WeeklyTask.withDates(
       taskName: map['taskName'],
       weekdays: List.castFrom(map['weekdays']),
       taskRepetition: map["taskRepetition"],
@@ -212,6 +223,18 @@ class MonthlyTask extends Task {
   MonthlyTask({
     @required taskName,
     @required this.day,
+    taskRepetition,
+    achievedTasks = 0,
+  }) : super(
+          taskName: taskName,
+          taskType: TaskType.monthly,
+          taskRepetition: taskRepetition,
+          achievedTasks: achievedTasks,
+        );
+
+  MonthlyTask.withDates({
+    @required taskName,
+    @required this.day,
     this.dates,
     taskRepetition,
     achievedTasks = 0,
@@ -237,7 +260,7 @@ class MonthlyTask extends Task {
     if (map == null) {
       return null;
     }
-    return MonthlyTask(
+    return MonthlyTask.withDates(
       taskName: map['taskName'],
       day: map['day'],
       dates: List.castFrom(map['dates']),

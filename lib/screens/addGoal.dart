@@ -142,7 +142,7 @@ class _NewGoalState extends State<NewGoal> {
                                     ),
                                   ),
                                 ),
-                                AddTask(tasks, width, height, setError),
+                                AddTask(tasks, width, height, setError,notifyManeger),
                                 RaisedButton(
                                   splashColor: Colors.teal,
                                   shape: RoundedRectangleBorder(

@@ -25,12 +25,14 @@ class _NewGoalState extends State<NewGoal> {
   TextEditingController _dueDatecontroller = TextEditingController();
   DateTime _dateTime;
   List<Task> tasks = [];
+  bool isEnabled = true;
   setError(value) => setState(() => _error = value);
+  setEnabled(value) => setState(() => isEnabled = value);
+  final GlobalKey<AddTaskState> addTaskState = GlobalKey<AddTaskState>();
 
   @override
   void dispose() {
     _goalnamecontroller.dispose();
-
     super.dispose();
   }
 
@@ -142,8 +144,8 @@ class _NewGoalState extends State<NewGoal> {
                                     ),
                                   ),
                                 ),
-                                AddTask(
-                                    tasks, width, height, setError, _dateTime),
+                                AddTask(addTaskState, tasks, width, height,
+                                    setError, _dateTime),
                                 RaisedButton(
                                   splashColor: Colors.teal,
                                   shape: RoundedRectangleBorder(
@@ -151,7 +153,8 @@ class _NewGoalState extends State<NewGoal> {
                                   ),
                                   color: Colors.white,
                                   onPressed: () {
-                                    if (model.isValid) {
+                                    bool valid = isValid();
+                                    if (valid && model.isValid) {
                                       if (tasks.length > 0) {
                                         model.createGoal(
                                             _goalnamecontroller.text,
@@ -223,6 +226,12 @@ class _NewGoalState extends State<NewGoal> {
                                           model.dueDate.value == null) {
                                         model.setDueDate("");
                                       }
+                                      if (!valid) {
+                                        setState(() {
+                                          _error =
+                                              "Oops, it looks like you have invalid tasks! try to edit or delete them";
+                                        });
+                                      }
                                     }
                                   },
                                   textColor: Colors.black,
@@ -243,6 +252,28 @@ class _NewGoalState extends State<NewGoal> {
     );
   }
 
+  bool isValid() {
+    bool isValid = true;
+    tasks.forEach((element) {
+      var currentTask;
+      var currentTaskType = element.taskType;
+      if (currentTaskType == TaskType.monthly) {
+        currentTask = element as MonthlyTask;
+      } else if (currentTaskType == TaskType.once) {
+        currentTask = element as OnceTask;
+      } else if (currentTaskType == TaskType.weekly) {
+        currentTask = element as WeeklyTask;
+      } else if (currentTaskType == TaskType.daily) {
+        currentTask = element as DailyTask;
+      }
+      if (currentTask.calcRepetition(_dateTime, DateTime.now()) == 0) {
+        isValid = false;
+        return;
+      }
+    });
+    return isValid;
+  }
+
   Future _datePicker(BuildContext context) async {
     DateTime _picker = await showDatePicker(
         context: context,
@@ -251,8 +282,12 @@ class _NewGoalState extends State<NewGoal> {
         lastDate: DateTime(2120));
     if (_picker != null) {
       setState(() {
+        print(_picker);
         _dateTime = _picker;
         _dueDatecontroller.text = _dateTime.toString().split(' ').first;
+        addTaskState.currentState.deadline = _dateTime;
+        addTaskState.currentState.isDatePicked = true;
+        addTaskState.currentState.buildTasks(null);
       });
     }
   }

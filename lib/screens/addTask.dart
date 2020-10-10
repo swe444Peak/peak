@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peak/enums/taskType.dart';
-import 'package:peak/services/notification.dart';
+
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:peak/models/task.dart';
 
@@ -8,17 +8,20 @@ class AddTask extends StatefulWidget {
   var width;
   var height;
   Function showError;
+
   List<Task> tasks;
   DateTime deadline;
-  AddTask(this.tasks, this.width, this.height, this.showError, this.deadline);
+  AddTask(Key key, this.tasks, this.width, this.height, this.showError,
+      this.deadline)
+      : super(key: key);
   @override
   State<StatefulWidget> createState() => new AddTaskState();
 }
 
 class AddTaskState extends State<AddTask> {
   String repetitionError;
-  final values = [true, false, false, false, false, false, false];
-
+  var values = [true, false, false, false, false, false, false];
+  DateTime deadline;
   DateTime _dateTime;
   DateTime now = DateTime.now();
   String dropdownValue;
@@ -28,6 +31,9 @@ class AddTaskState extends State<AddTask> {
   List<Widget> tasksList = [];
   TextEditingController _taskcontroller = TextEditingController();
   TextEditingController _updateController = new TextEditingController();
+  bool isDatePicked = false;
+  var repItems;
+  int editIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +44,16 @@ class AddTaskState extends State<AddTask> {
   @override
   void initState() {
     super.initState();
-    _buildTasks(null);
+    buildTasks(null);
   }
 
-  List<Widget> _buildTasks(int editIndex) {
+  List<Widget> buildTasks(int editIndex) {
+    if (isDatePicked) {
+      repItems = ['Daily', 'Weekly', 'Monthly', 'Once'];
+    } else {
+      repItems = [" "];
+    }
+
     tasksList = [];
     if (editIndex != null) {
       //in case user wants to edit an exsting task
@@ -49,6 +61,7 @@ class AddTaskState extends State<AddTask> {
         _updateController =
             new TextEditingController(text: widget.tasks[editIndex].taskName);
       }
+
       if (dropdownValue == null) {
         dropdownValue = ((widget.tasks[editIndex].taskType.toShortString())[0]
                 .toUpperCase() +
@@ -57,6 +70,7 @@ class AddTaskState extends State<AddTask> {
                 .toUpperCase() +
             (widget.tasks[editIndex].taskType.toShortString()).substring(1));
       } //end if
+
       print("inside Edit task $editIndex");
       tasksList.add(Card(
           elevation: 20,
@@ -90,8 +104,8 @@ class AddTaskState extends State<AddTask> {
                     setState(() {
                       if (_updateController.text.isNotEmpty) {
                         updateError = null;
-                        _buildTasks(editIndex);
-                      } else {}
+                        buildTasks(editIndex);
+                      }
                     });
                   },
                 ),
@@ -107,11 +121,10 @@ class AddTaskState extends State<AddTask> {
                       _dateTime = DateTime.now();
                       dropdownValue = newValue;
                       currentValue = newValue;
-                      _buildTasks(editIndex);
+                      buildTasks(editIndex);
                     });
                   },
-                  items: ['Daily', 'Weekly', 'Monthly', 'Once']
-                      .map<DropdownMenuItem<String>>((value) {
+                  items: repItems.map<DropdownMenuItem<String>>((value) {
                     //currentValue = value;
                     return DropdownMenuItem<String>(
                       value: value,
@@ -177,7 +190,7 @@ class AddTaskState extends State<AddTask> {
                   onChanged: (_) {
                     setState(() {
                       error = null;
-                      _buildTasks(null);
+                      buildTasks(null);
                     });
                   },
                 ),
@@ -188,19 +201,26 @@ class AddTaskState extends State<AddTask> {
                     fontSize: 25,
                   ),
                   value: dropdownValue,
+                  onTap: () {
+                    if (deadline == null) {
+                      setState(() {
+                        widget.showError(
+                            "Please pick a goal due date so you can be able to add a task");
+                      });
+                    }
+                  },
                   onChanged: (newValue) {
                     setState(() {
                       repetitionError = null;
                       dropdownValue = newValue;
                       currentValue = newValue;
-                      _buildTasks(null);
+                      buildTasks(null);
                     });
                   },
                   decoration: InputDecoration(
                     errorText: repetitionError,
                   ),
-                  items: ['Daily', 'Weekly', 'Monthly', 'Once']
-                      .map<DropdownMenuItem<String>>((value) {
+                  items: repItems.map<DropdownMenuItem<String>>((value) {
                     //currentValue = value;
                     return DropdownMenuItem<String>(
                       value: value,
@@ -237,6 +257,7 @@ class AddTaskState extends State<AddTask> {
     }
 
     for (int index = 0; index < widget.tasks.length; index++) {
+      var isValid = true;
       if (editIndex != null && editIndex == index) continue;
       var currentTask;
       var currentTaskType = widget.tasks[index].taskType;
@@ -246,6 +267,11 @@ class AddTaskState extends State<AddTask> {
         currentTask = widget.tasks[index] as OnceTask;
       } else if (currentTaskType == TaskType.weekly) {
         currentTask = widget.tasks[index] as WeeklyTask;
+      } else if (currentTaskType == TaskType.daily) {
+        currentTask = widget.tasks[index] as DailyTask;
+      }
+      if (currentTask.calcRepetition(deadline, DateTime.now()) == 0) {
+        isValid = false;
       }
       tasksList.add(Card(
         child: Padding(
@@ -265,44 +291,57 @@ class AddTaskState extends State<AddTask> {
                                 ? " on ${currentTask.date.toString().split(" ").first}"
                                 : " on ${currentTask.weekdaysList()}")))),
             trailing: new IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () => _editLabelAt(index)),
+                icon: isValid
+                    ? Icon(Icons.edit)
+                    : Icon(
+                        Icons.error,
+                        color: Colors.red,
+                      ),
+                onPressed: () => _editLabelAt(index, isValid)),
           ),
         ),
       ));
     }
 
     return tasksList;
-  } //end _buildTasks
-
-  _clearText() {
-    setState(() {
-      _taskcontroller.clear();
-      dropdownValue = "";
-      currentValue = "";
-      error = null;
-      _buildTasks(null);
-    });
-  }
+  } //end buildTasks
 
   _onSave() {
     setState(() {
-      if (_taskcontroller.text.trim().isNotEmpty && dropdownValue != null) {
-        widget.tasks.add(creatTask(
-            taskName: _taskcontroller.text,
-            taskType: currentValue.formString()));
+      print(isDatePicked);
+      if (!isDatePicked) {
+        widget.showError(
+            "Please pick a goal due date so you can be able to add a task");
         _taskcontroller.clear();
-        error = null;
-        repetitionError = null;
         dropdownValue = null;
         currentValue = null;
-        _dateTime = DateTime.now();
-        _buildTasks(null);
+        buildTasks(null);
+      } else if (_taskcontroller.text.trim().isNotEmpty &&
+          dropdownValue != null) {
+        var task = creatTask(
+            taskName: _taskcontroller.text,
+            taskType: currentValue.formString());
+        if (currentValue.formString() == TaskType.weekly &&
+            task.taskRepetition == 0) {
+          buildTasks(null);
+          widget.showError(
+              "Oops, the chosen days have no repetition. Please select other days that are within the due date duration");
+        } else {
+          widget.tasks.add(task);
+          _taskcontroller.clear();
+          values = [true, false, false, false, false, false, false];
+          error = null;
+          repetitionError = null;
+          dropdownValue = null;
+          currentValue = null;
+          _dateTime = DateTime.now();
+          buildTasks(null);
+        }
       } else {
         if (dropdownValue == null)
-          repetitionError = "Task repetition most be selected! ";
+          repetitionError = "Task repetition must be selected! ";
         if (_taskcontroller.text.trim().isEmpty) error = 'Enter a name!';
-        _buildTasks(null);
+        buildTasks(null);
       }
     });
   }
@@ -311,10 +350,11 @@ class AddTaskState extends State<AddTask> {
     setState(() {
       if (widget.tasks.length > 1) {
         widget.tasks.removeAt(index);
-        _buildTasks(null);
+        buildTasks(null);
       } else {
         widget.showError(
             "Task can not be deleted, goal most have at least one task.");
+        buildTasks(null);
         //show alert
         //     showDialog(
         //       context: context,
@@ -344,8 +384,11 @@ class AddTaskState extends State<AddTask> {
     });
   }
 
-  _editLabelAt(index) {
+  _editLabelAt(index, [isValid]) {
     setState(() {
+      if (!isValid) {
+        widget.showError("Task's date is invalid, try choosing another date");
+      }
       _updateController.clear();
       dropdownValue = null;
       currentValue = null;
@@ -361,36 +404,50 @@ class AddTaskState extends State<AddTask> {
         _dateTime = currentTask.date;
       }
 
-      _buildTasks(index);
+      buildTasks(index);
     });
   }
 
   _onUpdateAt(index) {
     setState(() {
       if (_updateController.text.trim().isNotEmpty) {
-        widget.tasks.removeAt(index);
-        widget.tasks.add(creatTask(
-            taskName: _updateController.text,
-            taskType: currentValue.formString()));
-        dropdownValue = null;
-        currentValue = null;
-        _updateController.clear();
-        _dateTime = DateTime.now();
-        updateError = null;
-        _buildTasks(null);
+        if (currentValue.formString() == TaskType.weekly &&
+            widget.tasks[index].taskRepetition == 0) {
+          buildTasks(index);
+          widget.showError(
+              "Oops, the chosen days have no repetition. Please select other days that are within the due date duration");
+        } else {
+          widget.tasks.removeAt(index);
+          widget.tasks.add(creatTask(
+              taskName: _updateController.text,
+              taskType: currentValue.formString()));
+          dropdownValue = null;
+          currentValue = null;
+          _updateController.clear();
+          _dateTime = DateTime.now();
+          updateError = null;
+          buildTasks(null);
+        }
       } else {
         updateError = 'Enter a name!';
-        _buildTasks(index);
+        buildTasks(index);
       }
     });
   }
 
   Widget repeatDate({int index}) {
     if (currentValue == "Daily") {
-      return Text("*This task will repeat daily",
-          style: TextStyle(
-              fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
-          textAlign: TextAlign.center);
+      if (isAtSameDate(deadline, DateTime.now())) {
+        return Text("*This task will repeat only today",
+            style: TextStyle(
+                fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
+            textAlign: TextAlign.center);
+      } else {
+        return Text("*This task will repeat daily",
+            style: TextStyle(
+                fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
+            textAlign: TextAlign.center);
+      }
     } else if (currentValue == "Weekly") {
       return Column(
         children: [
@@ -408,7 +465,7 @@ class AddTaskState extends State<AddTask> {
                   if (index != null) {
                     widget.tasks[index].taskName = _updateController.text;
                   }
-                  _buildTasks(index);
+                  buildTasks(index);
                 }
               });
             },
@@ -417,26 +474,56 @@ class AddTaskState extends State<AddTask> {
         ],
       );
     } else if (currentValue == "Monthly") {
-      return Column(
-        children: [
-          Text("*Pick the starting day for your monthly task",
-              style: TextStyle(
-                  fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
-              textAlign: TextAlign.center),
-          CalendarDatePicker(
-              initialDate: _dateTime == null ? DateTime.now() : _dateTime,
-              firstDate: DateTime.now(),
-              lastDate: widget.deadline.subtract(Duration(days: 1)),
-              onDateChanged: (d) {
-                _dateTime = d;
-              })
-        ],
-      );
+      if (deadline.day == DateTime.now().day) {
+        return Text("*This task will repeat only today",
+            style: TextStyle(
+                fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
+            textAlign: TextAlign.center);
+      } else {
+        if (_dateTime == null ||
+            _dateTime.isAfter(deadline.subtract(Duration(days: 1)))) {
+          _dateTime = DateTime.now();
+        }
+        return Column(
+          children: [
+            Text("*Pick the starting day for your monthly task",
+                style: TextStyle(
+                    fontFamily: 'Montserrat',
+                    fontSize: 18.0,
+                    color: Colors.teal),
+                textAlign: TextAlign.center),
+            CalendarDatePicker(
+                initialDate: _dateTime == null ||
+                        _dateTime.isAfter(deadline.subtract(Duration(days: 1)))
+                    ? DateTime.now()
+                    : _dateTime,
+                firstDate: DateTime.now(),
+                lastDate: deadline.subtract(Duration(days: 1)),
+                onDateChanged: (d) {
+                  _dateTime = d;
+                })
+          ],
+        );
+      }
     } else if (currentValue == "Once") {
+      if (_dateTime == null ||
+          _dateTime.isAfter(deadline.subtract(Duration(days: 1)))) {
+        _dateTime = DateTime.now();
+      }
+
+      if (isAtSameDate(deadline, DateTime.now())) {
+        return Text("*This task will repeat only today",
+            style: TextStyle(
+                fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
+            textAlign: TextAlign.center);
+      }
       return CalendarDatePicker(
-          initialDate: _dateTime == null ? DateTime.now() : _dateTime,
+          initialDate: _dateTime == null ||
+                  _dateTime.isAfter(deadline.subtract(Duration(days: 1)))
+              ? DateTime.now()
+              : _dateTime,
           firstDate: DateTime.now(),
-          lastDate: widget.deadline.subtract(Duration(days: 1)),
+          lastDate: deadline.subtract(Duration(days: 1)),
           onDateChanged: (d) {
             _dateTime = d;
           });
@@ -452,7 +539,9 @@ class AddTaskState extends State<AddTask> {
         return DailyTask(taskName: taskName);
       case TaskType.once:
         var date = _dateTime == null ? DateTime.now() : _dateTime;
-        return OnceTask(taskName: taskName, date: date);
+        var task = OnceTask(taskName: taskName, date: date);
+        task.calcRepetition(deadline, DateTime.now());
+        return task;
       case TaskType.weekly:
         List<int> days = [];
         var temp = values[0];
@@ -463,10 +552,15 @@ class AddTaskState extends State<AddTask> {
             days.add(i + 1);
           }
         }
-        return WeeklyTask(taskName: taskName, weekdays: days);
+        print(days);
+        var task = WeeklyTask(taskName: taskName, weekdays: days);
+        task.calcRepetition(deadline, DateTime.now());
+        return task;
       case TaskType.monthly:
         var day = _dateTime == null ? DateTime.now().day : _dateTime.day;
-        return MonthlyTask(taskName: taskName, day: day);
+        var task = MonthlyTask(taskName: taskName, day: day);
+        task.calcRepetition(deadline, DateTime.now());
+        return task;
     }
   }
 
@@ -478,6 +572,13 @@ class AddTaskState extends State<AddTask> {
     if (counter == 1) {
       return true;
     }
+    return false;
+  }
+
+  bool isAtSameDate(DateTime date1, DateTime date2) {
+    if (date1.day == date2.day) {
+      if (date1.month == date2.month) if (date1.year == date2.year) return true;
+    } //end if
     return false;
   }
 }

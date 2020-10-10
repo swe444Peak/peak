@@ -68,7 +68,7 @@ class DailyTask extends Task {
 
   @override
   int calcRepetition(DateTime dueDate, DateTime creation) {
-    this.taskRepetition = (dueDate.difference(creation)).inDays;
+    this.taskRepetition = (dueDate.difference(creation)).inDays + 1;
     return taskRepetition;
   }
 }
@@ -116,7 +116,11 @@ class OnceTask extends Task {
 
   @override
   int calcRepetition(DateTime dueDate, DateTime creation) {
-    this.taskRepetition = 1;
+    if (date.isBefore(dueDate) || this.isAtSameDate(dueDate, date))
+      this.taskRepetition = 1;
+    else {
+      taskRepetition = 0;
+    }
     return taskRepetition;
   }
 }
@@ -217,6 +221,8 @@ class WeeklyTask extends Task {
   @override
   int calcRepetition(DateTime dueDate, DateTime creation) {
     int repetition = 0;
+    this.dates = [];
+
     if (this.isAtSameDate(dueDate, creation)) {
       weekdays.forEach((element) {
         if (creation.weekday == element) {
@@ -228,8 +234,8 @@ class WeeklyTask extends Task {
       return repetition;
     }
 
-    int duration = (dueDate.difference(creation)).inDays;
-
+    int duration = (dueDate.difference(creation)).inDays + 1;
+    print("gg $duration");
     for (int i = 0; i < duration; i++) {
       weekdays.forEach((element) {
         if (creation.weekday == element) {
@@ -304,6 +310,7 @@ class MonthlyTask extends Task {
   @override
   int calcRepetition(DateTime dueDate, DateTime creation) {
     int repetition = 0;
+    this.dates = [];
     if (this.isAtSameDate(dueDate, creation)) {
       //if creation == dueDate
       if (creation.day == day) {
@@ -314,7 +321,8 @@ class MonthlyTask extends Task {
       }
     } //end if
 
-    int duration = dueDate.difference(creation).inDays;
+    int duration = dueDate.difference(creation).inDays + 1;
+
     for (int i = 0; i < duration; i++) {
       //if creation != dueDate
 

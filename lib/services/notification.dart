@@ -63,11 +63,10 @@ class NotificationManager {
      await flutterLocalNotificationsPlugin.schedule(countNoti++,
          title, body, timeDaily, getPlatformChannelSpecfics());
  }}
+
  void showNotification(  String title, String body) async {
-    
     DateTime now = DateTime.now().add(Duration(seconds: 6));
      await flutterLocalNotificationsPlugin.schedule(countNoti++,title, body ,now, getPlatformChannelSpecfics());
-   
  }
 
   void showTaskNotification(  String title, String body, List<DateTime> dates) async {
@@ -82,74 +81,12 @@ class NotificationManager {
   }
 
   void showDeadlineNotification( String title , String body, DateTime slectedTime ) async {
-  goalDeadline = slectedTime;
-  var day= slectedTime.day-1;
-  var month = slectedTime.month;
-  var year =slectedTime.year;
- 
-  DateTime time = DateTime.utc(year,month,day);
-  await flutterLocalNotificationsPlugin.schedule( countNoti++,title, body ,time , getPlatformChannelSpecfics());
+  
+  await flutterLocalNotificationsPlugin.schedule( countNoti++,title, body ,slectedTime.subtract(Duration(days: 1)) , getPlatformChannelSpecfics());
   }
 
   Future<void> removeReminder() async {
   await  flutterLocalNotificationsPlugin.cancelAll();
   }
-
-   /*Duration sinceDeadline = goalDeadline.difference(DateTime.now());
-   int indays = sinceDeadline.inDays;
-   var incMins= 30;
-   var hour =0;
-   var min =0;
-   switch(taskType){
-   case 'Weekly':
-   for (var item in dates) {
-     await flutterLocalNotificationsPlugin.schedule( title, body ,item , getPlatformChannelSpecfics());
-   }
-   
-
-   // var inWeeks = indays/7;
-   // var addWeek=7; 
-    
-   //for (var i=1  ;i <= inWeeks ;i++ ){
-  // DateTime timeweekly = DateTime.utc(DateTime.now().year,DateTime.now().month,DateTime.now().day+addWeek,hour,min+incMins);
-  // addWeek=addWeek+7;
-   //incMins = incMins+30;
- // await flutterLocalNotificationsPlugin.schedule( title, body ,timeweekly , getPlatformChannelSpecfics());
-  // }
-
-   break;
-   case 'Monthly': 
-
-   for (var item in dates) {
-     await flutterLocalNotificationsPlugin.schedule( title, body ,item , getPlatformChannelSpecfics());
-   }
-
-   //var inMonths =  indays/30;
-   //var addMoth=1; 
-
-   //for (var i=1  ;i <= inMonths ;i++ ){
-   //DateTime timeweekly = DateTime.utc(DateTime.now().year,DateTime.now().month+addMoth,DateTime.now().day,hour,min+incMins);
-   //addMoth++;
-   //incMins = incMins+30;
- // await flutterLocalNotificationsPlugin.schedule( title, body ,timeweekly , getPlatformChannelSpecfics());
-  // }
-   break;
-   default:
-    print('Somthing went WRONG');
-   }
-    */
-    
-  
-
-
-
-  
-
-
-
- 
- 
-
-  
 
 }

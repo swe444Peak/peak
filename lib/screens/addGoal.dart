@@ -162,11 +162,14 @@ class _NewGoalState extends State<NewGoal> {
                                           switch (
                                               item.taskType.toShortString()) {
                                             case 'once':
+                                               OnceTask oTask =
+                                                  item as OnceTask;
                                               notifyManeger
                                                   .showNotificationOnce(
                                                       'Reminder To',
                                                       item.taskName,
-                                                      _dateTime);
+                                                      oTask.date);
+                                                      print(oTask.date);
                                               break;
                                             case 'daily':
                                               notifyManeger
@@ -184,6 +187,7 @@ class _NewGoalState extends State<NewGoal> {
                                                       'Weekly Reminder',
                                                       item.taskName,
                                                       wTask.dates);
+                                                       print(wTask.dates);
                                               break;
                                             case 'monthly':
                                               //add dates list
@@ -194,6 +198,7 @@ class _NewGoalState extends State<NewGoal> {
                                                       'Monthly Reminder',
                                                       item.taskName,
                                                       mTask.dates);
+                                                       print(mTask.dates);
                                               break;
                                             default:
                                               print(

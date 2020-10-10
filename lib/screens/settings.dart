@@ -11,32 +11,34 @@ import '../models/goal.dart';
 import '../models/task.dart';
 import '../models/user.dart';
 import '../services/databaseServices.dart';
+import 'addGoal.dart';
 
 class SettingsPage extends StatelessWidget {
   final DatabaseServices dBS = new DatabaseServices();
-  final NotificationManager manger = new NotificationManager();
+  final NotificationManager notifyManeger = new NotificationManager();
   final userRef = FirebaseFirestore.instance.collection('goals').get();
-
-  List<Task> _taskList = [];
-  UnmodifiableListView<Task> get taskList => UnmodifiableListView(_taskList);
+  
+  
+  //List<Task> _taskList = [];
+ // UnmodifiableListView<Task> get taskList => UnmodifiableListView(_taskList);
 
   List<Goal> _goalList = [];
   UnmodifiableListView<Goal> get goalList => UnmodifiableListView(_goalList);
 
-  List<OnceTask> _otaskList = [];
-  UnmodifiableListView<Task> get otaskList => UnmodifiableListView(_otaskList);
-  List<DailyTask> _dtaskList = [];
-  UnmodifiableListView<Task> get dtaskList => UnmodifiableListView(_dtaskList);
-  List<WeeklyTask> _wtaskList = [];
-  UnmodifiableListView<Task> get wtaskList => UnmodifiableListView(_wtaskList);
-  List<MonthlyTask> _mtaskList = [];
-  UnmodifiableListView<Task> get mtaskList => UnmodifiableListView(_mtaskList);
+ // List<OnceTask> _otaskList = [];
+ // UnmodifiableListView<Task> get otaskList => UnmodifiableListView(_otaskList);
+  //List<DailyTask> _dtaskList = [];
+ // UnmodifiableListView<Task> get dtaskList => UnmodifiableListView(_dtaskList);
+ // List<WeeklyTask> _wtaskList = [];
+  //UnmodifiableListView<Task> get wtaskList => UnmodifiableListView(_wtaskList);
+  //List<MonthlyTask> _mtaskList = [];
+ // UnmodifiableListView<Task> get mtaskList => UnmodifiableListView(_mtaskList);
 
   @override
   Widget build(BuildContext context) {
     // final QuerySnapshot listTas = userRef.
     var userId = Provider.of<User>(context);
-    PeakUser user = new PeakUser(uid: "", name: "", notificationStatus: true);
+  //  PeakUser user = new PeakUser(uid: "", name: "", notificationStatus: true);
     bool _state = true;
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
@@ -174,7 +176,7 @@ class SettingsPage extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
 
-                              child: ListTile(
+                              /*child: ListTile(
                                 leading: Text(
                                   "Notification         ",
                                   style: TextStyle(
@@ -191,66 +193,76 @@ class SettingsPage extends StatelessWidget {
                                     colorOff: Colors.redAccent,
                                     iconOn: Icons.done,
                                     iconOff: Icons.alarm_off,
-                                    value: Provider.of<PeakUser>(context).notificationStatus,
+                                    value: Provider.of<PeakUser>(context)
+                                        .notificationStatus,
                                     onChanged: (state) {
                                       dBS.updateNotificationStatus(
                                           status: state);
                                       _state = state;
                                       if (state == false)
-                                        manger.removeReminder();
+                                        notifyManeger.removeReminder();
                                       else if (state == true)
-                                        for (var task in _otaskList) {
-                                          manger.showNotificationOnce(
-                                              "Remember To",
-                                              task.taskName,
-                                              task.date);
-                                        }
-                                      for (var task in _wtaskList) {
-                                        manger.showTaskNotification(
-                                            "Weekly Reminder",
-                                            task.taskName,
-                                            task.dates);
-                                      }
-
-                                      for (var task in _mtaskList) {
-                                        manger.showTaskNotification(
-                                            "Monthly Reminder",
-                                            task.taskName,
-                                            task.dates);
-                                      }
-
-                                      /* for (var task in _taskList) {
-                                  //add task type to DB
-                                  if (!task.isDone())
-                                    if (task.taskType.toShortString() =='once')
-                                    manger.showNotificationOnce("Remember To", task.taskName, task.date)
-                                    else{
-                                    manger.showTaskNotification(
-                                      "Remember To",
-                                      task.taskName,
-                                      task.taskType.toShortString(),
-                                    task.dates);}
-                                }*/
-                                      for (var goal in _goalList) {
-                                        if (!goal.isAchieved) {
-                                          manger.showDeadlineNotification(
-                                              "Deadline Reminder",
-                                              'The deadline for' +
-                                                  goal.goalName +
-                                                  'goal is Tomorrow',
-                                              goal.deadline);
-                                          for (var task in _dtaskList) {
-                                            manger.showDailyNotification(
-                                                "Daily Reminder",
-                                                task.taskName,
-                                                goal.deadline);
+                                        for (var goal in _goalList) {
+                                          if (!goal.isAchieved)
+                                            notifyManeger
+                                                .showDeadlineNotification(
+                                                    "Deadline Reminder",
+                                                    'The deadline for' +
+                                                        goal.goalName +
+                                                        'goal is Tomorrow',
+                                                    goal.deadline);
+                                          for (var item in goal.tasks) {
+                                            switch (
+                                                item.taskType.toShortString()) {
+                                              case 'once':
+                                                OnceTask oTask =
+                                                    item as OnceTask;
+                                                notifyManeger
+                                                    .showNotificationOnce(
+                                                        'Reminder To',
+                                                        item.taskName,
+                                                        oTask.date);
+                                                print(oTask.date);
+                                                break;
+                                              case 'daily':
+                                                notifyManeger
+                                                    .showDailyNotification(
+                                                        'Daily Reminder',
+                                                        item.taskName,
+                                                        notifyManeger
+                                                            .goalDeadline);
+                                                break;
+                                              case 'weekly':
+                                                WeeklyTask wTask =
+                                                    item as WeeklyTask;
+                                                notifyManeger
+                                                    .showTaskNotification(
+                                                        'Weekly Reminder',
+                                                        item.taskName,
+                                                        wTask.dates);
+                                                print(wTask.dates);
+                                                break;
+                                              case 'monthly':
+                                                //add dates list
+                                                MonthlyTask mTask =
+                                                    item as MonthlyTask;
+                                                notifyManeger
+                                                    .showTaskNotification(
+                                                        'Monthly Reminder',
+                                                        item.taskName,
+                                                        mTask.dates);
+                                                print(mTask.dates);
+                                                break;
+                                              default:
+                                                print(
+                                                    'Somthing went WRONG in set notification');
+                                            }
                                           }
                                         }
-                                      }
                                       print("");
                                     }),
                                 onTap: () {},
-                              ),
+                              ),*/
                             ),
                           )
                         ],

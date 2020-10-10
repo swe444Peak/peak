@@ -25,17 +25,17 @@ class DatabaseServices {
   Future updateUserData({String username}) async {
     return await userCollection.doc(uid).set({
       "username": username,
-      "notificationStatus": true
+     // "notificationStatus": true
     });
   } //end updateUserData
 
-  Future updateNotificationStatus({bool status}) async {
+  /*Future updateNotificationStatus({bool status}) async {
      if (_firebaseService.currentUser != null) {
     return await userCollection.doc(_firebaseService.currentUser.uid).update({
       "notificationStatus": status,
     });
      }
-  } //end updateUserData
+  } //end updateUserData*/
   
 
   Future updateGoal({Goal goal}) async {
@@ -64,7 +64,7 @@ class DatabaseServices {
     return PeakUser(
       uid: snapshot.id,
       name: snapshot.data()['username'],
-      notificationStatus : snapshot.data()['notificationStatus']
+    //  notificationStatus : snapshot.data()['notificationStatus']
     );
   }
 

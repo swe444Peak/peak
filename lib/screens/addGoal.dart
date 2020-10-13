@@ -172,15 +172,17 @@ class _NewGoalState extends State<NewGoal> {
                                                       'Reminder To',
                                                       item.taskName,
                                                       oTask.date);
+                                                      print("Once");
                                                       print(oTask.date);
                                               break;
                                             case 'daily':
+                                             print("Daily");
                                               notifyManeger
                                                   .showDailyNotification(
                                                       'Daily Reminder',
                                                       item.taskName,
-                                                      notifyManeger
-                                                          .goalDeadline);
+                                                      _dateTime);
+                                                       
                                               break;
                                             case 'weekly':
                                               WeeklyTask wTask =
@@ -190,7 +192,6 @@ class _NewGoalState extends State<NewGoal> {
                                                       'Weekly Reminder',
                                                       item.taskName,
                                                       wTask.dates);
-                                                       print(wTask.dates);
                                               break;
                                             case 'monthly':
                                               //add dates list
@@ -201,7 +202,6 @@ class _NewGoalState extends State<NewGoal> {
                                                       'Monthly Reminder',
                                                       item.taskName,
                                                       mTask.dates);
-                                                       print(mTask.dates);
                                               break;
                                             default:
                                               print(
@@ -212,9 +212,9 @@ class _NewGoalState extends State<NewGoal> {
                                             context, 'goalsList');
                                         notifyManeger.showDeadlineNotification(
                                             'Deadline Reminder',
-                                            'The deadline for' +
+                                            'The deadline for ' +
                                                 _goalnamecontroller.text +
-                                                'goal is Tomorrow',
+                                                ' goal is Tomorrow',
                                             _dateTime);
                                       } else {
                                         setState(() {

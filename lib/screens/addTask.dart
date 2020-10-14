@@ -474,7 +474,7 @@ class AddTaskState extends State<AddTask> {
         ],
       );
     } else if (currentValue == "Monthly") {
-      if (deadline.day == DateTime.now().day) {
+      if (isAtSameDate(deadline, DateTime.now())) {
         return Text("*This task will repeat only today",
             style: TextStyle(
                 fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),

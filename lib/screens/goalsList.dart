@@ -4,7 +4,6 @@ import 'package:peak/viewmodels/goalsList_model.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:stacked/stacked.dart';
 import '../locator.dart';
-import 'addNewGoal.dart';
 
 class GoalsListPage extends StatelessWidget {
   @override

@@ -8,7 +8,6 @@ import 'package:peak/screens/goalsList.dart';
 import 'package:peak/screens/signUp.dart';
 import 'screens/goalsList.dart';
 import 'screens/login.dart';
-import 'screens/addNewGoal.dart';
 
 const String initialRoute = "login";
 

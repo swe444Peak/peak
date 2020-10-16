@@ -6,8 +6,8 @@ import 'custom_bottomNavigationBar.dart';
 class Base extends StatelessWidget {
   String title;
   Widget child;
-
-  Base({this.title, this.child});
+  List<Widget> actions;
+  Base({this.title, this.child, this.actions});
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -42,27 +42,29 @@ class Base extends StatelessWidget {
                   ], begin: Alignment.topLeft, end: Alignment.bottomCenter)),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(
-                  width * 0.06, height * 0.12, width * 0.06, 0.0),
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding:
-                            EdgeInsets.fromLTRB(0.0, 0.0, 0.0, (width * 0.06)),
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 34.0,
-                            fontWeight: FontWeight.w400,
-                          ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, height * 0.09, 0, 0.0),
+                    child: AppBar(
+                      title: Text(
+                        title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 34.0,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
-                    ],
+                      backgroundColor: Colors.transparent,
+                      elevation: 0.0,
+                      actions: actions,
+                    ),
                   ),
-                  child
+                  Padding(
+                    padding:
+                        EdgeInsets.fromLTRB(width * 0.06, 0, width * 0.06, 0.0),
+                    child: child,
+                  )
                 ],
               ),
             ),

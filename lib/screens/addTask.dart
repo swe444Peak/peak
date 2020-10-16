@@ -34,7 +34,6 @@ class AddTaskState extends State<AddTask> {
   bool isDatePicked = false;
   var repItems;
   int editIndex;
-
   @override
   Widget build(BuildContext context) {
     return new ListView(
@@ -279,7 +278,41 @@ class AddTaskState extends State<AddTask> {
           child: ListTile(
             leading: new IconButton(
                 icon: const Icon(Icons.delete),
-                onPressed: () => _removeLabelAt(index)),
+                onPressed: () {
+                  //alertt
+                  Widget noButton = FlatButton(
+                    child: Text("No"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  );
+                  Widget yesButton = FlatButton(
+                    child: Text("Yes"),
+                    onPressed: () {
+                      _removeLabelAt(index);
+                      Navigator.pop(context);
+                    },
+                  );
+                  // set up the AlertDialog
+                  AlertDialog alert = AlertDialog(
+                    scrollable: true,
+                    contentPadding: EdgeInsets.all(5),
+                    title: Text("Delete task"),
+                    content: Text("are you sure you want to delete this task?"),
+                    actions: [
+                      noButton,
+                      yesButton,
+                    ],
+                  );
+                  // show the dialog
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+                }),
             title: Text(widget.tasks[index].taskName),
             subtitle: Text(
                 "Repetition: ${widget.tasks[index].taskType.toShortString()}" +

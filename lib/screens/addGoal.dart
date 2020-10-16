@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../locator.dart';
 import '../services/notification.dart';
 import 'addTask.dart';
+import 'package:lottie/lottie.dart';
 
 class NewGoal extends StatefulWidget {
   @override
@@ -165,24 +166,23 @@ class _NewGoalState extends State<NewGoal> {
                                           switch (
                                               item.taskType.toShortString()) {
                                             case 'once':
-                                               OnceTask oTask =
-                                                  item as OnceTask;
+                                              OnceTask oTask = item as OnceTask;
                                               notifyManeger
                                                   .showNotificationOnce(
                                                       'Reminder To',
                                                       item.taskName,
                                                       oTask.date);
-                                                      print("Once");
-                                                      print(oTask.date);
+                                              print("Once");
+                                              print(oTask.date);
                                               break;
                                             case 'daily':
-                                             print("Daily");
+                                              print("Daily");
                                               notifyManeger
                                                   .showDailyNotification(
                                                       'Daily Reminder',
                                                       item.taskName,
                                                       _dateTime);
-                                                       
+
                                               break;
                                             case 'weekly':
                                               WeeklyTask wTask =
@@ -210,6 +210,8 @@ class _NewGoalState extends State<NewGoal> {
                                         }
                                         Navigator.pushNamed(
                                             context, 'goalsList');
+                                        //confirm message here
+                                        goalConfirmDailog(context);
                                         notifyManeger.showDeadlineNotification(
                                             'Deadline Reminder',
                                             'The deadline for ' +
@@ -295,6 +297,48 @@ class _NewGoalState extends State<NewGoal> {
         addTaskState.currentState.buildTasks(null);
       });
     }
+  }
+
+  goalConfirmDailog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("No"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Yes"),
+      onPressed: () {
+        //Google calender here
+        Navigator.pop(context);
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      scrollable: true,
+      contentPadding: EdgeInsets.all(5),
+      title: Text("Added Successfully !"),
+      content: Column(
+        children: [
+          Lottie.asset('assets/goalConfirm.json', width: 200, height: 200),
+          Text(
+              "your goal was added successfully , would you like to add it to google calendar?"),
+        ],
+      ),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   Widget showAlert() {

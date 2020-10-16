@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:peak/screens/AddNewGoal.dart';
+
 import 'package:provider/provider.dart';
 import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/services/databaseServices.dart';

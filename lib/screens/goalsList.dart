@@ -230,7 +230,11 @@ class GoalsListPage extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                              context, "goalDetails",
+                                              arguments: goal);
+                                        },
                                       ),
                                     );
                                   },

@@ -7,8 +7,7 @@ enum TaskType {
 
 extension ParseToString on TaskType {
   String toShortString() {
-    String type = this.toString().split('.').last;
-    return type.substring(0, 1).toUpperCase() + type.substring(1);
+    return this.toString().split('.').last;
   }
 }
 

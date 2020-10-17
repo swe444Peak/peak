@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/router.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:peak/services/dialogManager.dart';
+import 'package:peak/services/dialogService.dart';
 import 'package:provider/provider.dart';
 
 import 'locator.dart';
@@ -24,6 +26,11 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        builder: (context, child) => Navigator(
+          key: locator<DialogService>().dialogNavigationKey,
+          onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => DialogManager(child: child)),
+        ),
         theme: ThemeData(),
         initialRoute: 'login',
         onGenerateRoute: Router.generateRoute,

@@ -8,7 +8,7 @@ class GoalsListModel extends ChangeNotifier {
   final _firstoreService = locator<DatabaseServices>();
   ViewState _state = ViewState.Idle;
   List<Goal> _goals;
-  bool empty = false;
+  bool empty = true;
   List<Goal> get goals => _goals;
   ViewState get state => _state;
   void setState(ViewState viewState) {

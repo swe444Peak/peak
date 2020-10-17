@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:stacked_services/stacked_services.dart';
+import 'package:peak/models/dialogModels.dart';
 
 class DialogService {
   GlobalKey<NavigatorState> _dialogNavigationKey = GlobalKey<NavigatorState>();
@@ -25,7 +25,7 @@ class DialogService {
     _showDialogListener(DialogRequest(
       title: title,
       description: description,
-      mainButtonTitle: buttonTitle,
+      buttonTitle: buttonTitle,
     ));
     return _dialogCompleter.future;
   }
@@ -40,8 +40,8 @@ class DialogService {
     _showDialogListener(DialogRequest(
         title: title,
         description: description,
-        mainButtonTitle: confirmationTitle,
-        secondaryButtonTitle: cancelTitle));
+        buttonTitle: confirmationTitle,
+        cancelTitle: cancelTitle));
     return _dialogCompleter.future;
   }
 

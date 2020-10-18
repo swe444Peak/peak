@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
@@ -20,12 +19,12 @@ class DatabaseServices {
 
   final _goalsCollectionReference =
       FirebaseFirestore.instance.collection("goals");
-  
 
-  Future updateUserData({String username}) async {
+  Future updateUserData({String username, String picURL}) async {
     return await userCollection.doc(uid).set({
       "username": username,
-     // "notificationStatus": true
+      "picURL": picURL,
+      // "notificationStatus": true
     });
   } //end updateUserData
 
@@ -36,7 +35,6 @@ class DatabaseServices {
     });
      }
   } //end updateUserData*/
-  
 
   Future updateGoal({Goal goal}) async {
     var doc;
@@ -64,7 +62,8 @@ class DatabaseServices {
     return PeakUser(
       uid: snapshot.id,
       name: snapshot.data()['username'],
-    //  notificationStatus : snapshot.data()['notificationStatus']
+      picURL: snapshot.data()['picURL'],
+      //  notificationStatus : snapshot.data()['notificationStatus']
     );
   }
 
@@ -86,5 +85,11 @@ class DatabaseServices {
     }
 
     return _goalController.stream;
+  }
+
+  Future updateProfilePic(picURL) async {
+    return await userCollection.doc(_firebaseService.currentUser.uid).update({
+      "picURL": picURL,
+    });
   }
 }

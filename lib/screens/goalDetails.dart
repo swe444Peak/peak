@@ -12,26 +12,28 @@ class GoalDetails extends StatelessWidget {
   Goal goal;
   GoalDetails({this.goal});
 
-  List<Widget> actions = [
-    IconButton(
-      icon: Icon(
-        Icons.edit,
-        color: Colors.white,
-      ),
-      onPressed: () => print(""),
-    ),
-    IconButton(
-      icon: Icon(
-        Icons.delete,
-        color: Colors.white,
-      ),
-      onPressed: () => print(""),
-    )
-  ];
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
+
+    List<Widget> actions = [
+      IconButton(
+        icon: Icon(
+          Icons.edit,
+          color: Colors.white,
+        ),
+        onPressed: () =>
+            Navigator.pushNamed(context, "editGoal", arguments: goal),
+      ),
+      IconButton(
+        icon: Icon(
+          Icons.delete,
+          color: Colors.white,
+        ),
+        onPressed: () => print(""),
+      )
+    ];
 
     return ChangeNotifierProvider<GoalsListModel>(
       create: (context) => locator<GoalsListModel>(),

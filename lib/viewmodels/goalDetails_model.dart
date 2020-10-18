@@ -18,6 +18,8 @@ class GoalDetailsModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  addGoalToGoogleCalendar() {}
+
   T task<T>(goal, index) {
     var currentTask;
     var currentTaskType = goal.tasks[index].taskType;
@@ -36,7 +38,7 @@ class GoalDetailsModel extends ChangeNotifier {
   Future<bool> deleteGoal(Goal goal) async {
     var dialogResponse = await _dialogService.showConfirmationDialog(
       title: 'Are you sure?',
-      description: 'Do you really want to delete the post?',
+      description: 'Do you really want to delete the goal?',
       confirmationTitle: 'Yes',
       cancelTitle: 'No',
     );

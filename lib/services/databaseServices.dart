@@ -92,4 +92,8 @@ class DatabaseServices {
       "picURL": picURL,
     });
   }
+
+  Future deleteGoal(String documentId) async {
+    await _goalsCollectionReference.doc(documentId).delete();
+  }
 }

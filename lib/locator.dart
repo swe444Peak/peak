@@ -4,6 +4,7 @@ import 'package:peak/services/dialogService.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:peak/viewmodels/editPicture_model.dart';
+import 'package:peak/viewmodels/goalDetails_model.dart';
 import 'package:peak/viewmodels/goalsList_model.dart';
 import 'package:peak/viewmodels/login_model.dart';
 import 'package:peak/viewmodels/signup_model.dart';
@@ -19,4 +20,5 @@ void setupLocator() {
   locator.registerFactory(() => GoalsListModel());
   locator.registerFactory(() => CreateGoalModel());
   locator.registerFactory(() => EditPictureModel());
+  locator.registerFactory(() => GoalDetailsModel());
 }

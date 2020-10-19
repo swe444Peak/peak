@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../locator.dart';
 import 'addTask.dart';
-import 'editTask.dart';
+//import 'editTask.dart';
 
 class EditGoal extends StatefulWidget {
   Goal goal;
@@ -138,8 +138,8 @@ class _EditGoalState extends State<EditGoal> {
                                   ),
                                 ),
                               ),
-                              EditTask(addTaskState, tasks, width, height,
-                                  setError, _dateTime),
+                              // EditTask(addTaskState, tasks, width, height,
+                              //     setError, _dateTime),
                               RaisedButton(
                                 splashColor: Colors.teal,
                                 shape: RoundedRectangleBorder(

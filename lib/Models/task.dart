@@ -39,6 +39,7 @@ abstract class Task {
 }
 
 class DailyTask extends Task {
+  List<DateTime> doneDates = List<DateTime>();
   DailyTask({@required taskName, taskRepetition, achievedTasks = 0})
       : super(
             taskName: taskName,
@@ -136,6 +137,7 @@ class WeeklyTask extends Task {
     sunday:7
   */
   List<DateTime> dates = List<DateTime>();
+  List<DateTime> doneDates = List<DateTime>();
   List<int> weekdays = List<int>(); /*The day of the week monday..sunday*/
   WeeklyTask(
       {@required taskName,
@@ -257,7 +259,7 @@ class WeeklyTask extends Task {
 class MonthlyTask extends Task {
   int day; /*The day of the month 1..31*/
   List<DateTime> dates = List<DateTime>();
-
+  List<DateTime> doneDates = List<DateTime>();
   MonthlyTask({
     @required taskName,
     @required this.day,

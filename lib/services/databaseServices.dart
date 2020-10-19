@@ -49,7 +49,8 @@ class DatabaseServices {
 
   //creating user data stream to get user doc
 
-  Stream<PeakUser> userData(String id) {
+  Stream<PeakUser> userData([String id]) {
+    id = _firebaseService.currentUser.uid;
     return userCollection
         .doc(id)
         .snapshots()

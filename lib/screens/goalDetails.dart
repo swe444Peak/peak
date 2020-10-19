@@ -26,7 +26,8 @@ class GoalDetails extends StatelessWidget {
                 Icons.edit,
                 color: Colors.white,
               ),
-              onPressed: () => print(""),
+              onPressed: () =>
+                  Navigator.pushNamed(context, "editGoal", arguments: goal),
             ),
             IconButton(
                 icon: Icon(

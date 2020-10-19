@@ -20,9 +20,10 @@ class DatabaseServices {
   final _goalsCollectionReference =
       FirebaseFirestore.instance.collection("goals");
 
-  Future updateUserData({String username}) async {
+  Future updateUserData({String username, String picURL}) async {
     return await userCollection.doc(uid).set({
       "username": username,
+      "picURL": picURL,
       // "notificationStatus": true
     });
   } //end updateUserData
@@ -61,6 +62,7 @@ class DatabaseServices {
     return PeakUser(
       uid: snapshot.id,
       name: snapshot.data()['username'],
+      picURL: snapshot.data()['picURL'],
       //  notificationStatus : snapshot.data()['notificationStatus']
     );
   }
@@ -83,6 +85,12 @@ class DatabaseServices {
     }
 
     return _goalController.stream;
+  }
+
+  Future updateProfilePic(picURL) async {
+    return await userCollection.doc(_firebaseService.currentUser.uid).update({
+      "picURL": picURL,
+    });
   }
 
   Future deleteGoal(String documentId) async {

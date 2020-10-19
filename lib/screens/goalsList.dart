@@ -210,20 +210,7 @@ class GoalsListPage extends StatelessWidget {
                                                         EdgeInsets.symmetric(
                                                             horizontal:
                                                                 width * 0.01),
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.brightness_1,
-                                                          color: (goal
-                                                                  .isAchieved
-                                                              ? Colors.green
-                                                              : Colors
-                                                                  .red[600]),
-                                                        ),
-                                                        Text(
-                                                            "${goal.isAchieved ? "Completed" : "Incomplete"}"),
-                                                      ],
-                                                    ),
+                                                    child: goalStatus(goal),
                                                   ),
                                                 ],
                                               ),
@@ -248,6 +235,54 @@ class GoalsListPage extends StatelessWidget {
               ),
             ],
           )),
+    );
+  }
+
+  Widget goalStatus(goal) {
+    if (goal.isAchieved) {
+      return Row(children: [
+        Icon(
+          Icons.brightness_1,
+          color: (Colors.green),
+        ),
+        Text("Completed"),
+      ]);
+    }
+
+    bool today = goal.deadline.day == DateTime.now().day &&
+        goal.deadline.month == DateTime.now().month &&
+        goal.deadline.year == DateTime.now().year;
+
+    if (goal.deadline.isBefore(DateTime.now()) && !today) {
+      return Row(children: [
+        Icon(
+          Icons.brightness_1,
+          color: (Colors.grey),
+        ),
+        Text("Outdated"),
+      ]);
+    }
+
+    if (goal.calcProgress() == 0) {
+      return Row(
+        children: [
+          Icon(
+            Icons.brightness_1,
+            color: (Colors.red),
+          ),
+          Text("Incomplete"),
+        ],
+      );
+    }
+
+    return Row(
+      children: [
+        Icon(
+          Icons.brightness_1,
+          color: (Colors.blue),
+        ),
+        Text("In progress"),
+      ],
     );
   }
 }

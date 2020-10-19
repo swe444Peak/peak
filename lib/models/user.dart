@@ -5,8 +5,9 @@ import 'package:flutter/cupertino.dart';
 class PeakUser {
   final String uid;
   final String name;
- // bool notificationStatus;
+  final String picURL;
+  // bool notificationStatus;
 
-  PeakUser({@required this.uid, this.name}); //this.notificationStatus
+  PeakUser(
+      {@required this.uid, this.name, this.picURL}); //this.notificationStatus
 }
- 

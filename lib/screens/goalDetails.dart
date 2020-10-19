@@ -26,7 +26,8 @@ class GoalDetails extends StatelessWidget {
                 Icons.edit,
                 color: Colors.white,
               ),
-              onPressed: () => print(""),
+              onPressed: () =>
+                  Navigator.pushNamed(context, "editGoal", arguments: goal),
             ),
             IconButton(
                 icon: Icon(
@@ -54,19 +55,24 @@ class GoalDetails extends StatelessWidget {
                     shrinkWrap: true,
                     children: [
                       ListTile(
-                        title: Text("Goal Name"),
-                        subtitle: Text(goal.goalName),
+                        title: Text(goal.goalName),
                       ),
                       ListTile(
                         title: Text("Due Date"),
-                        subtitle: Text(
-                            "${goal.deadline.day}/${goal.deadline.month}/${goal.deadline.year}"),
+                        subtitle: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                                "${goal.deadline.day}/${goal.deadline.month}/${goal.deadline.year}"),
+                            goalStatus(),
+                          ],
+                        ),
                       )
                     ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(width * 0.04),
+                  padding: EdgeInsets.all(width * 0.02),
                   child: Text(
                     "Tasks",
                     style: TextStyle(
@@ -91,7 +97,7 @@ class GoalDetails extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "${goal.tasks[index].taskType.toShortString()} Task" +
+                                "${goal.tasks[index].taskType.toShortString().substring(0, 1).toUpperCase() + goal.tasks[index].taskType.toShortString().substring(1)} Task" +
                                     ((goal.tasks[index].taskType ==
                                             TaskType.daily)
                                         ? ""
@@ -119,12 +125,83 @@ class GoalDetails extends StatelessWidget {
                       ),
                     );
                   },
-                )
+                ),
+                _buildGestureDetector(model, width),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildGestureDetector(model, width) {
+    return GestureDetector(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+            width * 0.009, width * 0.02, width * 0.009, width * 0.01),
+        child: Center(
+          child: Text(
+            "Add this goal to my Google Calendar",
+            style: TextStyle(
+                    fontSize: width * 0.04,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline)
+                .apply(color: Colors.teal),
+          ),
+        ),
+      ),
+      onTap: () {
+        model.addGoalToGoogleCalendar();
+      },
+    );
+  }
+
+  Widget goalStatus() {
+    if (goal.isAchieved) {
+      return Row(children: [
+        Icon(
+          Icons.brightness_1,
+          color: (Colors.green),
+        ),
+        Text("Completed"),
+      ]);
+    }
+
+    bool today = goal.deadline.day == DateTime.now().day &&
+        goal.deadline.month == DateTime.now().month &&
+        goal.deadline.year == DateTime.now().year;
+
+    if (goal.deadline.isBefore(DateTime.now()) && !today) {
+      return Row(children: [
+        Icon(
+          Icons.brightness_1,
+          color: (Colors.grey),
+        ),
+        Text("Outdated"),
+      ]);
+    }
+
+    if (goal.calcProgress() == 0) {
+      return Row(
+        children: [
+          Icon(
+            Icons.brightness_1,
+            color: (Colors.red),
+          ),
+          Text("Incomplete"),
+        ],
+      );
+    }
+
+    return Row(
+      children: [
+        Icon(
+          Icons.brightness_1,
+          color: (Colors.blue),
+        ),
+        Text("In progress"),
+      ],
     );
   }
 }

@@ -8,6 +8,7 @@ import 'firebaseAuthService.dart';
 
 class DatabaseServices {
   final String uid;
+  var peakuser;
   DatabaseServices({this.uid});
   final StreamController<List<Goal>> _goalController =
       StreamController<List<Goal>>.broadcast();
@@ -49,7 +50,8 @@ class DatabaseServices {
 
   //creating user data stream to get user doc
 
-  Stream<PeakUser> userData(String id) {
+  Stream<PeakUser> userData([String id]) {
+    id = _firebaseService.currentUser.uid;
     return userCollection
         .doc(id)
         .snapshots()
@@ -87,6 +89,12 @@ class DatabaseServices {
     return _goalController.stream;
   }
 
+  Future updateAccountData(name) async {
+    return await userCollection.doc(_firebaseService.currentUser.uid).update({
+      "username": name,
+    });
+  }
+
   Future updateProfilePic(picURL) async {
     return await userCollection.doc(_firebaseService.currentUser.uid).update({
       "picURL": picURL,
@@ -96,4 +104,13 @@ class DatabaseServices {
   Future deleteGoal(String documentId) async {
     await _goalsCollectionReference.doc(documentId).delete();
   }
+
+  PeakUser getUser() {
+    userData().listen((event) async {
+      peakuser = event;
+    });
+    return peakuser;
+  }
 }
+
+

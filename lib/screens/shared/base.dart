@@ -16,7 +16,7 @@ class Base extends StatelessWidget {
     return Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
-        bottomNavigationBar: CustomNavigationBar(1),
+        /*bottomNavigationBar: CustomNavigationBar(1),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.pushNamed(context, 'addNewGoal');
@@ -24,7 +24,7 @@ class Base extends StatelessWidget {
           child: Icon(Icons.add),
           backgroundColor: Colors.teal[400],
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,*/
         body: Stack(
           children: [
             Container(

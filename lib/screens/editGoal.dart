@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:peak/enums/taskType.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/models/task.dart';
-import 'package:peak/screens/shared/base.dart';
 import 'package:peak/services/notification.dart';
-import 'package:peak/viewmodels/createGoal_model.dart';
+import 'package:peak/viewmodels/editGoal_model.dart';
 import 'package:provider/provider.dart';
 
-import '../locator.dart';
-import 'addTask.dart';
 import 'editTask.dart';
+//import 'editTask.dart';
 
 class EditGoal extends StatefulWidget {
   Goal goal;
@@ -30,13 +28,15 @@ class _EditGoalState extends State<EditGoal> {
 
   setError(value) => setState(() => _error = value);
   setEnabled(value) => setState(() => isEnabled = value);
-  final GlobalKey<AddTaskState> addTaskState = GlobalKey<AddTaskState>();
+  final GlobalKey<EditTaskState> editTaskState = GlobalKey<EditTaskState>();
+
   void initState() {
     _goalnamecontroller.text = widget.goal.goalName;
     _dateTime = widget.goal.deadline;
+
     _dueDatecontroller.text =
         "${widget.goal.deadline.day}/${widget.goal.deadline.month}/${widget.goal.deadline.year}";
-    //tasks = widget.goal.tasks;
+    //tasks = ;
     return super.initState();
   }
 
@@ -45,9 +45,11 @@ class _EditGoalState extends State<EditGoal> {
     var user = Provider.of<User>(context);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    return ChangeNotifierProvider<CreateGoalModel>(
-        create: (context) => locator<CreateGoalModel>(),
-        child: Consumer<CreateGoalModel>(
+    var modell = EditGoalModel();
+    print(modell);
+    return ChangeNotifierProvider<EditGoalModel>(
+        create: (context) => modell,
+        child: Consumer<EditGoalModel>(
             builder: (context, model, child) => Scaffold(
                   extendBodyBehindAppBar: true,
                   backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
@@ -138,8 +140,8 @@ class _EditGoalState extends State<EditGoal> {
                                   ),
                                 ),
                               ),
-                              EditTask(addTaskState, tasks, width, height,
-                                  setError, _dateTime),
+                              EditTask(editTaskState, widget.goal.tasks, width,
+                                  height, setError, _dateTime),
                               RaisedButton(
                                 splashColor: Colors.teal,
                                 shape: RoundedRectangleBorder(
@@ -209,6 +211,8 @@ class _EditGoalState extends State<EditGoal> {
                                       });
                                     }
                                   } else {
+                                    print(model.goalName.value);
+                                    print(model.dueDate.value);
                                     if (model.goalName.error == null &&
                                         model.goalName.value == null) {
                                       model.setGoalName("");
@@ -249,9 +253,8 @@ class _EditGoalState extends State<EditGoal> {
         print(_picker);
         _dateTime = _picker;
         _dueDatecontroller.text = _dateTime.toString().split(' ').first;
-        addTaskState.currentState.deadline = _dateTime;
-        addTaskState.currentState.isDatePicked = true;
-        addTaskState.currentState.buildTasks(null);
+        editTaskState.currentState.deadline = _dateTime;
+        editTaskState.currentState.buildTasks(null);
       });
     }
   }

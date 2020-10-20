@@ -50,6 +50,10 @@ class FirbaseAuthService {
     }
   }
 
+  PeakUser getCurrentUser() {
+    return currentUser;
+  }
+
   Future logout() async {
     try {
       await _auth.signOut();

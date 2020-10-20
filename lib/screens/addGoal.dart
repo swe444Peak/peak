@@ -1,17 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/enums/taskType.dart';
 
 import 'package:peak/services/databaseServices.dart';
+import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:provider/provider.dart';
 
 import '../locator.dart';
 import '../services/notification.dart';
 import 'addTask.dart';
-import 'package:lottie/lottie.dart';
+//import 'package:lottie/lottie.dart';
 
 class NewGoal extends StatefulWidget {
   @override
@@ -19,8 +21,10 @@ class NewGoal extends StatefulWidget {
 }
 
 class _NewGoalState extends State<NewGoal> {
+  GoogleCalendar googleCalendar = new GoogleCalendar();
   var goalsCounter = 0;
   NotificationManager notifyManeger = new NotificationManager();
+  DateTime now = DateTime.now();
   String _error;
   TextEditingController _goalnamecontroller = TextEditingController();
   TextEditingController _dueDatecontroller = TextEditingController();
@@ -311,6 +315,7 @@ class _NewGoalState extends State<NewGoal> {
       child: Text("Yes"),
       onPressed: () {
         //Google calender here
+        googleCalendar.setEvent(_goalnamecontroller.text, now ,_dateTime);
         Navigator.pop(context);
       },
     );

@@ -20,7 +20,7 @@ class EditGoal extends StatefulWidget {
 
 class _EditGoalState extends State<EditGoal> {
   var goalDocId;
-   DateTime now = DateTime.now();
+  DateTime now = DateTime.now();
   GoogleCalendar googleCalendar = new GoogleCalendar();
   NotificationManager notifyManeger = new NotificationManager();
   String _error;
@@ -40,7 +40,6 @@ class _EditGoalState extends State<EditGoal> {
 
     _dueDatecontroller.text =
         "${widget.goal.deadline.day}/${widget.goal.deadline.month}/${widget.goal.deadline.year}";
-    //tasks = ;
     return super.initState();
   }
 
@@ -49,10 +48,9 @@ class _EditGoalState extends State<EditGoal> {
     var user = Provider.of<User>(context);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    var modell = EditGoalModel();
-    print(modell);
+
     return ChangeNotifierProvider<EditGoalModel>(
-        create: (context) => modell,
+        create: (context) => EditGoalModel(),
         child: Consumer<EditGoalModel>(
             builder: (context, model, child) => Scaffold(
                   extendBodyBehindAppBar: true,
@@ -156,9 +154,16 @@ class _EditGoalState extends State<EditGoal> {
                                   bool valid = isValid();
                                   if (valid && model.isValid) {
                                     if (tasks.length > 0) {
-                                     goalDocId= model.createGoal(_goalnamecontroller.text,
-                                          user?.uid, _dateTime, tasks);
-                                     googleCalendar.updateEvent(_goalnamecontroller.text, now ,_dateTime, goalDocId);
+                                      goalDocId = model.createGoal(
+                                          _goalnamecontroller.text,
+                                          user?.uid,
+                                          _dateTime,
+                                          tasks);
+                                      googleCalendar.updateEvent(
+                                          _goalnamecontroller.text,
+                                          now,
+                                          _dateTime,
+                                          goalDocId);
                                       for (var item in tasks) {
                                         switch (item.taskType.toShortString()) {
                                           case 'once':
@@ -216,8 +221,6 @@ class _EditGoalState extends State<EditGoal> {
                                       });
                                     }
                                   } else {
-                                    print(model.goalName.value);
-                                    print(model.dueDate.value);
                                     if (model.goalName.error == null &&
                                         model.goalName.value == null) {
                                       model.setGoalName("");
@@ -255,7 +258,6 @@ class _EditGoalState extends State<EditGoal> {
         lastDate: DateTime(2120));
     if (_picker != null) {
       setState(() {
-        print(_picker);
         _dateTime = _picker;
         _dueDatecontroller.text = _dateTime.toString().split(' ').first;
         editTaskState.currentState.deadline = _dateTime;

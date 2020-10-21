@@ -42,6 +42,7 @@ class EditTaskState extends State<EditTask> {
   @override
   void initState() {
     super.initState();
+    deadline = widget.deadline;
     buildTasks(null);
   }
 
@@ -65,7 +66,6 @@ class EditTaskState extends State<EditTask> {
             (widget.tasks[editIndex].taskType.toShortString()).substring(1));
       } //end if
 
-      print("inside Edit task $editIndex");
       tasksList.add(Card(
           elevation: 20,
           shape: RoundedRectangleBorder(
@@ -546,7 +546,7 @@ class EditTaskState extends State<EditTask> {
             days.add(i + 1);
           }
         }
-        print(days);
+
         var task = WeeklyTask(taskName: taskName, weekdays: days);
         task.calcRepetition(deadline, DateTime.now());
         return task;

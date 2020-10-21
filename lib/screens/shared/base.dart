@@ -42,10 +42,11 @@ class Base extends StatelessWidget {
                   ], begin: Alignment.topLeft, end: Alignment.bottomCenter)),
             ),
             Container(
-              child: Column(
+              child: ListView(
                 children: [
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, height * 0.09, 0, 0.0),
+                    padding:
+                        EdgeInsets.fromLTRB(0, height * 0.09, 0, height * 0.02),
                     child: AppBar(
                       title: Text(
                         title,

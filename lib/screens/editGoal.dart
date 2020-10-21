@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:peak/enums/taskType.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/models/task.dart';
+import 'package:peak/models/user.dart';
+import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/notification.dart';
 import 'package:peak/viewmodels/editGoal_model.dart';
 import 'package:provider/provider.dart';
 
+import '../locator.dart';
 import 'editTask.dart';
 //import 'editTask.dart';
 
@@ -23,7 +26,7 @@ class _EditGoalState extends State<EditGoal> {
   TextEditingController _goalnamecontroller = TextEditingController();
   TextEditingController _dueDatecontroller = TextEditingController();
   DateTime _dateTime;
-  List<Task> tasks = [];
+  List<Task> tasks;
   bool isEnabled = true;
 
   setError(value) => setState(() => _error = value);
@@ -36,7 +39,7 @@ class _EditGoalState extends State<EditGoal> {
 
     _dueDatecontroller.text =
         "${widget.goal.deadline.day}/${widget.goal.deadline.month}/${widget.goal.deadline.year}";
-    //tasks = ;
+    tasks = widget.goal.tasks;
     return super.initState();
   }
 
@@ -47,199 +50,229 @@ class _EditGoalState extends State<EditGoal> {
     var height = MediaQuery.of(context).size.height;
     var modell = EditGoalModel();
     print(modell);
-    return ChangeNotifierProvider<EditGoalModel>(
-        create: (context) => modell,
-        child: Consumer<EditGoalModel>(
-            builder: (context, model, child) => Scaffold(
-                  extendBodyBehindAppBar: true,
-                  backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
-                  appBar: AppBar(
-                    title: Text(
-                      "Edit a goal",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 34.0,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    backgroundColor: Colors.transparent,
-                    elevation: 0.0,
-                    bottom: PreferredSize(
-                      preferredSize:
-                          Size(MediaQuery.of(context).size.width, 50),
-                      child: showAlert(),
-                    ),
-                  ),
-                  body: Stack(
-                    children: [
-                      Container(
-                        width: width * 0.8,
-                        height: width * 0.6,
-                        margin: EdgeInsets.fromLTRB(0, 0.0, width * 0.2, 0.0),
-                        decoration: BoxDecoration(
-                            color: Colors.indigo[500],
-                            borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(400)),
-                            gradient: LinearGradient(
-                                colors: [
-                                  Colors.teal[400],
-                                  Colors.indigo[600],
-                                  Colors.deepPurple[900]
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomCenter)),
-                      ),
-                      SingleChildScrollView(
-                        child: Container(
-                          //height: height * 0.88,
-                          padding: EdgeInsets.fromLTRB(
-                              width * 0.06, 0.0, width * 0.06, height * 0.03),
-                          child: ListView(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            children: [
-                              Card(
-                                elevation: 20,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(width * 0.06),
-                                  child: TextField(
-                                    controller: _goalnamecontroller,
-                                    decoration: InputDecoration(
-                                      labelText: 'Goal Name',
-                                      errorText: model.goalName.error,
-                                    ),
-                                    onChanged: (value) =>
-                                        model.setGoalName(value),
-                                  ),
-                                ),
-                              ),
-                              Card(
-                                elevation: 20,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(width * 0.06),
-                                  child: TextField(
-                                    controller: _dueDatecontroller,
-                                    decoration: InputDecoration(
-                                      labelText: "Due Date",
-                                      errorText: model.dueDate.error,
-                                      icon: Icon(Icons.calendar_today),
-                                    ),
-                                    readOnly: true,
-                                    onTap: () {
-                                      setState(() {
-                                        _datePicker(context);
-                                        model.setDueDate(_dateTime.toString());
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                              EditTask(editTaskState, widget.goal.tasks, width,
-                                  height, setError, _dateTime),
-                              RaisedButton(
-                                splashColor: Colors.teal,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                ),
-                                color: Colors.white,
-                                onPressed: () {
-                                  bool valid = isValid();
-                                  if (valid && model.isValid) {
-                                    if (tasks.length > 0) {
-                                      model.createGoal(_goalnamecontroller.text,
-                                          user?.uid, _dateTime, tasks);
-                                      for (var item in tasks) {
-                                        switch (item.taskType.toShortString()) {
-                                          case 'once':
-                                            OnceTask oTask = item as OnceTask;
-                                            notifyManeger.showNotificationOnce(
-                                                'Reminder To',
-                                                item.taskName,
-                                                oTask.date);
-                                            print("Once");
-                                            print(oTask.date);
-                                            break;
-                                          case 'daily':
-                                            print("Daily");
-                                            notifyManeger.showDailyNotification(
-                                                'Daily Reminder',
-                                                item.taskName,
-                                                _dateTime);
 
-                                            break;
-                                          case 'weekly':
-                                            WeeklyTask wTask =
-                                                item as WeeklyTask;
-                                            notifyManeger.showTaskNotification(
-                                                'Weekly Reminder',
-                                                item.taskName,
-                                                wTask.dates);
-                                            break;
-                                          case 'monthly':
-                                            //add dates list
-                                            MonthlyTask mTask =
-                                                item as MonthlyTask;
-                                            notifyManeger.showTaskNotification(
-                                                'Monthly Reminder',
-                                                item.taskName,
-                                                mTask.dates);
-                                            break;
-                                          default:
-                                            print(
-                                                'Somthing went WRONG in set notification');
-                                        }
-                                      }
-                                      Navigator.pushNamed(context, 'goalsList');
-                                      //confirm message here
-                                      goalChangeDailog(context);
-                                      notifyManeger.showDeadlineNotification(
-                                          'Deadline Reminder',
-                                          'The deadline for ' +
-                                              _goalnamecontroller.text +
-                                              ' goal is Tomorrow',
-                                          _dateTime);
-                                    } else {
-                                      setState(() {
-                                        _error =
-                                            "a goal should have at lest one task";
-                                      });
-                                    }
-                                  } else {
-                                    print(model.goalName.value);
-                                    print(model.dueDate.value);
-                                    if (model.goalName.error == null &&
-                                        model.goalName.value == null) {
-                                      model.setGoalName("");
-                                    }
-                                    if (model.dueDate.error == null &&
-                                        model.dueDate.value == null) {
-                                      model.setDueDate("");
-                                    }
-                                    if (!valid) {
-                                      setState(() {
-                                        _error =
-                                            "Oops, it looks like you have invalid tasks! try to edit or delete them";
-                                      });
-                                    }
-                                  }
-                                },
-                                textColor: Colors.black,
-                                child: Text('Edit Goal',
-                                    style: TextStyle(fontSize: 19.0)),
+    return Provider(
+        create: (context) => tasks,
+        child: StreamProvider<PeakUser>.value(
+            initialData: PeakUser(uid: "", name: ""),
+            value: DatabaseServices().userData(user.uid),
+            builder: (context, snapshot) {
+              return ChangeNotifierProvider<EditGoalModel>(
+                  create: (context) => locator<EditGoalModel>(),
+                  child: Consumer<EditGoalModel>(
+                      builder: (context, model, child) => SafeArea(
+                              child: Scaffold(
+                            extendBodyBehindAppBar: true,
+                            backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
+                            appBar: AppBar(
+                              title: Text(
+                                "Edit a goal",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 34.0,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )));
+                              backgroundColor: Colors.transparent,
+                              elevation: 0.0,
+                              bottom: PreferredSize(
+                                preferredSize:
+                                    Size(MediaQuery.of(context).size.width, 50),
+                                child: showAlert(),
+                              ),
+                            ),
+                            body: Stack(
+                              children: [
+                                Container(
+                                  width: width * 0.8,
+                                  height: width * 0.6,
+                                  margin: EdgeInsets.fromLTRB(
+                                      0, 0.0, width * 0.2, 0.0),
+                                  decoration: BoxDecoration(
+                                      color: Colors.indigo[500],
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(400)),
+                                      gradient: LinearGradient(
+                                          colors: [
+                                            Colors.teal[400],
+                                            Colors.indigo[600],
+                                            Colors.deepPurple[900]
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomCenter)),
+                                ),
+                                SingleChildScrollView(
+                                  child: Container(
+                                    padding: EdgeInsets.fromLTRB(width * 0.06,
+                                        0.0, width * 0.06, height * 0.03),
+                                    child: ListView(
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      children: [
+                                        Card(
+                                          elevation: 20,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                          child: Padding(
+                                            padding:
+                                                EdgeInsets.all(width * 0.06),
+                                            child: TextField(
+                                              controller: _goalnamecontroller,
+                                              decoration: InputDecoration(
+                                                labelText: 'Goal Name',
+                                                errorText: model.goalName.error,
+                                              ),
+                                              onChanged: (value) =>
+                                                  model.setGoalName(value),
+                                            ),
+                                          ),
+                                        ),
+                                        Card(
+                                          elevation: 20,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                          child: Padding(
+                                            padding:
+                                                EdgeInsets.all(width * 0.06),
+                                            child: TextField(
+                                              controller: _dueDatecontroller,
+                                              decoration: InputDecoration(
+                                                labelText: "Due Date",
+                                                errorText: model.dueDate.error,
+                                                icon:
+                                                    Icon(Icons.calendar_today),
+                                              ),
+                                              readOnly: true,
+                                              onTap: () {
+                                                setState(() {
+                                                  _datePicker(context);
+                                                  model.setDueDate(
+                                                      _dateTime.toString());
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                        EditTask(editTaskState, tasks, width,
+                                            height, setError, _dateTime),
+                                        RaisedButton(
+                                          splashColor: Colors.teal,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(18.0),
+                                          ),
+                                          color: Colors.white,
+                                          onPressed: () {
+                                            bool valid = isValid();
+                                            if (valid && model.isValid) {
+                                              if (tasks.length > 0) {
+                                                model.createGoal(
+                                                    _goalnamecontroller.text,
+                                                    user?.uid,
+                                                    _dateTime,
+                                                    tasks);
+                                                for (var item in tasks) {
+                                                  switch (item.taskType
+                                                      .toShortString()) {
+                                                    case 'once':
+                                                      OnceTask oTask =
+                                                          item as OnceTask;
+                                                      notifyManeger
+                                                          .showNotificationOnce(
+                                                              'Reminder To',
+                                                              item.taskName,
+                                                              oTask.date);
+                                                      print("Once");
+                                                      print(oTask.date);
+                                                      break;
+                                                    case 'daily':
+                                                      print("Daily");
+                                                      notifyManeger
+                                                          .showDailyNotification(
+                                                              'Daily Reminder',
+                                                              item.taskName,
+                                                              _dateTime);
+
+                                                      break;
+                                                    case 'weekly':
+                                                      WeeklyTask wTask =
+                                                          item as WeeklyTask;
+                                                      notifyManeger
+                                                          .showTaskNotification(
+                                                              'Weekly Reminder',
+                                                              item.taskName,
+                                                              wTask.dates);
+                                                      break;
+                                                    case 'monthly':
+                                                      //add dates list
+                                                      MonthlyTask mTask =
+                                                          item as MonthlyTask;
+                                                      notifyManeger
+                                                          .showTaskNotification(
+                                                              'Monthly Reminder',
+                                                              item.taskName,
+                                                              mTask.dates);
+                                                      break;
+                                                    default:
+                                                      print(
+                                                          'Somthing went WRONG in set notification');
+                                                  }
+                                                }
+                                                Navigator.pushNamed(
+                                                    context, 'goalsList');
+                                                //confirm message here
+                                                goalChangeDailog(context);
+                                                notifyManeger
+                                                    .showDeadlineNotification(
+                                                        'Deadline Reminder',
+                                                        'The deadline for ' +
+                                                            _goalnamecontroller
+                                                                .text +
+                                                            ' goal is Tomorrow',
+                                                        _dateTime);
+                                              } else {
+                                                setState(() {
+                                                  _error =
+                                                      "a goal should have at lest one task";
+                                                });
+                                              }
+                                            } else {
+                                              print(model.goalName.value);
+                                              print(model.dueDate.value);
+                                              if (model.goalName.error ==
+                                                      null &&
+                                                  model.goalName.value ==
+                                                      null) {
+                                                model.setGoalName("");
+                                              }
+                                              if (model.dueDate.error == null &&
+                                                  model.dueDate.value == null) {
+                                                model.setDueDate("");
+                                              }
+                                              if (!valid) {
+                                                setState(() {
+                                                  _error =
+                                                      "Oops, it looks like you have invalid tasks! try to edit or delete them";
+                                                });
+                                              }
+                                            }
+                                          },
+                                          textColor: Colors.black,
+                                          child: Text('Edit Goal',
+                                              style: TextStyle(fontSize: 19.0)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ))));
+            }));
   }
 
   Future _datePicker(BuildContext context) async {

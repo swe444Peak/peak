@@ -112,5 +112,3 @@ class DatabaseServices {
     return peakuser;
   }
 }
-
-

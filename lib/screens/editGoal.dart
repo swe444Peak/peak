@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:peak/enums/taskType.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/models/task.dart';
+import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/services/notification.dart';
 import 'package:peak/viewmodels/editGoal_model.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,9 @@ class EditGoal extends StatefulWidget {
 }
 
 class _EditGoalState extends State<EditGoal> {
+  var goalDocId;
+   DateTime now = DateTime.now();
+  GoogleCalendar googleCalendar = new GoogleCalendar();
   NotificationManager notifyManeger = new NotificationManager();
   String _error;
   TextEditingController _goalnamecontroller = TextEditingController();
@@ -152,8 +156,9 @@ class _EditGoalState extends State<EditGoal> {
                                   bool valid = isValid();
                                   if (valid && model.isValid) {
                                     if (tasks.length > 0) {
-                                      model.createGoal(_goalnamecontroller.text,
+                                     goalDocId= model.createGoal(_goalnamecontroller.text,
                                           user?.uid, _dateTime, tasks);
+                                     googleCalendar.updateEvent(_goalnamecontroller.text, now ,_dateTime, goalDocId);
                                       for (var item in tasks) {
                                         switch (item.taskType.toShortString()) {
                                           case 'once':

@@ -36,6 +36,7 @@ class GoalDetails extends StatelessWidget {
                 ),
                 onPressed: () async {
                   var isDeleted = await model.deleteGoal(goal);
+                  await model.deletFromGooleCalendar(goal.docID);
                   if (isDeleted) {
                     Navigator.pop(context);
                   }
@@ -157,7 +158,7 @@ class GoalDetails extends StatelessWidget {
         ),
       ),
       onTap: () {
-        model.addGoalToGoogleCalendar();
+        model.addGoalToGoogleCalendar(goal.goalName,goal.creationDate,goal.deadline,goal.docID);
       },
     );
   }

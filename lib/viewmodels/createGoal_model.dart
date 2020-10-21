@@ -40,7 +40,7 @@ class CreateGoalModel extends ChangeNotifier {
     }
     notifyListeners();
   }
-
+  
   Future createGoal(
       String goalName, String uID, DateTime deadLine, List<Task> tasks) async {
     Goal goal = Goal(

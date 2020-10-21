@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/services/databaseServices.dart';
+import 'package:peak/services/firebaseAuthService.dart';
 import 'package:peak/viewmodels/editProfile_model.dart';
 import 'package:provider/provider.dart';
 
@@ -15,10 +16,17 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   TextEditingController _editnamecontroller = new TextEditingController();
   final _database = locator<DatabaseServices>();
+  final _fireService = locator<FirbaseAuthService>();
   @override
   void initState() {
-    _editnamecontroller.text = _database.getUser().name;
+    EditProfileModel().setName("");
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _editnamecontroller.dispose();
+    super.dispose();
   }
 
   @override
@@ -29,7 +37,6 @@ class _EditProfileState extends State<EditProfile> {
     var height = screenSize.height;
     final double circleRadius = 250.0;
     final double circleBorderWidth = 10;
-
     return StreamProvider<PeakUser>.value(
         initialData: PeakUser(uid: "", name: ""),
         value: DatabaseServices().userData(user.uid),
@@ -143,7 +150,8 @@ class _EditProfileState extends State<EditProfile> {
                                                   controller:
                                                       _editnamecontroller,
                                                   decoration: InputDecoration(
-                                                    labelText: 'Name',
+                                                    labelText:
+                                                        "${Provider.of<PeakUser>(context).name}",
                                                     labelStyle:
                                                         TextStyle(fontSize: 20),
                                                     errorText: model.name.error,
@@ -190,11 +198,10 @@ class _EditProfileState extends State<EditProfile> {
                                                         ),
                                                       ),
                                                       onTap: () async {
-                                                        var upload =
-                                                            await EditProfileModel()
-                                                                .uploadPic();
+                                                        await EditProfileModel()
+                                                            .uploadPic();
                                                         updateConfirmDailog(
-                                                            context);
+                                                            context, "picture");
                                                       }),
                                                 ),
                                               ),
@@ -229,10 +236,25 @@ class _EditProfileState extends State<EditProfile> {
                                                         ),
                                                       ),
                                                       onTap: () async {
-                                                        var upload = await model
-                                                            .updateName(
-                                                                _editnamecontroller
-                                                                    .text);
+                                                        if (model.isValid) {
+                                                          print(model.isValid);
+                                                          print(model.name);
+                                                          var upload = await model
+                                                              .updateName(
+                                                                  _editnamecontroller
+                                                                      .text);
+                                                          updateConfirmDailog(
+                                                              context, "name");
+                                                        } else {
+                                                          if (model.name
+                                                                      .error ==
+                                                                  null &&
+                                                              model.name
+                                                                      .value ==
+                                                                  null) {
+                                                            model.setName("");
+                                                          }
+                                                        }
                                                       }),
                                                 ),
                                               ),
@@ -249,7 +271,7 @@ class _EditProfileState extends State<EditProfile> {
         });
   }
 
-  updateConfirmDailog(BuildContext context) {
+  updateConfirmDailog(BuildContext context, String content) {
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -261,7 +283,7 @@ class _EditProfileState extends State<EditProfile> {
           content: Column(
             children: [
               SizedBox(height: 10),
-              Text("Updated successfully"),
+              Text("your $content was Updated successfully"),
             ],
           ),
           actions: [

@@ -15,6 +15,7 @@ class EditProfileModel extends ChangeNotifier {
   ValidationItem _name = ValidationItem(null, null);
 
   ValidationItem get name => _name;
+  bool get isValid => name.value != null;
 
   ViewState _state = ViewState.Idle;
   ViewState get state => _state;
@@ -24,7 +25,7 @@ class EditProfileModel extends ChangeNotifier {
   }
 
   void setName(String name) {
-    if (name.trim().isEmpty) {
+    if (name.trim().isEmpty && !isValid) {
       _name = ValidationItem(null, "name field is required");
     } else {
       _name = ValidationItem(name, null);
@@ -54,11 +55,12 @@ class EditProfileModel extends ChangeNotifier {
     final File _myImage = await pickImage();
     if (_myImage != null) {
       print('IN UPLOAD');
-      var rand = Random(25);
+      Random rand = Random();
       final StorageReference firebaseStorageRef = FirebaseStorage.instance
           .ref()
           .child(
-              'profilepics/${rand.nextInt(5000).toString()}.jpg'); //i is the name of the image
+              'profilepics/${rand.nextInt(50000).toString()}.jpg'); //i is the name of the image
+      print(rand.nextInt(50000));
       StorageUploadTask uploadTask = firebaseStorageRef.putFile(_myImage);
       StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
       var downloadUrl = await storageSnapshot.ref.getDownloadURL();

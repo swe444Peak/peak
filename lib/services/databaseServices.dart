@@ -109,8 +109,10 @@ class DatabaseServices {
     userData().listen((event) async {
       peakuser = event;
     });
-    return peakuser;
+    while (peakuser != null) {
+      return peakuser;
+    }
+    print("problem in getUser");
+    return null;
   }
 }
-
-

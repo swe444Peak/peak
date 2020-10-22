@@ -4,8 +4,14 @@ import 'package:peak/models/validationItem.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/models/task.dart';
+import 'package:peak/services/dialogService.dart';
+import 'package:peak/services/googleCalendar.dart';
+
+import '../locator.dart';
 
 class EditGoalModel extends ChangeNotifier {
+  DialogService _dialogService = locator<DialogService>();
+  final _firstoreService = locator<DatabaseServices>();
   ValidationItem _goalName = ValidationItem("l", null);
   ValidationItem _dueDate = ValidationItem("r", null);
 
@@ -41,17 +47,32 @@ class EditGoalModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future createGoal(
-      String goalName, String uID, DateTime deadLine, List<Task> tasks) async {
+  Future updateGoal(String goalName, DateTime creationDate, DateTime deadline,
+      List<Task> tasks, String docID) async {
     Goal goal = Goal(
         goalName: goalName,
-        uID: uID,
-        deadline: deadLine,
+        deadline: deadline,
+        docID: docID,
         tasks: tasks,
-        creationDate: DateTime.now());
+        creationDate: creationDate);
     setState(ViewState.Busy);
-    var result = await DatabaseServices().updateGoal(goal: goal);
+    var result = await _firstoreService.updateGoal(goal);
     setState(ViewState.Idle);
+
+    var dialogResponse = await _dialogService.showConfirmationDialog(
+      title: 'your Goal was updated successfully!',
+      description: 'Do you want to update your Google Calendar?',
+      confirmationTitle: 'Yes',
+      cancelTitle: 'No',
+    );
+    if (dialogResponse.confirmed) {
+      GoogleCalendar googleCalendar = new GoogleCalendar();
+      setState(ViewState.Busy);
+      googleCalendar.updateEvent(goalName, DateTime.now(), deadline, docID);
+      setState(ViewState.Idle);
+      return true;
+    }
+
     return result;
   }
 }

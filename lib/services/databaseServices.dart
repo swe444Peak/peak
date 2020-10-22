@@ -5,6 +5,7 @@ import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
+
 import 'firebaseAuthService.dart';
 
 class DatabaseServices {
@@ -38,7 +39,7 @@ class DatabaseServices {
      }
   } //end updateUserData*/
 
-  Future updateGoal({Goal goal}) async {
+  Future addGoal({Goal goal}) async {
     var doc;
     try {
       doc = await _goalsCollectionReference.add(goal.toMap());
@@ -49,6 +50,14 @@ class DatabaseServices {
     }
   }
 
+  Future updateGoal(Goal goal) async {
+    await _goalsCollectionReference
+        .doc(goal.docID)
+        .update(goal.updateToMap())
+        .catchError((error) {
+      print(error);
+    });
+  }
   //creating user data stream to get user doc
 
   Stream<PeakUser> userData([String id]) {

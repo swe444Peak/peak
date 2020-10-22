@@ -16,7 +16,7 @@ class Goal {
 
   Goal(
       {@required String goalName,
-      @required String uID,
+      String uID,
       @required DateTime deadline,
       String docID,
       List<Task> tasks,
@@ -43,6 +43,17 @@ class Goal {
       "tasks": this.mapfy(),
       "isAchieved": (this.isAchieved ? true : this.checkAchieved()),
       "creationDate": this.creationDate,
+      "numOfTasks": this.numOfTasks,
+    };
+  }
+
+  Map<String, dynamic> updateToMap() {
+    return {
+      "goalName": this.goalName,
+      "deadline": Timestamp.fromMicrosecondsSinceEpoch(
+          this.deadline.microsecondsSinceEpoch),
+      "tasks": this.mapfy(),
+      "isAchieved": (this.isAchieved ? true : this.checkAchieved()),
       "numOfTasks": this.numOfTasks,
     };
   }
@@ -124,8 +135,8 @@ class Goal {
     return totalTasks;
   }
 
-  int calcAchievedTasks(){
-    int count =0;
+  int calcAchievedTasks() {
+    int count = 0;
     this.tasks.forEach((element) {
       count += element.achievedTasks;
     }); //end forEach

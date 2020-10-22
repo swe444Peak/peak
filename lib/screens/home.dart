@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:peak/services/databaseServices.dart';
 import 'package:peak/viewmodels/home_model.dart';
+import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import '../locator.dart';
@@ -11,7 +14,8 @@ class HomePage extends StatefulWidget{
 
 } 
 class HomePageState extends State<HomePage>{
-    int tab;     //tabs: 0=>Tasks  1=>completed  2=>Incompleted
+    int tab=0;     //tabs: 0=>Tasks  1=>completed  2=>Incompleted
+    var user;
     var width;
     var height;
     List<Widget> tasks = [];
@@ -21,13 +25,15 @@ class HomePageState extends State<HomePage>{
     var screenSize = MediaQuery.of(context).size;
     width = screenSize.width;
     height = screenSize.height;
+    var user = Provider.of<User>(context);
+    var puser;
+    DatabaseServices().userData(user?.uid).listen((event) {
+      puser = event;
+     });
 
     return ViewModelBuilder<HomeModel>.reactive(
       viewModelBuilder: () => locator<HomeModel>(),
-      onModelReady: (model) {
-        model.readTasks();
-        _buildTasks(model: model);
-      },
+      onModelReady: (model) => model.readTasks(),
       builder: (context, model, child) => Scaffold(
           extendBodyBehindAppBar: true,
           backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
@@ -84,7 +90,7 @@ class HomePageState extends State<HomePage>{
                               padding: EdgeInsets.fromLTRB(
                                   0.0, 0.0, 0.0, (width * 0.03)),
                               child: Text(
-                                "Hi, ${model.getUser().name[0].toUpperCase()+model.getUser().name.substring(1)}!",
+                                "Hi, ${(puser != null)? puser.name[0].toUpperCase()+puser.name.substring(1) : " "}!",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30.0,
@@ -125,8 +131,46 @@ class HomePageState extends State<HomePage>{
                               ),
                             )
                           : (model.goals != null)
-                              ? ListView(
-                                children: tasks)
+                              ? ListView.builder(
+                                  itemCount: model.tasks.length,
+                                  itemBuilder: (context, index){
+                                    var task = model.tasks[index];
+                                    print(model.tasks.length);
+                                    return Card(
+                                      elevation: 20,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                      ),
+                  child: Padding(
+                    padding: EdgeInsets.all(width*0.008),
+                    child: ListTile(
+                      title: Text(task["task"].taskName,
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: (task["status"]? Colors.grey : Colors.black87),
+                        decoration: (task["status"]? TextDecoration.lineThrough : TextDecoration.none),
+                      ),),
+                      subtitle: Text(task["goal"]),
+                      trailing: IconButton(
+                        icon: Icon(
+                        (task["status"]? Icons.check_box : Icons.check_box_outline_blank),
+                        color: (task["status"]? Colors.green : Colors.grey),
+                      ),
+                onPressed: (){
+                  if(task["status"]){
+                    model.updateTask(task["task"], task["goalId"], task["status"]);
+                    //initState();
+                  }else{
+                    model.updateTask(task["task"], task["goalId"], task["status"]);
+                    //initState();
+                  }
+                }),
+                    ),
+                )
+                );
+                
+                                  },)
                               : Center(
                                   child: CircularProgressIndicator(),
                                 ),
@@ -140,17 +184,21 @@ class HomePageState extends State<HomePage>{
   }//end bulid 
 
   
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    super.initState();
+  }
 
-  void _buildTasks({int tab = 0, HomeModel model}){
+  void _buildTasks({int tab = 0, }){
+    HomeModel model = locator<HomeModel>();
+    model.readTasks();
     List<Map<String, dynamic>> completed = model.compTasks;
     List<Map<String, dynamic>> incompleted = model.incompTasks;
-    numTasks = completed.length + incompleted.length;
+    numTasks = ((completed.isNotEmpty)? completed.length : 0) + incompleted.length;
+    print("num = $numTasks name = ");
     switch(tab){
       case 0:
+              if(completed.isNotEmpty)
               incompleted.forEach((element) { 
                 tasks.add(Card(
                   child: Padding(
@@ -169,13 +217,16 @@ class HomePageState extends State<HomePage>{
                 )
                 );//end add
               });//end forEach incopmleted
-
+              print("here****************");
               completed.forEach((element) { 
                 tasks.add(Card(
                   child: Padding(
                     padding: EdgeInsets.all(width*0.1),
                     child: ListTile(
-                      title: Text(element["task"]),
+                      title: Text(element["task"],
+                      style: TextStyle(
+                        decoration: TextDecoration.lineThrough,
+                      ),),
                       subtitle: Text(element["goal"]),
                       trailing: IconButton(
                         icon: Icon(

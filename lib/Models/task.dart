@@ -40,7 +40,7 @@ abstract class Task {
 
 class DailyTask extends Task {
   List<DateTime> doneDates = List<DateTime>();
-  DailyTask({@required taskName, taskRepetition, achievedTasks = 0})
+  DailyTask({@required taskName, taskRepetition, achievedTasks = 0, doneDates})
       : super(
             taskName: taskName,
             taskType: TaskType.daily,
@@ -53,6 +53,7 @@ class DailyTask extends Task {
       "taskType": this.taskType.toShortString(),
       "taskRepetition": this.taskRepetition,
       "achievedTasks": this.achievedTasks,
+      "doneDates": this.doneDates,
     };
   }
 
@@ -64,6 +65,7 @@ class DailyTask extends Task {
       taskName: map['taskName'],
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
+      doneDates: List.castFrom(map['doneDates']),
     );
   }
 
@@ -76,7 +78,7 @@ class DailyTask extends Task {
 
 class OnceTask extends Task {
   final DateTime date;
-  final bool done;
+  bool done;
   OnceTask(
       {@required taskName,
       @required this.date,
@@ -143,7 +145,8 @@ class WeeklyTask extends Task {
       {@required taskName,
       @required this.weekdays,
       taskRepetition,
-      achievedTasks = 0})
+      achievedTasks = 0,
+      doneDates})
       : super(
             taskName: taskName,
             taskType: TaskType.weekly,
@@ -155,7 +158,8 @@ class WeeklyTask extends Task {
       @required this.weekdays,
       this.dates,
       taskRepetition,
-      achievedTasks = 0})
+      achievedTasks = 0,
+      doneDates})
       : super(
             taskName: taskName,
             taskType: TaskType.weekly,
@@ -171,6 +175,7 @@ class WeeklyTask extends Task {
       "dates": this.dates,
       "taskRepetition": this.taskRepetition,
       "achievedTasks": this.achievedTasks,
+      "doneDates": this.doneDates,
     };
   }
 
@@ -185,6 +190,7 @@ class WeeklyTask extends Task {
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
       dates: List.castFrom(map['dates']),
+      doneDates: List.castFrom(map['doneDates'])
     );
   }
 
@@ -265,6 +271,7 @@ class MonthlyTask extends Task {
     @required this.day,
     taskRepetition,
     achievedTasks = 0,
+    doneDates,
   }) : super(
           taskName: taskName,
           taskType: TaskType.monthly,
@@ -278,6 +285,7 @@ class MonthlyTask extends Task {
     this.dates,
     taskRepetition,
     achievedTasks = 0,
+    doneDates,
   }) : super(
           taskName: taskName,
           taskType: TaskType.monthly,
@@ -293,6 +301,7 @@ class MonthlyTask extends Task {
       "dates": this.dates,
       "taskRepetition": this.taskRepetition,
       "achievedTasks": this.achievedTasks,
+      "doneDates": this.doneDates,
     };
   }
 
@@ -306,6 +315,7 @@ class MonthlyTask extends Task {
       dates: List.castFrom(map['dates']),
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
+      doneDates: List.castFrom(map['doneDates']),
     );
   }
 

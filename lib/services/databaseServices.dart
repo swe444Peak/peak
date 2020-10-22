@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
+import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'firebaseAuthService.dart';
 
@@ -92,6 +93,17 @@ class DatabaseServices {
     return await userCollection.doc(_firebaseService.currentUser.uid).update({
       "picURL": picURL,
     });
+  }
+
+  Future updateTask(String docId, dynamic orignalTask, dynamic editedTask) async{
+    //print("before remove");
+    await _goalsCollectionReference.doc(docId).update(
+      {"tasks": FieldValue.arrayRemove([orignalTask.toMap()])}
+    );
+    //print("after remove");
+    await _goalsCollectionReference.doc(docId).update(
+      {"tasks": FieldValue.arrayUnion([editedTask.toMap()])}
+    );
   }
 
   Future deleteGoal(String documentId) async {

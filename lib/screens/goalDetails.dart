@@ -19,6 +19,7 @@ class GoalDetails extends StatelessWidget {
       create: (context) => locator<GoalDetailsModel>(),
       child: Consumer<GoalDetailsModel>(
         builder: (context, model, child) => Base(
+          chidlPadding: EdgeInsets.fromLTRB(width * 0.06, 0, width * 0.06, 0.0),
           title: "Goal Details",
           actions: [
             IconButton(
@@ -36,9 +37,19 @@ class GoalDetails extends StatelessWidget {
                 ),
                 onPressed: () async {
                   var isDeleted = await model.deleteGoal(goal);
-                  await model.deletFromGooleCalendar(goal.docID);
                   if (isDeleted) {
                     Navigator.pop(context);
+                    var deleteDialogResponse =
+                        await model.dialogService.showConfirmationDialog(
+                      title: 'your Goal was deleted successfully!',
+                      description:
+                          'Do you want to delete this goal from your Google Calendar?',
+                      confirmationTitle: 'Yes',
+                      cancelTitle: 'No',
+                    );
+                    if (deleteDialogResponse.confirmed) {
+                      model.deletFromGooleCalendar(goal.docID);
+                    }
                   }
                 }),
           ],
@@ -158,7 +169,8 @@ class GoalDetails extends StatelessWidget {
         ),
       ),
       onTap: () {
-        model.addGoalToGoogleCalendar(goal.goalName,goal.creationDate,goal.deadline,goal.docID);
+        model.addGoalToGoogleCalendar(
+            goal.goalName, goal.creationDate, goal.deadline, goal.docID);
       },
     );
   }

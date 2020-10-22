@@ -49,14 +49,20 @@ class EditGoalModel extends ChangeNotifier {
 
   Future updateGoal(String goalName, DateTime creationDate, DateTime deadline,
       List<Task> tasks, String docID) async {
-    Goal goal = Goal(
+    int numOfTasks = 0;
+    tasks.forEach((element) {
+      numOfTasks += element.taskRepetition;
+    });
+
+    Goal updatedGoal = Goal(
         goalName: goalName,
         deadline: deadline,
         docID: docID,
         tasks: tasks,
-        creationDate: creationDate);
+        creationDate: creationDate,
+        numOfTasks: numOfTasks);
     setState(ViewState.Busy);
-    var result = await _firstoreService.updateGoal(goal);
+    var result = await _firstoreService.updateGoal(updatedGoal);
     setState(ViewState.Idle);
 
     var dialogResponse = await _dialogService.showConfirmationDialog(

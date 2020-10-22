@@ -37,6 +37,7 @@ class EditTaskState extends State<EditTask> {
   TextEditingController _updateController = new TextEditingController();
   var repItems;
   int editIndex;
+
   @override
   Widget build(BuildContext context) {
     return new ListView(
@@ -512,7 +513,9 @@ class EditTaskState extends State<EditTask> {
   Task creatTask({TaskType taskType, @required String taskName}) {
     switch (taskType) {
       case TaskType.daily:
-        return DailyTask(taskName: taskName);
+        var task = DailyTask(taskName: taskName);
+        task.calcRepetition(deadline, DateTime.now());
+        return task;
       case TaskType.once:
         var date = _dateTime == null ? DateTime.now() : _dateTime;
         var task = OnceTask(taskName: taskName, date: date);

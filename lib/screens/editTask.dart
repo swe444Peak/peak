@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:peak/enums/taskType.dart';
+import 'package:peak/services/dialogService.dart';
 
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:peak/models/task.dart';
+
+import '../locator.dart';
 
 class EditTask extends StatefulWidget {
   var width;
@@ -19,6 +22,7 @@ class EditTask extends StatefulWidget {
 }
 
 class EditTaskState extends State<EditTask> {
+  DialogService _dialogService = locator<DialogService>();
   String repetitionError;
   var values = [true, false, false, false, false, false, false];
   DateTime deadline;
@@ -273,40 +277,8 @@ class EditTaskState extends State<EditTask> {
           child: ListTile(
             leading: new IconButton(
                 icon: const Icon(Icons.delete),
-                onPressed: () {
-                  //alertt
-                  Widget noButton = FlatButton(
-                    child: Text("No"),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  );
-                  Widget yesButton = FlatButton(
-                    child: Text("Yes"),
-                    onPressed: () {
-                      _removeLabelAt(index);
-                      Navigator.pop(context);
-                    },
-                  );
-                  // set up the AlertDialog
-                  AlertDialog alert = AlertDialog(
-                    scrollable: true,
-                    contentPadding: EdgeInsets.all(5),
-                    title: Text("Delete task"),
-                    content: Text("are you sure you want to delete this task?"),
-                    actions: [
-                      noButton,
-                      yesButton,
-                    ],
-                  );
-                  // show the dialog
-                  showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context) {
-                      return alert;
-                    },
-                  );
+                onPressed: () async {
+                  if (await _confirmRemove()) _removeLabelAt(index);
                 }),
             title: Text(widget.tasks[index].taskName),
             subtitle: Text(
@@ -376,6 +348,16 @@ class EditTaskState extends State<EditTask> {
         buildTasks(null);
       }
     });
+  }
+
+  Future<bool> _confirmRemove() async {
+    var dialogResponse = await _dialogService.showConfirmationDialog(
+      title: 'Delete task',
+      description: 'are you sure you want to delete this task',
+      confirmationTitle: 'Yes',
+      cancelTitle: 'No',
+    );
+    return dialogResponse.confirmed;
   }
 
   _editLabelAt(index, [isValid]) {

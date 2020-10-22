@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 import '../locator.dart';
 import 'addTask.dart';
 import 'editTask.dart';
-//import 'editTask.dart';
 
 class EditGoal extends StatefulWidget {
   Goal goal;
@@ -23,7 +22,7 @@ class EditGoal extends StatefulWidget {
 class _EditGoalState extends State<EditGoal> {
   var goalDocId;
   DateTime now = DateTime.now();
-  GoogleCalendar googleCalendar = new GoogleCalendar();
+
   NotificationManager notifyManeger = new NotificationManager();
   String _error;
   TextEditingController _goalnamecontroller = TextEditingController();
@@ -39,9 +38,9 @@ class _EditGoalState extends State<EditGoal> {
   void initState() {
     _goalnamecontroller.text = widget.goal.goalName;
     _dateTime = widget.goal.deadline;
-
     _dueDatecontroller.text =
         "${widget.goal.deadline.day}/${widget.goal.deadline.month}/${widget.goal.deadline.year}";
+    tasks = widget.goal.tasks;
     return super.initState();
   }
 
@@ -156,16 +155,12 @@ class _EditGoalState extends State<EditGoal> {
                                   bool valid = isValid();
                                   if (valid && model.isValid) {
                                     if (tasks.length > 0) {
-                                      goalDocId = model.createGoal(
+                                      model.updateGoal(
                                           _goalnamecontroller.text,
-                                          user?.uid,
+                                          widget.goal.creationDate,
                                           _dateTime,
-                                          tasks);
-                                      googleCalendar.updateEvent(
-                                          _goalnamecontroller.text,
-                                          now,
-                                          _dateTime,
-                                          goalDocId);
+                                          tasks,
+                                          widget.goal.docID);
                                       for (var item in tasks) {
                                         switch (item.taskType.toShortString()) {
                                           case 'once':

@@ -21,7 +21,7 @@ class NewGoal extends StatefulWidget {
 }
 
 class _NewGoalState extends State<NewGoal> {
-  var goalDocId="";
+  var goalDocId;
   GoogleCalendar googleCalendar = new GoogleCalendar();
   var goalsCounter = 0;
   NotificationManager notifyManeger = new NotificationManager();
@@ -162,7 +162,7 @@ class _NewGoalState extends State<NewGoal> {
                                     bool valid = isValid();
                                     if (valid && model.isValid) {
                                       if (tasks.length > 0) {
-                                       goalDocId= model.createGoal(
+                                        goalDocId = model.createGoal(
                                             _goalnamecontroller.text,
                                             user?.uid,
                                             _dateTime,
@@ -216,7 +216,7 @@ class _NewGoalState extends State<NewGoal> {
                                         Navigator.pushNamed(
                                             context, 'goalsList');
                                         //confirm message here
-                                        goalConfirmDailog(context);
+                                        goalConfirmDailog();
                                         notifyManeger.showDeadlineNotification(
                                             'Deadline Reminder',
                                             'The deadline for ' +
@@ -304,7 +304,7 @@ class _NewGoalState extends State<NewGoal> {
     }
   }
 
-  goalConfirmDailog(BuildContext context) {
+  goalConfirmDailog() {
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("No"),
@@ -316,34 +316,31 @@ class _NewGoalState extends State<NewGoal> {
       child: Text("Yes"),
       onPressed: () {
         //Google calender here
-      //  googleCalendar.setEvent(_goalnamecontroller.text, now ,_dateTime,goalDocId);
-      googleCalendar.setEvent(_goalnamecontroller.text, now ,_dateTime);
+        googleCalendar.setEvent(
+            _goalnamecontroller.text, now, _dateTime, goalDocId);
         Navigator.pop(context);
       },
     );
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      scrollable: true,
-      contentPadding: EdgeInsets.all(5),
-      title: Text("Added Successfully !"),
-      content: Column(
-        children: [
-          Lottie.asset('assets/goalConfirm.json', width: 200, height: 200),
-          Text(
-              "your goal was added successfully , would you like to add it to google calendar?"),
-        ],
-      ),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-    // show the dialog
     showDialog(
       context: context,
-      barrierDismissible: true,
+      useRootNavigator: false,
       builder: (BuildContext context) {
-        return alert;
+        return AlertDialog(
+          scrollable: true,
+          contentPadding: EdgeInsets.all(5),
+          title: Text("Added Successfully !"),
+          content: Column(
+            children: [
+              Lottie.asset('assets/goalConfirm.json', width: 200, height: 200),
+              Text(
+                  "your goal was added successfully , would you like to add it to google calendar?"),
+            ],
+          ),
+          actions: [
+            cancelButton,
+            continueButton,
+          ],
+        );
       },
     );
   }

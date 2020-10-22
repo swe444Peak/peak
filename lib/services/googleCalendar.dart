@@ -19,7 +19,7 @@ class GoogleCalendar {
    Event event = Event(); // Create object of event
     event.summary = name;
     event.id=id;
-   
+       
 
     EventDateTime start = new EventDateTime(); //Setting start time
       start.dateTime= startDate;

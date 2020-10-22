@@ -8,12 +8,9 @@ import 'package:peak/services/notification.dart';
 import 'package:peak/viewmodels/editGoal_model.dart';
 import 'package:provider/provider.dart';
 
-<<<<<<< HEAD
 import '../locator.dart';
 import 'addTask.dart';
-=======
 import 'editTask.dart';
->>>>>>> 6bea6abe94e3507071985e822e25cfb1a6259500
 //import 'editTask.dart';
 
 class EditGoal extends StatefulWidget {

@@ -13,13 +13,13 @@ class GoogleCalendar {
       "");
 
 
-  void setEvent(String name , DateTime startDate ,DateTime endDate ,String id){
+  void setEvent(String name , DateTime startDate ,DateTime endDate ){
     print("deadline for event"+endDate.toString());
     
    Event event = Event(); // Create object of event
     event.summary = name;
-    event.id=id;
-   
+    //event.id=id;
+       
 
     EventDateTime start = new EventDateTime(); //Setting start time
       start.dateTime= startDate;

@@ -21,7 +21,7 @@ class NewGoal extends StatefulWidget {
 }
 
 class _NewGoalState extends State<NewGoal> {
-  var goalDocId;
+  var goalDocId="";
   GoogleCalendar googleCalendar = new GoogleCalendar();
   var goalsCounter = 0;
   NotificationManager notifyManeger = new NotificationManager();
@@ -316,7 +316,8 @@ class _NewGoalState extends State<NewGoal> {
       child: Text("Yes"),
       onPressed: () {
         //Google calender here
-       googleCalendar.setEvent(_goalnamecontroller.text, now ,_dateTime,goalDocId);
+      //  googleCalendar.setEvent(_goalnamecontroller.text, now ,_dateTime,goalDocId);
+      googleCalendar.setEvent(_goalnamecontroller.text, now ,_dateTime);
         Navigator.pop(context);
       },
     );

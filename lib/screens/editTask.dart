@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:peak/enums/taskType.dart';
-import 'package:peak/services/dialogService.dart';
 
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:peak/models/task.dart';
 
-import '../locator.dart';
-
-class AddTask extends StatefulWidget {
+class EditTask extends StatefulWidget {
   var width;
   var height;
   Function showError;
 
   List<Task> tasks;
   DateTime deadline;
-  AddTask(Key key, this.tasks, this.width, this.height, this.showError,
+  EditTask(Key key, this.tasks, this.width, this.height, this.showError,
       this.deadline)
       : super(key: key);
   @override
-  State<StatefulWidget> createState() => new AddTaskState();
+  State<StatefulWidget> createState() => new EditTaskState();
 }
 
-class AddTaskState extends State<AddTask> {
-  DialogService _dialogService = locator<DialogService>();
+class EditTaskState extends State<EditTask> {
   String repetitionError;
   var values = [true, false, false, false, false, false, false];
   DateTime deadline;
@@ -35,7 +31,6 @@ class AddTaskState extends State<AddTask> {
   List<Widget> tasksList = [];
   TextEditingController _taskcontroller = TextEditingController();
   TextEditingController _updateController = new TextEditingController();
-  bool isDatePicked = false;
   var repItems;
   int editIndex;
   @override
@@ -47,15 +42,12 @@ class AddTaskState extends State<AddTask> {
   @override
   void initState() {
     super.initState();
+    deadline = widget.deadline;
     buildTasks(null);
   }
 
   List<Widget> buildTasks(int editIndex) {
-    if (isDatePicked) {
-      repItems = ['Daily', 'Weekly', 'Monthly', 'Once'];
-    } else {
-      repItems = [" "];
-    }
+    repItems = ['Daily', 'Weekly', 'Monthly', 'Once'];
 
     tasksList = [];
     if (editIndex != null) {
@@ -74,7 +66,6 @@ class AddTaskState extends State<AddTask> {
             (widget.tasks[editIndex].taskType.toShortString()).substring(1));
       } //end if
 
-      print("inside Edit task $editIndex");
       tasksList.add(Card(
           elevation: 20,
           shape: RoundedRectangleBorder(
@@ -282,8 +273,40 @@ class AddTaskState extends State<AddTask> {
           child: ListTile(
             leading: new IconButton(
                 icon: const Icon(Icons.delete),
-                onPressed: () async {
-                  if (await _confirmRemove()) _removeLabelAt(index);
+                onPressed: () {
+                  //alertt
+                  Widget noButton = FlatButton(
+                    child: Text("No"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  );
+                  Widget yesButton = FlatButton(
+                    child: Text("Yes"),
+                    onPressed: () {
+                      _removeLabelAt(index);
+                      Navigator.pop(context);
+                    },
+                  );
+                  // set up the AlertDialog
+                  AlertDialog alert = AlertDialog(
+                    scrollable: true,
+                    contentPadding: EdgeInsets.all(5),
+                    title: Text("Delete task"),
+                    content: Text("are you sure you want to delete this task?"),
+                    actions: [
+                      noButton,
+                      yesButton,
+                    ],
+                  );
+                  // show the dialog
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
                 }),
             title: Text(widget.tasks[index].taskName),
             subtitle: Text(
@@ -313,16 +336,7 @@ class AddTaskState extends State<AddTask> {
 
   _onSave() {
     setState(() {
-      print(isDatePicked);
-      if (!isDatePicked) {
-        widget.showError(
-            "Please pick a goal due date so you can be able to add a task");
-        _taskcontroller.clear();
-        dropdownValue = null;
-        currentValue = null;
-        buildTasks(null);
-      } else if (_taskcontroller.text.trim().isNotEmpty &&
-          dropdownValue != null) {
+      if (_taskcontroller.text.trim().isNotEmpty && dropdownValue != null) {
         var task = creatTask(
             taskName: _taskcontroller.text,
             taskType: currentValue.formString());
@@ -362,16 +376,6 @@ class AddTaskState extends State<AddTask> {
         buildTasks(null);
       }
     });
-  }
-
-  Future<bool> _confirmRemove() async {
-    var dialogResponse = await _dialogService.showConfirmationDialog(
-      title: 'Delete task',
-      description: 'are you sure you want to delete this task',
-      confirmationTitle: 'Yes',
-      cancelTitle: 'No',
-    );
-    return dialogResponse.confirmed;
   }
 
   _editLabelAt(index, [isValid]) {
@@ -542,7 +546,7 @@ class AddTaskState extends State<AddTask> {
             days.add(i + 1);
           }
         }
-        print(days);
+
         var task = WeeklyTask(taskName: taskName, weekdays: days);
         task.calcRepetition(deadline, DateTime.now());
         return task;

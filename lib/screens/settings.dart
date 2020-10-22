@@ -37,6 +37,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // final QuerySnapshot listTas = userRef.
     var userId = Provider.of<User>(context);
+    //var userp = Provider.of<PeakUser>(context);
     //  PeakUser user = new PeakUser(uid: "", name: "", notificationStatus: true);
     bool _state = true;
     var screenSize = MediaQuery.of(context).size;
@@ -113,12 +114,12 @@ class SettingsPage extends StatelessWidget {
 
                               child: ListTile(
                                   leading: Icon(
-                                    Icons.add_a_photo,
+                                    Icons.perm_identity,
                                     color: Color.fromRGBO(23, 23, 85, 1.0),
                                     size: 32,
                                   ),
                                   title: Text(
-                                    "Profile Picture",
+                                    "Edit Profile",
                                     style: TextStyle(
                                       color: Color.fromRGBO(23, 23, 85, 1.0),
                                       fontWeight: FontWeight.w500,
@@ -126,11 +127,11 @@ class SettingsPage extends StatelessWidget {
                                     ),
                                   ),
                                   onTap: () {
-                                    Navigator.pushNamed(context, 'editPicture');
+                                    Navigator.pushNamed(context, 'editProfile');
                                   }),
                             ),
                           ),
-                          Padding(
+                          /*Padding(
                             //Account
                             padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
                             child: Card(
@@ -155,10 +156,13 @@ class SettingsPage extends StatelessWidget {
                                     fontSize: 18,
                                   ),
                                 ),
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.pushNamed(context, 'editAccount',
+                                      arguments: userId);
+                                },
                               ),
                             ),
-                          ),
+                          ),*/
                           Padding(
                             //Logout
                             padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),

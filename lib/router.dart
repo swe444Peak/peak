@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:peak/screens/addGoal.dart';
 import 'package:peak/screens/editGoal.dart';
-import 'package:peak/screens/editPicture.dart';
+import 'package:peak/screens/editProfile.dart';
 import 'package:peak/screens/forgoPassword.dart';
 import 'package:peak/screens/goalDetails.dart';
 import 'package:peak/screens/home.dart';
@@ -43,8 +43,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => ProfilePage());
       case 'signUp':
         return MaterialPageRoute(builder: (_) => SignupPage());
-      case 'editPicture':
-        return MaterialPageRoute(builder: (_) => EditPicture());
+      case 'editProfile':
+        return MaterialPageRoute(builder: (_) => EditProfile());
       case 'forgotPassword':
         return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
     }

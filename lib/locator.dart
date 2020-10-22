@@ -3,7 +3,8 @@ import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/dialogService.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
-import 'package:peak/viewmodels/editPicture_model.dart';
+import 'package:peak/viewmodels/editGoal_model.dart';
+import 'package:peak/viewmodels/editProfile_model.dart';
 import 'package:peak/viewmodels/goalDetails_model.dart';
 import 'package:peak/viewmodels/goalsList_model.dart';
 import 'package:peak/viewmodels/home_model.dart';
@@ -20,7 +21,8 @@ void setupLocator() {
   locator.registerFactory(() => SignUpModel());
   locator.registerFactory(() => GoalsListModel());
   locator.registerFactory(() => CreateGoalModel());
-  locator.registerFactory(() => EditPictureModel());
   locator.registerFactory(() => GoalDetailsModel());
   locator.registerFactory(() => HomeModel());
+  locator.registerFactory(() => EditGoalModel());
+  locator.registerFactory(() => EditProfileModel());
 }

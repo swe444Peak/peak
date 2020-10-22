@@ -6,17 +6,37 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:peak/enums/viewState.dart';
 import 'package:peak/locator.dart';
+import 'package:peak/models/validationItem.dart';
 import 'package:peak/services/databaseServices.dart';
 
-class EditPictureModel extends ChangeNotifier {
+class EditProfileModel extends ChangeNotifier {
   final _firstoreService = locator<DatabaseServices>();
   final ImagePicker _picker = ImagePicker();
+  ValidationItem _name = ValidationItem(null, null);
+
+  ValidationItem get name => _name;
+  bool get isValid => name.value != null;
 
   ViewState _state = ViewState.Idle;
   ViewState get state => _state;
   void setState(ViewState viewState) {
     _state = viewState;
     notifyListeners();
+  }
+
+  void setName(String name) {
+    if (name.trim().isEmpty && !isValid) {
+      _name = ValidationItem(null, "name field is required");
+    } else {
+      _name = ValidationItem(name, null);
+    }
+    notifyListeners();
+  }
+
+  Future updateName(newName) async {
+    print("in updateee");
+    print(_name.toString());
+    var wait = await _firstoreService.updateAccountData(newName);
   }
 
   Future pickImage() async {
@@ -35,11 +55,12 @@ class EditPictureModel extends ChangeNotifier {
     final File _myImage = await pickImage();
     if (_myImage != null) {
       print('IN UPLOAD');
-      var rand = Random(25);
+      Random rand = Random();
       final StorageReference firebaseStorageRef = FirebaseStorage.instance
           .ref()
           .child(
-              'profilepics/${rand.nextInt(5000).toString()}.jpg'); //i is the name of the image
+              'profilepics/${rand.nextInt(50000).toString()}.jpg'); //i is the name of the image
+      print(rand.nextInt(50000));
       StorageUploadTask uploadTask = firebaseStorageRef.putFile(_myImage);
       StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
       var downloadUrl = await storageSnapshot.ref.getDownloadURL();

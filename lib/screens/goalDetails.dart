@@ -36,6 +36,7 @@ class GoalDetails extends StatelessWidget {
                 ),
                 onPressed: () async {
                   var isDeleted = await model.deleteGoal(goal);
+                  await model.deletFromGooleCalendar(goal.docID);
                   if (isDeleted) {
                     Navigator.pop(context);
                   }
@@ -82,49 +83,54 @@ class GoalDetails extends StatelessWidget {
                     ),
                   ),
                 ),
-                ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: goal.tasks.length,
-                  itemBuilder: (context, index) {
-                    var currentTask = model.task(goal, index);
-                    return Card(
-                      child: Padding(
-                        padding: EdgeInsets.all(width * 0.008),
-                        child: ListTile(
-                          title: Text(goal.tasks[index].taskName),
-                          subtitle: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "${goal.tasks[index].taskType.toShortString().substring(0, 1).toUpperCase() + goal.tasks[index].taskType.toShortString().substring(1)} Task" +
-                                    ((goal.tasks[index].taskType ==
-                                            TaskType.daily)
-                                        ? ""
-                                        : (goal.tasks[index].taskType ==
-                                                TaskType.monthly
-                                            ? " on ${currentTask.day}"
+                SingleChildScrollView(
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: goal.tasks.length,
+                    itemBuilder: (context, index) {
+                      var currentTask = model.task(goal, index);
+                      return Card(
+                        child: Padding(
+                          padding: EdgeInsets.all(width * 0.008),
+                          child: ListTile(
+                            title: Text(goal.tasks[index].taskName),
+                            subtitle: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "${goal.tasks[index].taskType.toShortString().substring(0, 1).toUpperCase() + goal.tasks[index].taskType.toShortString().substring(1)} Task" +
+                                        ((goal.tasks[index].taskType ==
+                                                TaskType.daily)
+                                            ? ""
                                             : (goal.tasks[index].taskType ==
-                                                    TaskType.once
-                                                ? " on ${currentTask.date.toString().split(" ").first}"
-                                                : " on ${currentTask.weekdaysList()}"))),
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.assignment_turned_in,
-                                    color: Colors.teal,
+                                                    TaskType.monthly
+                                                ? " on ${currentTask.day}"
+                                                : (goal.tasks[index].taskType ==
+                                                        TaskType.once
+                                                    ? " on ${currentTask.date.toString().split(" ").first}"
+                                                    : " on ${currentTask.weekdaysList()}"))),
+                                    softWrap: true,
                                   ),
-                                  Text(
-                                      "${currentTask.achievedTasks}/${currentTask.taskRepetition}"),
-                                ],
-                              ),
-                            ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.assignment_turned_in,
+                                      color: Colors.teal,
+                                    ),
+                                    Text(
+                                        "${currentTask.achievedTasks}/${currentTask.taskRepetition}"),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
                 _buildGestureDetector(model, width),
               ],
@@ -152,7 +158,7 @@ class GoalDetails extends StatelessWidget {
         ),
       ),
       onTap: () {
-        model.addGoalToGoogleCalendar();
+        model.addGoalToGoogleCalendar(goal.goalName,goal.creationDate,goal.deadline,goal.docID);
       },
     );
   }

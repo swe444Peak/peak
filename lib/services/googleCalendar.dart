@@ -7,48 +7,102 @@ import 'package:url_launcher/url_launcher.dart';
 class GoogleCalendar {
   
   GoogleCalendar();
-
    static const _scopes = const [CalendarApi.CalendarScope];
   var _clientID = new ClientId(
       "761711840085-1pfna7muukpjvqgn48c44ghjliu35vnu.apps.googleusercontent.com",
       "");
 
-  void setEvent(String name , DateTime startDate ,DateTime endDate ){
-    Event event = Event(); // Create object of event
+
+  void setEvent(String name , DateTime startDate ,DateTime endDate ,String id){
+    print("deadline for event"+endDate.toString());
+    
+   Event event = Event(); // Create object of event
     event.summary = name;
+    event.id=id;
+   
 
     EventDateTime start = new EventDateTime(); //Setting start time
       start.dateTime= startDate;
+      start.timeZone  = "GMT+03:00";
       event.start = start;
 
      EventDateTime end = new EventDateTime();
      end.dateTime=endDate;
+     end.timeZone = "GMT+03:00";
+     event.end=end;
+
+      insertEvent(event); 
+  }
+   
+  Future<void> deleteEvent(String id) async {
+    try {
+        await clientViaUserConsent(_clientID, _scopes, prompt).then((AuthClient client) async {
+        var calendar = CalendarApi(client);
+        String calendarId = "primary";
+        print("try before delete"); 
+      await  calendar.events.delete(calendarId, id);
+        });
+      } catch (e) {
+        log('Error Deleting $e');
+      }
+
+  }
+ 
+   Future<void> updateEvent(String name ,DateTime creation ,DateTime deadline ,String id) async {
+       Event event = Event(); // Create object of event
+    event.summary = name;
+    event.id=id;
+   
+
+    EventDateTime start = new EventDateTime(); //Setting start time
+      start.dateTime= creation;
+      start.timeZone  = "GMT+03:00";
+      event.start = start;
+
+     EventDateTime end = new EventDateTime();
+     end.dateTime=deadline;
+     end.timeZone = "GMT+03:00";
      event.end=end;
 
 
- insertEvent(event);
- 
-  }
-
-   insertEvent(event) {
     try {
-      clientViaUserConsent(_clientID, _scopes, prompt)
-          .then((AuthClient client) {
+        await clientViaUserConsent(_clientID, _scopes, prompt).then((AuthClient client) async {
         var calendar = CalendarApi(client);
         String calendarId = "primary";
-        calendar.events.insert(event, calendarId).then((value) {
+        print("try before updating"); 
+      await  calendar.events.update(event, calendarId, id);
+        });
+         print("event updated succsesfully"); 
+      } catch (e) {
+        log('Error Updating $e');
+      }
+
+  }
+
+  insertEvent(event) async {
+try {
+        await clientViaUserConsent(_clientID, _scopes, prompt).then((AuthClient client) async {
+        var calendar = CalendarApi(client);
+        String calendarId = "primary";
+        print("try before insert"); 
+      await  calendar.events.insert(event,calendarId).then((value) {
+          print("try after insert");
           print("ADDEDDD_________________${value.status}");
           if (value.status == "confirmed") {
-            log('Event added in google calendar');
+            print('Event added in google calendar');
           } else {
-            log("Unable to add event in google calendar");
+            print("Unable to add event in google calendar");
           }
         });
-      });
-    } catch (e) {
-      log('Error creating event $e');
-    }
-  }
+        });
+      } catch (e) {
+        log('Error creating event $e');
+      }
+}
+
+
+
+
 
   void prompt(String url) async {
     if (await canLaunch(url)) {
@@ -58,3 +112,5 @@ class GoogleCalendar {
     }
   }
 }
+
+

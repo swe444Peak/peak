@@ -5,10 +5,12 @@ import 'package:peak/enums/viewState.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/dialogService.dart';
+import 'package:peak/services/googleCalendar.dart';
 
 import '../locator.dart';
 
 class GoalDetailsModel extends ChangeNotifier {
+  GoogleCalendar googleCalendar = new GoogleCalendar();
   DialogService _dialogService = locator<DialogService>();
   final _firstoreService = locator<DatabaseServices>();
   ViewState _state = ViewState.Idle;
@@ -18,7 +20,13 @@ class GoalDetailsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  addGoalToGoogleCalendar() {}
+  addGoalToGoogleCalendar(String name , DateTime startDate ,DateTime endDate ,String id) {
+googleCalendar.setEvent(name, startDate, endDate,id);
+  }
+
+  deletFromGooleCalendar(String id){
+    googleCalendar.deleteEvent(id);
+  }
 
   T task<T>(goal, index) {
     var currentTask;

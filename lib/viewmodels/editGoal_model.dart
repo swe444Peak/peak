@@ -5,9 +5,9 @@ import 'package:peak/services/databaseServices.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/models/task.dart';
 
-class CreateGoalModel extends ChangeNotifier {
-  ValidationItem _goalName = ValidationItem(null, null);
-  ValidationItem _dueDate = ValidationItem(null, null);
+class EditGoalModel extends ChangeNotifier {
+  ValidationItem _goalName = ValidationItem("l", null);
+  ValidationItem _dueDate = ValidationItem("r", null);
 
   ViewState _state = ViewState.Idle;
 
@@ -40,7 +40,7 @@ class CreateGoalModel extends ChangeNotifier {
     }
     notifyListeners();
   }
-  
+
   Future createGoal(
       String goalName, String uID, DateTime deadLine, List<Task> tasks) async {
     Goal goal = Goal(

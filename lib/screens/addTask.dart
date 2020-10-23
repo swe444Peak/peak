@@ -74,7 +74,6 @@ class AddTaskState extends State<AddTask> {
             (widget.tasks[editIndex].taskType.toShortString()).substring(1));
       } //end if
 
-      print("inside Edit task $editIndex");
       tasksList.add(Card(
           elevation: 20,
           shape: RoundedRectangleBorder(

@@ -11,7 +11,7 @@ import '../locator.dart';
 
 class GoalDetailsModel extends ChangeNotifier {
   final googleCalendar = locator<GoogleCalendar>();
-  DialogService _dialogService = locator<DialogService>();
+  DialogService dialogService = locator<DialogService>();
   final _firstoreService = locator<DatabaseServices>();
   ViewState _state = ViewState.Idle;
   ViewState get state => _state;
@@ -20,14 +20,14 @@ class GoalDetailsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addGoalToGoogleCalendar(
+  addGoalToGoogleCalendar(
       String name, DateTime startDate, DateTime endDate, String id) {
     googleCalendar.setEvent(name, startDate, endDate);
   }
 
-  // void deletFromGooleCalendar(String id) {
-  //   googleCalendar.deleteEvent(id);
-  // }
+  deletFromGooleCalendar(String id) {
+    googleCalendar.deleteEvent(id);
+  }
 
   T task<T>(goal, index) {
     var currentTask;
@@ -45,7 +45,7 @@ class GoalDetailsModel extends ChangeNotifier {
   }
 
   Future<bool> deleteGoal(Goal goal) async {
-    var dialogResponse = await _dialogService.showConfirmationDialog(
+    var dialogResponse = await dialogService.showConfirmationDialog(
       title: 'Are you sure?',
       description: 'Do you really want to delete the goal?',
       confirmationTitle: 'Yes',

@@ -49,18 +49,21 @@ class EditGoalModel extends ChangeNotifier {
   }
 
   Future updateGoal(String goalName, DateTime creationDate, DateTime deadline,
-      List<Task> tasks, String docID,String eventId) async {
-    Goal goal = Goal(
+      List<Task> tasks, String docID) async {
+    int numOfTasks = 0;
+    tasks.forEach((element) {
+      numOfTasks += element.taskRepetition;
+    });
+
+    Goal updatedGoal = Goal(
         goalName: goalName,
         deadline: deadline,
         docID: docID,
         tasks: tasks,
         creationDate: creationDate,
-     );
-     goal.eventId = eventId;
-     
+        numOfTasks: numOfTasks);
     setState(ViewState.Busy);
-    var result = await _firstoreService.updateGoal(goal);
+    var result = await _firstoreService.updateGoal(updatedGoal);
     setState(ViewState.Idle);
 
     var dialogResponse = await _dialogService.showConfirmationDialog(
@@ -72,7 +75,7 @@ class EditGoalModel extends ChangeNotifier {
     if (dialogResponse.confirmed) {
     //  GoogleCalendar googleCalendar = new GoogleCalendar();
       setState(ViewState.Busy);
-      googleCalendar.updateEvent(goalName, creationDate, deadline, goal.eventId);
+      googleCalendar.updateEvent(goalName, creationDate, deadline, updatedGoal.eventId);
       setState(ViewState.Idle);
       return true;
     }

@@ -145,20 +145,21 @@ class _EditProfileState extends State<EditProfile> {
                                                 padding: EdgeInsets.all(
                                                     width * 0.06),
                                                 child: TextField(
-                                                  style:
-                                                      TextStyle(fontSize: 20),
-                                                  controller:
-                                                      _editnamecontroller,
-                                                  decoration: InputDecoration(
-                                                    labelText:
-                                                        "${Provider.of<PeakUser>(context).name}",
-                                                    labelStyle:
+                                                    style:
                                                         TextStyle(fontSize: 20),
-                                                    errorText: model.name.error,
-                                                  ),
-                                                  onChanged: (value) =>
-                                                      model.setName(value),
-                                                ),
+                                                    controller:
+                                                        _editnamecontroller,
+                                                    decoration: InputDecoration(
+                                                      labelText:
+                                                          "${Provider.of<PeakUser>(context).name}",
+                                                      labelStyle: TextStyle(
+                                                          fontSize: 20),
+                                                      errorText:
+                                                          model.name.error,
+                                                    ),
+                                                    onChanged: (value) {
+                                                      model.setName(value);
+                                                    }),
                                               ),
                                             ),
                                           ),
@@ -242,18 +243,14 @@ class _EditProfileState extends State<EditProfile> {
                                                           var upload = await model
                                                               .updateName(
                                                                   _editnamecontroller
-                                                                      .text);
+                                                                      .text
+                                                                      .trim());
                                                           updateConfirmDailog(
                                                               context, "name");
-                                                        } else {
-                                                          if (model.name
-                                                                      .error ==
-                                                                  null &&
-                                                              model.name
-                                                                      .value ==
-                                                                  null) {
-                                                            model.setName("");
-                                                          }
+                                                          setState(() {
+                                                            EditProfileModel()
+                                                                .setName("");
+                                                          });
                                                         }
                                                       }),
                                                 ),

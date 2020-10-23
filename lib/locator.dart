@@ -11,6 +11,7 @@ import 'package:peak/viewmodels/goalsList_model.dart';
 import 'package:peak/viewmodels/home_model.dart';
 import 'package:peak/viewmodels/login_model.dart';
 import 'package:peak/viewmodels/signup_model.dart';
+import 'package:peak/viewmodels/viewProgress_model.dart';
 
 GetIt locator = GetIt.instance;
 
@@ -27,4 +28,5 @@ void setupLocator() {
   locator.registerFactory(() => HomeModel());
   locator.registerFactory(() => EditGoalModel());
   locator.registerFactory(() => EditProfileModel());
+  locator.registerFactory(() => ViewProgressModel());
 }

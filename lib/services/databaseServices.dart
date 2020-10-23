@@ -11,7 +11,7 @@ import 'firebaseAuthService.dart';
 class DatabaseServices {
   final String uid;
   var peakuser;
-   String eventId ;
+  String eventId;
   DatabaseServices({this.uid});
   final StreamController<List<Goal>> _goalController =
       StreamController<List<Goal>>.broadcast();
@@ -60,15 +60,15 @@ class DatabaseServices {
     });
   }
 
- Future updateEventId(String docID)async{
-await _goalsCollectionReference
-        .doc(docID).update({"evenId":eventId});
-
-        print(" updaaaateeeeedddd");
- }
+  Future updateEventId(String docID) async {
+    print("BEFORE UPDATE");
+    await _goalsCollectionReference.doc(docID).update({
+      "eventId": eventId,
+    });
+  }
 
   // Future updateEventId()async{
-   
+
   // }
   //creating user data stream to get user doc
 
@@ -123,15 +123,16 @@ await _goalsCollectionReference
     });
   }
 
-  Future updateTask(String docId, dynamic orignalTask, dynamic editedTask) async{
+  Future updateTask(
+      String docId, dynamic orignalTask, dynamic editedTask) async {
     //print("before remove");
-    await _goalsCollectionReference.doc(docId).update(
-      {"tasks": FieldValue.arrayRemove([orignalTask.toMap()])}
-    );
+    await _goalsCollectionReference.doc(docId).update({
+      "tasks": FieldValue.arrayRemove([orignalTask.toMap()])
+    });
     //print("after remove");
-    await _goalsCollectionReference.doc(docId).update(
-      {"tasks": FieldValue.arrayUnion([editedTask.toMap()])}
-    );
+    await _goalsCollectionReference.doc(docId).update({
+      "tasks": FieldValue.arrayUnion([editedTask.toMap()])
+    });
   }
 
   Future deleteGoal(String documentId) async {

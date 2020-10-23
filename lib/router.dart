@@ -14,7 +14,7 @@ import 'screens/login.dart';
 
 const String initialRoute = "login";
 
-class Router {
+class Routerr {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':

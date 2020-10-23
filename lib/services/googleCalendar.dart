@@ -15,7 +15,7 @@ class GoogleCalendar {
       "761711840085-1pfna7muukpjvqgn48c44ghjliu35vnu.apps.googleusercontent.com",
       "");
 
-  void setEvent(String name, DateTime startDate, DateTime endDate) {
+  Future setEvent(String name, DateTime startDate, DateTime endDate) {
     print("deadline for event" + endDate.toString());
     Event event = Event(); // Create object of event
     event.summary = name;
@@ -30,7 +30,7 @@ class GoogleCalendar {
     end.timeZone = "GMT+03:00";
     event.end = end;
 
-    insertEvent(event);
+    return insertEvent(event);
   }
 
   Future<void> deleteEvent(String id) async {

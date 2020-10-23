@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         ),
         theme: ThemeData(),
         initialRoute: 'login',
-        onGenerateRoute: Router.generateRoute,
+        onGenerateRoute: Routerr.generateRoute,
       ),
     );
   }

@@ -318,10 +318,10 @@ class _NewGoalState extends State<NewGoal> {
     );
     Widget continueButton = FlatButton(
       child: Text("Yes"),
-      onPressed: () {
-         model.addGoalToGoogleCalendar(_goalnamecontroller.text,now,_dateTime);
+      onPressed: () async {
+         await model.addGoalToGoogleCalendar(_goalnamecontroller.text,now,_dateTime);
          print("after google calendar adding");
-        model.uPdateEventId(docId);
+        model.uPdateEventId();
         Navigator.pop(context);
       },
     );

@@ -52,6 +52,8 @@ dependencies:
   email_validator: ^1.0.5
   stacked_services: ^0.5.4+4
   stacked: ^1.7.6
+  sleek_circular_slider: ^1.2.0+web
+
 
 dev_dependencies:
   flutter_test:

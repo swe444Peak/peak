@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peak/enums/taskType.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/screens/shared/base.dart';
+import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/goalDetails_model.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ class GoalDetails extends StatelessWidget {
   Goal goal;
   GoalDetails({this.goal});
  final googleCalendar = locator<GoogleCalendar>();
+ final _firebacseServices = locator<DatabaseServices>();
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -154,7 +156,8 @@ class GoalDetails extends StatelessWidget {
   }
 
   Widget _buildGestureDetector(model, width) {
-    if(goal.eventId==null){
+  
+    if(goal.eventId == null){
     return GestureDetector(
       child: Padding(
         padding: EdgeInsets.fromLTRB(

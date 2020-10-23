@@ -12,6 +12,7 @@ class DatabaseServices {
   final String uid;
   var peakuser;
   String eventId;
+  String eventDoc;
   DatabaseServices({this.uid});
   final StreamController<List<Goal>> _goalController =
       StreamController<List<Goal>>.broadcast();
@@ -41,10 +42,11 @@ class DatabaseServices {
   } //end updateUserData*/
 
   Future addGoal({Goal goal}) async {
-    var doc;
+ DocumentReference doc;
     try {
       doc = await _goalsCollectionReference.add(goal.toMap());
-      return doc;
+      eventDoc = doc.id;
+      return doc.id;
     } catch (e) {
       print("$e");
       return e.toString();
@@ -60,10 +62,12 @@ class DatabaseServices {
     });
   }
 
-  Future updateEventId(String docID) async {
+  Future updateEventId(String result) async {
     print("BEFORE UPDATE");
-    await _goalsCollectionReference.doc(docID).update({
+    print(result);
+    await _goalsCollectionReference.doc(result).update({
       "eventId": eventId,
+      
     });
   }
 

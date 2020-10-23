@@ -20,7 +20,7 @@ class CreateGoalModel extends ChangeNotifier {
     final googleCalendar = locator<GoogleCalendar>();
 
   bool get isValid => goalName.value != null && _dueDate.value != null;
- var result ;
+ String result ;
   ViewState get state => _state;
 
  final _firebaceService = locator<DatabaseServices>();
@@ -69,7 +69,9 @@ class CreateGoalModel extends ChangeNotifier {
   }
   
   uPdateEventId(){
-   _firebaceService.updateEventId(result.toString());
+    print("result before ");
+    print (result);
+   _firebaceService.updateEventId(result);
   
  }
   

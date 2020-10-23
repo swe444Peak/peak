@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:peak/models/task.dart';
+import 'package:random_string/random_string.dart';
 
 class Goal {
   String goalName;
@@ -13,7 +14,7 @@ class Goal {
   DateTime creationDate;
   int numOfTasks;
   int achievedTasks;
-
+  String eventId;
   Goal(
       {@required String goalName,
       String uID,
@@ -22,7 +23,7 @@ class Goal {
       List<Task> tasks,
       bool isAchieved = false,
       DateTime creationDate,
-      int numOfTasks = 0}) {
+      int numOfTasks = 0, String eventId }) {
     this.goalName = goalName;
     this.uID = uID;
     this.deadline = DateTime(deadline.year, deadline.month, deadline.day);
@@ -32,6 +33,7 @@ class Goal {
         DateTime(creationDate.year, creationDate.month, creationDate.day);
     this.numOfTasks = (numOfTasks == 0 ? clacTasks() : numOfTasks);
     this.isAchieved = (isAchieved ? isAchieved : checkAchieved());
+    this.eventId=eventId;
   }
 
   Map<String, dynamic> toMap() {
@@ -44,6 +46,7 @@ class Goal {
       "isAchieved": (this.isAchieved ? true : this.checkAchieved()),
       "creationDate": this.creationDate,
       "numOfTasks": this.numOfTasks,
+       "eventId":this.eventId,
     };
   }
 
@@ -65,7 +68,8 @@ class Goal {
     });
     return mapfiedTasks;
   }
-
+   
+   
   bool checkAchieved() {
     bool checkAchieved = true;
     this.tasks.forEach((element) {

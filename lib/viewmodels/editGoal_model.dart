@@ -12,6 +12,7 @@ import '../locator.dart';
 class EditGoalModel extends ChangeNotifier {
   DialogService _dialogService = locator<DialogService>();
   final _firstoreService = locator<DatabaseServices>();
+  final googleCalendar = locator<GoogleCalendar>();
   ValidationItem _goalName = ValidationItem("l", null);
   ValidationItem _dueDate = ValidationItem("r", null);
 
@@ -48,13 +49,16 @@ class EditGoalModel extends ChangeNotifier {
   }
 
   Future updateGoal(String goalName, DateTime creationDate, DateTime deadline,
-      List<Task> tasks, String docID) async {
+      List<Task> tasks, String docID,String eventId) async {
     Goal goal = Goal(
         goalName: goalName,
         deadline: deadline,
         docID: docID,
         tasks: tasks,
-        creationDate: creationDate);
+        creationDate: creationDate,
+     );
+     goal.eventId = eventId;
+     
     setState(ViewState.Busy);
     var result = await _firstoreService.updateGoal(goal);
     setState(ViewState.Idle);
@@ -66,9 +70,9 @@ class EditGoalModel extends ChangeNotifier {
       cancelTitle: 'No',
     );
     if (dialogResponse.confirmed) {
-      GoogleCalendar googleCalendar = new GoogleCalendar();
+    //  GoogleCalendar googleCalendar = new GoogleCalendar();
       setState(ViewState.Busy);
-      googleCalendar.updateEvent(goalName, DateTime.now(), deadline, docID);
+      googleCalendar.updateEvent(goalName, creationDate, deadline, goal.eventId);
       setState(ViewState.Idle);
       return true;
     }

@@ -11,6 +11,7 @@ import 'firebaseAuthService.dart';
 class DatabaseServices {
   final String uid;
   var peakuser;
+   String eventId ;
   DatabaseServices({this.uid});
   final StreamController<List<Goal>> _goalController =
       StreamController<List<Goal>>.broadcast();
@@ -58,6 +59,17 @@ class DatabaseServices {
       print(error);
     });
   }
+
+ Future updateEventId(String docID)async{
+await _goalsCollectionReference
+        .doc(docID).update({"evenId":eventId});
+
+        print(" updaaaateeeeedddd");
+ }
+
+  // Future updateEventId()async{
+   
+  // }
   //creating user data stream to get user doc
 
   Stream<PeakUser> userData([String id]) {

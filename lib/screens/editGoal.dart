@@ -160,7 +160,8 @@ class _EditGoalState extends State<EditGoal> {
                                           widget.goal.creationDate,
                                           _dateTime,
                                           tasks,
-                                          widget.goal.docID);
+                                          widget.goal.docID,
+                                          widget.goal.eventId);
                                       for (var item in tasks) {
                                         switch (item.taskType.toShortString()) {
                                           case 'once':

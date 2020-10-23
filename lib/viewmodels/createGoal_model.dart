@@ -4,6 +4,10 @@ import 'package:peak/models/validationItem.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/models/task.dart';
+import 'package:peak/services/googleCalendar.dart';
+import 'package:random_string/random_string.dart';
+
+import '../locator.dart';
 
 class CreateGoalModel extends ChangeNotifier {
   ValidationItem _goalName = ValidationItem(null, null);
@@ -13,10 +17,13 @@ class CreateGoalModel extends ChangeNotifier {
 
   ValidationItem get goalName => _goalName;
   ValidationItem get dueDate => _dueDate;
+    final googleCalendar = locator<GoogleCalendar>();
 
   bool get isValid => goalName.value != null && _dueDate.value != null;
-
+ var result ;
   ViewState get state => _state;
+
+ 
 
   void setState(ViewState viewState) {
     _state = viewState;
@@ -50,8 +57,20 @@ class CreateGoalModel extends ChangeNotifier {
         tasks: tasks,
         creationDate: DateTime.now());
     setState(ViewState.Busy);
-    var result = await DatabaseServices().addGoal(goal: goal);
+   
+   result = await DatabaseServices().addGoal(goal: goal);
     setState(ViewState.Idle);
     return result;
   }
+
+ Future addGoalToGoogleCalendar(
+           String name, DateTime startDate, DateTime endDate) async {
+    await googleCalendar.setEvent(name, startDate, endDate);
+  }
+  
+ Future<void> uPdateEventId(docId){
+   DatabaseServices().updateEventId(docId.toString());
+   return docId ;
+ }
+  
 }

@@ -38,12 +38,20 @@ abstract class Task {
   }
 
   int calcRepetition(DateTime dueDate, DateTime creation);
+
+  static List<DateTime> castDates(List<dynamic> dates){
+    List<DateTime> castedDates = new List<DateTime>();
+    dates.forEach((date) {
+      castedDates.add(date.toDate());
+     });
+    return castedDates;
+  }
 }
 
 class DailyTask extends Task {
   List<DateTime> doneDates = List<DateTime>();
   DailyTask(
-      {@required taskName, taskRepetition, achievedTasks = 0, doneDates, id})
+      {@required taskName, taskRepetition, achievedTasks = 0, this.doneDates, id})
       : super(
             taskName: taskName,
             taskType: TaskType.daily,
@@ -65,11 +73,12 @@ class DailyTask extends Task {
     if (map == null) {
       return null;
     }
+
     return DailyTask(
       taskName: map['taskName'],
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
-      doneDates: List.castFrom(map['doneDates']),
+      doneDates: Task.castDates(map['doneDates']),
     );
   }
 
@@ -153,7 +162,7 @@ class WeeklyTask extends Task {
       id,
       taskRepetition,
       achievedTasks = 0,
-      doneDates})
+      })
       : super(
             taskName: taskName,
             taskType: TaskType.weekly,
@@ -167,7 +176,7 @@ class WeeklyTask extends Task {
       this.dates,
       taskRepetition,
       achievedTasks = 0,
-      doneDates})
+      this.doneDates})
       : super(
             taskName: taskName,
             taskType: TaskType.weekly,
@@ -193,12 +202,13 @@ class WeeklyTask extends Task {
     }
 
     return WeeklyTask.withDates(
-        taskName: map['taskName'],
-        weekdays: List.castFrom(map['weekdays']),
-        taskRepetition: map["taskRepetition"],
-        achievedTasks: map['achievedTasks'],
-        dates: List.castFrom(map['dates']),
-        doneDates: List.castFrom(map['doneDates']));
+      taskName: map['taskName'],
+      weekdays: List.castFrom(map['weekdays']),
+      taskRepetition: map["taskRepetition"],
+      achievedTasks: map['achievedTasks'],
+      dates: Task.castDates(map['dates']),
+      doneDates: Task.castDates(map['doneDates']),
+    );
   }
 
   String weekdaysList() {
@@ -278,7 +288,6 @@ class MonthlyTask extends Task {
     id,
     taskRepetition,
     achievedTasks = 0,
-    doneDates,
   }) : super(
           taskName: taskName,
           taskType: TaskType.monthly,
@@ -293,7 +302,7 @@ class MonthlyTask extends Task {
     this.dates,
     taskRepetition,
     achievedTasks = 0,
-    doneDates,
+    this.doneDates,
   }) : super(
           taskName: taskName,
           taskType: TaskType.monthly,
@@ -320,10 +329,10 @@ class MonthlyTask extends Task {
     return MonthlyTask.withDates(
       taskName: map['taskName'],
       day: map['day'],
-      dates: List.castFrom(map['dates']),
+      dates: Task.castDates(map['dates']),
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
-      doneDates: List.castFrom(map['doneDates']),
+      doneDates: Task.castDates(map['doneDates']),
     );
   }
 

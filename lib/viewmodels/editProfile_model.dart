@@ -25,7 +25,7 @@ class EditProfileModel extends ChangeNotifier {
   }
 
   void setName(String name) {
-    if (name.trim().isEmpty && !isValid) {
+    if (name.trim().isEmpty) {
       _name = ValidationItem(null, "name field is required");
     } else {
       _name = ValidationItem(name, null);

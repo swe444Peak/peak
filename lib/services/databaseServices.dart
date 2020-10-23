@@ -103,11 +103,11 @@ class DatabaseServices {
   }
 
   Future updateTask(String docId, dynamic orignalTask, dynamic editedTask) async{
-    //print("before remove");
+    
     await _goalsCollectionReference.doc(docId).update(
       {"tasks": FieldValue.arrayRemove([orignalTask.toMap()])}
     );
-    //print("after remove");
+
     await _goalsCollectionReference.doc(docId).update(
       {"tasks": FieldValue.arrayUnion([editedTask.toMap()])}
     );

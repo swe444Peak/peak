@@ -12,7 +12,7 @@ class HomeModel extends ChangeNotifier {
   ViewState _state = ViewState.Idle;
   List<Goal> _goals;
   List<Map<String, dynamic>> _completedTasks, _incompletedTasks , _tasks ;
-  DateTime today = DateTime.now();
+  DateTime today = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   bool empty = true;
   List<Goal> get goals => _goals;
   ViewState get state => _state;
@@ -74,7 +74,7 @@ class HomeModel extends ChangeNotifier {
             case"daily":
                         currentTask = task as DailyTask;
                         bool comp = false;
-                        print("task name = ${currentTask.taskName},   array len= ${currentTask.doneDates.length}");
+                        //print("task name = ${currentTask.taskName},   array len= ${currentTask.doneDates.length}");
                         currentTask.doneDates.forEach((date){
                           if(isAtSameDate(date, today)){
                             print("task is done");
@@ -167,60 +167,64 @@ class HomeModel extends ChangeNotifier {
     }, onError: (error) => print(error));
   }
 
-  void updateTask (Task currentTask, String docId, bool status){
-    print("inside updateTask()");
-    var type = currentTask.taskType.toShortString().toLowerCase();
-    if(status){  //true = uncheck the task
+  void updateTask (Task task, String docId, bool status){
+    var type = task.taskType.toShortString().toLowerCase();
       switch(type){
             case"once":
-                        OnceTask newTask = currentTask;
-                        newTask.done = false;
-                        _firstoreService.updateTask(docId, currentTask as OnceTask, newTask);
-                        break;
-            case"daily":
-                        DailyTask newTask = currentTask;
-                        newTask.doneDates.remove(today);
-                        _firstoreService.updateTask(docId, currentTask as DailyTask, newTask);
-                        break;
-            case"weekly":
-                        WeeklyTask newTask = currentTask;
-                        newTask.doneDates.remove(today);
-                        _firstoreService.updateTask(docId, currentTask as WeeklyTask, newTask);
-                        break;
-            case"monthly":
-                        MonthlyTask newTask = currentTask;
-                        newTask.doneDates.remove(today);
-                        _firstoreService.updateTask(docId, currentTask as MonthlyTask, newTask);
-                        break;
-          }//end switch
-    }else{  //false = the task is checked
-      print("inside else before switch");
-      print("type = $type");
-      switch(type){
-            case"once":
-                        OnceTask newTask = currentTask;
-                        newTask.done = true;
+                        OnceTask currentTask = task as OnceTask;
+                        OnceTask newTask = new OnceTask(taskName: currentTask.taskName, date: currentTask.date, 
+                        done: currentTask.done, taskRepetition: currentTask.taskRepetition, achievedTasks: currentTask.achievedTasks);
+                        if(status){     // true => change state from done to not done
+                          newTask.done = false;
+                          newTask.achievedTasks--;
+                        }else{    //false => chane state from not done to done 
+                          newTask.done = true;
+                          newTask.achievedTasks++;
+                        }
                         _firstoreService.updateTask(docId, currentTask, newTask);
                         break;
             case"daily":
-                        print("inside switch daily");
-                        DailyTask newTask = currentTask;
-                        newTask.doneDates.add(today);
-                        newTask.achievedTasks++;
+                        DailyTask currentTask = task as DailyTask;
+                        DailyTask newTask = new DailyTask(taskName: currentTask.taskName, doneDates: new List<DateTime>.from(currentTask.doneDates),
+                         taskRepetition: currentTask.taskRepetition, achievedTasks: currentTask.achievedTasks);
+                        if(status){
+                          newTask.doneDates.remove(today);
+                          newTask.achievedTasks--;
+                        }else{
+                          newTask.doneDates.add(today);
+                          newTask.achievedTasks++;
+                        }
                         _firstoreService.updateTask(docId, currentTask, newTask);
                         break;
             case"weekly":
-                        WeeklyTask newTask = currentTask;
-                        newTask.doneDates.add(today);
+                        WeeklyTask currentTask = task as WeeklyTask;
+                        WeeklyTask newTask = new WeeklyTask.withDates(taskName: currentTask.taskName, weekdays: new List<int>.from(currentTask.weekdays), 
+                        doneDates: new List<DateTime>.from(currentTask.doneDates), taskRepetition: currentTask.taskRepetition, 
+                        achievedTasks: currentTask.achievedTasks, dates: new List<DateTime>.from(currentTask.dates));
+                        if(status){
+                          newTask.doneDates.remove(today);
+                          newTask.achievedTasks--;
+                        }else{
+                          newTask.doneDates.add(today);
+                          newTask.achievedTasks++;
+                        }
                         _firstoreService.updateTask(docId, currentTask, newTask);
                         break;
             case"monthly":
-                        MonthlyTask newTask = currentTask;
-                        newTask.doneDates.add(today);
+                        MonthlyTask currentTask = task as MonthlyTask;
+                        MonthlyTask newTask = new MonthlyTask.withDates(taskName: currentTask.taskName, day: currentTask.day, achievedTasks: currentTask.achievedTasks, 
+                        taskRepetition: currentTask.taskRepetition, dates: new List<DateTime>.from(currentTask.dates), 
+                        doneDates: new List<DateTime>.from(currentTask.doneDates),);
+                        if(status){
+                          newTask.doneDates.remove(today);
+                          newTask.achievedTasks--;
+                        }else{
+                          newTask.doneDates.add(today);
+                          newTask.achievedTasks++;
+                        }
                         _firstoreService.updateTask(docId, currentTask, newTask);
                         break;
           }//end switch
-    }
   }
 
   void sortGoals() {

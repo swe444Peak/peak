@@ -94,7 +94,7 @@ class HomePageState extends State<HomePage> {
                               padding: EdgeInsets.fromLTRB(
                                   0.0, 0.0, 0.0, (width * 0.03)),
                               child: Text(
-                                "Hi, ${(puser != null) ? puser.name[0].toUpperCase() + puser.name.substring(1) : " "}!",
+                                ((puser != null) ? ("Hi, "+puser.name[0].toUpperCase() + puser.name.substring(1)+"!") : "Today's Tasks List"),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30.0,
@@ -106,7 +106,7 @@ class HomePageState extends State<HomePage> {
                               padding: EdgeInsets.fromLTRB(
                                   0.0, 0.0, 0.0, (width * 0.1)),
                               child: Text(
-                                "Here is your tasks for today, go clear them!",
+                                (model.empty?"Oops you have no tasks yet!":"Here is your tasks for today, go clear them!"),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 17.0,
@@ -128,10 +128,12 @@ class HomePageState extends State<HomePage> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8),
                                     child: Text(
-                                      "Your Goals list is empty\n Start adding new Goals!",
+                                      "Get started by adding some goals so you can have tasks to acheive!",
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontSize: width * 0.06,
-                                          color: Colors.white),
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w300),
                                     ),
                                   ),
                                 )

@@ -49,7 +49,7 @@ class EditGoalModel extends ChangeNotifier {
   }
 
   Future updateGoal(String goalName, DateTime creationDate, DateTime deadline,
-      List<Task> tasks, String docID,String eventid) async {
+      List<Task> tasks, String docID, String eventId) async {
     int numOfTasks = 0;
     tasks.forEach((element) {
       numOfTasks += element.taskRepetition;
@@ -65,22 +65,26 @@ class EditGoalModel extends ChangeNotifier {
     setState(ViewState.Busy);
     var result = await _firstoreService.updateGoal(updatedGoal);
     setState(ViewState.Idle);
+    if (eventId != null) {
+      var dialogResponse = await _dialogService.showConfirmationDialog(
+        title: 'your Goal was updated successfully!',
+        description: 'Do you want to update your Google Calendar?',
+        confirmationTitle: 'Yes',
+        cancelTitle: 'No',
+      );
+      if (dialogResponse.confirmed) {
+        setState(ViewState.Busy);
+        googleCalendar.updateEvent(goalName, creationDate, deadline, eventId);
+        _firstoreService.updateEventId(updatedGoal.docID);
 
-    var dialogResponse = await _dialogService.showConfirmationDialog(
-      title: 'your Goal was updated successfully!',
-      description: 'Do you want to update your Google Calendar?',
-      confirmationTitle: 'Yes',
-      cancelTitle: 'No',
-    );
-    if (dialogResponse.confirmed) {
-      setState(ViewState.Busy);
-      googleCalendar.updateEvent(goalName, creationDate, deadline, eventid);
-      _firstoreService.updateEventId(updatedGoal.docID);
-
-      setState(ViewState.Idle);
-      return true;
+        setState(ViewState.Idle);
+      }
+    } else {
+      var dialogResponse = await _dialogService.showDialog(
+        title: 'Success',
+        description: 'your Goal was updated successfully!',
+      );
     }
-
     return result;
   }
 }

@@ -134,7 +134,7 @@ class _EditGoalState extends State<EditGoal> {
                               _dateTime,
                               tasks,
                               widget.goal.docID,
-                               widget.goal.eventId,
+                              widget.goal.eventId,
                             );
                             for (var item in tasks) {
                               switch (item.taskType.toShortString()) {
@@ -174,8 +174,7 @@ class _EditGoalState extends State<EditGoal> {
                               }
                             }
                             Navigator.pushNamed(context, 'goalsList');
-                            //confirm message here
-                            goalChangeDailog(context);
+
                             notifyManeger.showDeadlineNotification(
                                 'Deadline Reminder',
                                 'The deadline for ' +
@@ -232,39 +231,6 @@ class _EditGoalState extends State<EditGoal> {
         editTaskState.currentState.buildTasks(null);
       });
     }
-  }
-
-  goalChangeDailog(BuildContext context) {
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("No"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-    Widget continueButton = FlatButton(
-      child: Text("Yes"),
-      onPressed: () {
-        //Google calender here
-        Navigator.pop(context);
-      },
-    );
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      scrollable: true,
-      contentPadding: EdgeInsets.all(5),
-      title: Text("Added Successfully !"),
-      content: Column(
-        children: [
-          Text(
-              "your goal was added successfully , would you like to add it to google calendar?"),
-        ],
-      ),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
   }
 
   bool isValid() {

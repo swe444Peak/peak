@@ -157,8 +157,9 @@ class HomeModel extends ChangeNotifier {
           }//end switch
          });//end forEach task
       });//end forEach goal
+      compin();
     }//end if
-    compin();
+    
         notifyListeners();
       }
       setState(ViewState.Idle);

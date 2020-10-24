@@ -360,14 +360,8 @@ class AddTaskState extends State<AddTask> {
 
   _removeLabelAt(int index) {
     setState(() {
-      if (widget.tasks.length > 1) {
-        widget.tasks.removeAt(index);
-        buildTasks(null);
-      } else {
-        widget.showError(
-            "Task can not be deleted, goal most have at least one task.");
-        buildTasks(null);
-      }
+      widget.tasks.removeAt(index);
+      buildTasks(null);
     });
   }
 
@@ -399,11 +393,11 @@ class AddTaskState extends State<AddTask> {
       } else if (currentTaskType == TaskType.once) {
         currentTask = widget.tasks[index] as OnceTask;
         _dateTime = currentTask.date;
-      } else if (currentTaskType == TaskType.weekly){
+      } else if (currentTaskType == TaskType.weekly) {
         currentTask = widget.tasks[index] as WeeklyTask;
         values = [false, false, false, false, false, false, false];
-        currentTask.weekdays.forEach((element){
-          values[element%7] = true;
+        currentTask.weekdays.forEach((element) {
+          values[element % 7] = true;
         });
       }
 

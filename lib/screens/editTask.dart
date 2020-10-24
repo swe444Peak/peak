@@ -356,14 +356,8 @@ class EditTaskState extends State<EditTask> {
 
   _removeLabelAt(int index) {
     setState(() {
-      if (widget.tasks.length > 1) {
-        widget.tasks.removeAt(index);
-        buildTasks(null);
-      } else {
-        widget.showError(
-            "Task can not be deleted, goal most have at least one task.");
-        buildTasks(null);
-      }
+      widget.tasks.removeAt(index);
+      buildTasks(null);
     });
   }
 
@@ -395,11 +389,11 @@ class EditTaskState extends State<EditTask> {
       } else if (currentTaskType == TaskType.once) {
         currentTask = widget.tasks[index] as OnceTask;
         _dateTime = currentTask.date;
-      }else if (currentTaskType == TaskType.weekly){
+      } else if (currentTaskType == TaskType.weekly) {
         currentTask = widget.tasks[index] as WeeklyTask;
         values = [false, false, false, false, false, false, false];
-        currentTask.weekdays.forEach((element){
-          values[element%7] = true;
+        currentTask.weekdays.forEach((element) {
+          values[element % 7] = true;
         });
       }
 
@@ -473,7 +467,7 @@ class EditTaskState extends State<EditTask> {
                     widget.tasks[index].taskName = _updateController.text;
                   }
                   buildTasks(index);
-                dateChanged = true;
+                  dateChanged = true;
                 }
               });
             },
@@ -510,12 +504,10 @@ class EditTaskState extends State<EditTask> {
                 firstDate: DateTime.now(),
                 lastDate: deadline.subtract(Duration(days: 1)),
                 onDateChanged: (d) {
-                  
-
                   _dateTime = d;
                   print(_dateTime.toString() + "ffff");
                   buildTasks(null);
-                    dateChanged = true;
+                  dateChanged = true;
                 })
           ],
         );
@@ -541,8 +533,8 @@ class EditTaskState extends State<EditTask> {
           firstDate: DateTime.now(),
           lastDate: deadline.subtract(Duration(days: 1)),
           onDateChanged: (d) {
-              print("inside repeat if");
-              dateChanged = true;
+            print("inside repeat if");
+            dateChanged = true;
             _dateTime = d;
           });
     }

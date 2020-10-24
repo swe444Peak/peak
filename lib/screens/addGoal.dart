@@ -121,6 +121,10 @@ class _NewGoalState extends State<NewGoal> {
                                       controller: _goalnamecontroller,
                                       decoration: InputDecoration(
                                         labelText: 'Goal Name',
+                                        labelStyle: TextStyle(
+                                         color: Colors.grey[700],
+                                          fontSize: 19,
+                                        ),
                                         errorText: model.goalName.error,
                                       ),
                                       onChanged: (value) =>
@@ -139,6 +143,10 @@ class _NewGoalState extends State<NewGoal> {
                                       controller: _dueDatecontroller,
                                       decoration: InputDecoration(
                                         labelText: "Due Date",
+                                        labelStyle: TextStyle(
+                                         color: Colors.grey[700],
+                                          fontSize: 19,
+                                        ),
                                         errorText: model.dueDate.error,
                                         icon: Icon(Icons.calendar_today),
                                       ),
@@ -220,7 +228,7 @@ class _NewGoalState extends State<NewGoal> {
                                         Navigator.pushNamed(
                                             context, 'goalsList');
                                         //confirm message here
-                                       goalConfirmDailog(model);
+                                        goalConfirmDailog(model);
                                         notifyManeger.showDeadlineNotification(
                                             'Deadline Reminder',
                                             'The deadline for ' +
@@ -319,8 +327,9 @@ class _NewGoalState extends State<NewGoal> {
     Widget continueButton = FlatButton(
       child: Text("Yes"),
       onPressed: () async {
-         await model.addGoalToGoogleCalendar(_goalnamecontroller.text,now,_dateTime);
-         print("after google calendar adding");
+        await model.addGoalToGoogleCalendar(
+            _goalnamecontroller.text, now, _dateTime);
+        print("after google calendar adding");
         model.uPdateEventId();
         Navigator.pop(context);
       },

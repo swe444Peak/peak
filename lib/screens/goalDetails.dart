@@ -164,7 +164,7 @@ class GoalDetails extends StatelessWidget {
         onTap: () {},
       );
     }
-  }
+  } 
 
   List<Widget> actions(model, context) {
     bool today = goal.deadline.day == DateTime.now().day &&

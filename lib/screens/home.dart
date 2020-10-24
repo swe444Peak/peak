@@ -109,7 +109,7 @@ class HomePageState extends State<HomePage> {
                                 "Here is your tasks for today, go clear them!",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 18.0,
+                                  fontSize: 17.0,
                                   fontWeight: FontWeight.w200,
                                 ),
                               ),

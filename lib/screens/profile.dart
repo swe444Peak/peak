@@ -118,7 +118,7 @@ class ProfilePage extends StatelessWidget {
                             ],
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: width * 0.2),
+                            padding: EdgeInsets.only(top: width * 0.05),
                             child: ViewProgress(),
                           ),
                         ],

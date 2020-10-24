@@ -197,7 +197,7 @@ class GoalDetails extends StatelessWidget {
         onTap: () {},
       );
     }
-  }
+  } 
 
   Widget goalStatus() {
     if (goal.isAchieved) {

@@ -89,7 +89,6 @@ class DailyTask extends Task {
     if (map == null) {
       return null;
     }
-
     return DailyTask(
       taskName: map['taskName'],
       taskRepetition: map["taskRepetition"],

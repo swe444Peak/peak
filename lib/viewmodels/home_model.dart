@@ -74,10 +74,8 @@ class HomeModel extends ChangeNotifier {
             case"daily":
                         currentTask = task as DailyTask;
                         bool comp = false;
-                        //print("task name = ${currentTask.taskName},   array len= ${currentTask.doneDates.length}");
                         currentTask.doneDates.forEach((date){
                           if(isAtSameDate(date, today)){
-                            print("task is done");
                             comp = true;
                             _completedTasks.add({
                               "goal": goal.goalName,
@@ -115,7 +113,7 @@ class HomeModel extends ChangeNotifier {
                         });//end forEach
                         if(comp)
                             break;
-                          currentTask.doneDates.forEach((date){
+                          currentTask.dates.forEach((date){
                           if(isAtSameDate(date, today)){
                             _incompletedTasks.add({
                               "goal": goal.goalName,
@@ -144,7 +142,7 @@ class HomeModel extends ChangeNotifier {
                         });//end forEach
                         if(comp)
                             break;
-                          currentTask.doneDates.forEach((date){
+                          currentTask.dates.forEach((date){
                           if(isAtSameDate(date, today)){
                             _incompletedTasks.add({
                               "goal": goal.goalName,

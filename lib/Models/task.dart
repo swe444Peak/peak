@@ -41,6 +41,8 @@ abstract class Task {
 
   static List<DateTime> castDates(List<dynamic> dates){
     List<DateTime> castedDates = new List<DateTime>();
+    if(dates == null){
+      return [];}
     dates.forEach((date) {
       castedDates.add(date.toDate());
      });
@@ -73,7 +75,6 @@ class DailyTask extends Task {
     if (map == null) {
       return null;
     }
-
     return DailyTask(
       taskName: map['taskName'],
       taskRepetition: map["taskRepetition"],

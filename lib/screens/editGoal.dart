@@ -81,6 +81,10 @@ class _EditGoalState extends State<EditGoal> {
                             labelText: 'Goal Name',
                             errorText: model.goalName.error,
                           ),
+                          style: TextStyle(
+                            fontSize: width * 0.04,
+                            color: Colors.grey[700],
+                          ),
                           onChanged: (value) => model.setGoalName(value),
                         ),
                       ),
@@ -99,6 +103,8 @@ class _EditGoalState extends State<EditGoal> {
                             errorText: model.dueDate.error,
                             icon: Icon(Icons.calendar_today),
                           ),
+                          style: TextStyle(
+                              fontSize: width * 0.04, color: Colors.grey[700]),
                           readOnly: true,
                           onTap: () {
                             setState(() {

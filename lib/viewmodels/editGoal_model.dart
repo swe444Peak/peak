@@ -73,9 +73,10 @@ class EditGoalModel extends ChangeNotifier {
       cancelTitle: 'No',
     );
     if (dialogResponse.confirmed) {
-    //  GoogleCalendar googleCalendar = new GoogleCalendar();
       setState(ViewState.Busy);
       googleCalendar.updateEvent(goalName, creationDate, deadline, updatedGoal.eventId);
+      _firstoreService.updateEventId(updatedGoal.docID);
+
       setState(ViewState.Idle);
       return true;
     }

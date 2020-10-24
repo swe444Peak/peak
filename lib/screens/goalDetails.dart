@@ -174,7 +174,7 @@ class GoalDetails extends StatelessWidget {
         ),
         onTap: () {
           model.addGoalToGoogleCalendar(
-              goal.goalName, goal.creationDate, goal.deadline, goal.eventId);
+              goal.goalName, goal.creationDate, goal.deadline, goal.eventId,goal.docID);
         },
       );
     } else {

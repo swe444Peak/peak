@@ -127,6 +127,7 @@ class Goal {
       isAchieved: map["isAchieved"],
       creationDate: map['creationDate'].toDate(),
       numOfTasks: map['numOfTasks'],
+      eventId: map["eventId"],
     );
   }
 

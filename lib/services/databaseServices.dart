@@ -67,7 +67,6 @@ class DatabaseServices {
     print(result);
     await _goalsCollectionReference.doc(result).update({
       "eventId": eventId,
-      
     });
   }
 

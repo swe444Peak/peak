@@ -37,6 +37,8 @@ class EditTaskState extends State<EditTask> {
   TextEditingController _updateController = new TextEditingController();
   var repItems;
   int editIndex;
+  bool dateChanged;
+  bool dropDownChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +58,8 @@ class EditTaskState extends State<EditTask> {
 
     tasksList = [];
     if (editIndex != null) {
+      dateChanged = false;
+      dropDownChanged = false;
       //in case user wants to edit an exsting task
       if (_updateController.text.isEmpty && updateError == null) {
         _updateController =
@@ -120,6 +124,7 @@ class EditTaskState extends State<EditTask> {
                       _dateTime = DateTime.now();
                       dropdownValue = newValue;
                       currentValue = newValue;
+                      dropDownChanged = true;
                       buildTasks(editIndex);
                     });
                   },
@@ -131,7 +136,9 @@ class EditTaskState extends State<EditTask> {
                     );
                   }).toList(),
                 ),
-                repeatDate(index: editIndex),
+                repeatDate(
+                    index: editIndex,
+                    creationDate: widget.tasks[editIndex].creationDate),
                 Padding(
                   padding: EdgeInsets.all(widget.width * 0.04),
                   child: ButtonTheme(
@@ -228,7 +235,8 @@ class EditTaskState extends State<EditTask> {
                   }).toList(),
                 ),
 
-                repeatDate(), //add the user selection !!!
+                repeatDate(
+                    creationDate: DateTime.now()), //add the user selection !!!
 
                 Padding(
                   padding: EdgeInsets.all(widget.width * 0.04),
@@ -269,7 +277,7 @@ class EditTaskState extends State<EditTask> {
       } else if (currentTaskType == TaskType.daily) {
         currentTask = widget.tasks[index] as DailyTask;
       }
-      if (currentTask.calcRepetition(deadline, DateTime.now()) == 0) {
+      if (currentTask.calcRepetition(deadline, currentTask.creationDate) == 0) {
         isValid = false;
       }
       tasksList.add(Card(
@@ -389,15 +397,22 @@ class EditTaskState extends State<EditTask> {
     setState(() {
       if (_updateController.text.trim().isNotEmpty) {
         if (currentValue.formString() == TaskType.weekly &&
-            widget.tasks[index].taskRepetition == 0) {
+            widget.tasks[index].calcRepetition(
+                    deadline, widget.tasks[index].creationDate) ==
+                0) {
           buildTasks(index);
           widget.showError(
               "Oops, the chosen days have no repetition. Please select other days that are within the due date duration");
         } else {
-          widget.tasks.removeAt(index);
-          widget.tasks.add(creatTask(
-              taskName: _updateController.text,
-              taskType: currentValue.formString()));
+          if (dateChanged || dropDownChanged) {
+            widget.tasks.removeAt(index);
+            widget.tasks.add(creatTask(
+                taskName: _updateController.text,
+                taskType: currentValue.formString()));
+          } else {
+            widget.tasks[index].taskName = _updateController.text;
+          }
+
           dropdownValue = null;
           currentValue = null;
           _updateController.clear();
@@ -412,10 +427,10 @@ class EditTaskState extends State<EditTask> {
     });
   }
 
-  Widget repeatDate({int index}) {
+  Widget repeatDate({int index, creationDate}) {
     if (currentValue == "Daily") {
-      if (isAtSameDate(deadline, DateTime.now())) {
-        return Text("*This task will repeat only today",
+      if (isAtSameDate(deadline, creationDate)) {
+        return Text("*This task will repeat only once",
             style: TextStyle(
                 fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
             textAlign: TextAlign.center);
@@ -435,6 +450,9 @@ class EditTaskState extends State<EditTask> {
           WeekdaySelector(
             selectedFillColor: Colors.lightBlue[600],
             onChanged: (v) {
+              if (editIndex != null) {
+                dateChanged = true;
+              }
               setState(() {
                 if (onlyOneDay(values) && values[v % 7] == true) {
                 } else {
@@ -451,8 +469,8 @@ class EditTaskState extends State<EditTask> {
         ],
       );
     } else if (currentValue == "Monthly") {
-      if (isAtSameDate(deadline, DateTime.now())) {
-        return Text("*This task will repeat only today",
+      if (isAtSameDate(deadline, creationDate)) {
+        return Text("*This task will repeat only once",
             style: TextStyle(
                 fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
             textAlign: TextAlign.center);
@@ -461,6 +479,8 @@ class EditTaskState extends State<EditTask> {
             _dateTime.isAfter(deadline.subtract(Duration(days: 1)))) {
           _dateTime = DateTime.now();
         }
+        print(_dateTime.toString());
+        print(deadline.toString());
         return Column(
           children: [
             Text("*Pick the starting day for your monthly task",
@@ -471,13 +491,19 @@ class EditTaskState extends State<EditTask> {
                 textAlign: TextAlign.center),
             CalendarDatePicker(
                 initialDate: _dateTime == null ||
-                        _dateTime.isAfter(deadline.subtract(Duration(days: 1)))
+                        _dateTime.isBefore(deadline.subtract(Duration(days: 1)))
                     ? DateTime.now()
                     : _dateTime,
                 firstDate: DateTime.now(),
                 lastDate: deadline.subtract(Duration(days: 1)),
                 onDateChanged: (d) {
+                  if (editIndex != null) {
+                    dateChanged = true;
+                  }
+
                   _dateTime = d;
+                  print(_dateTime.toString() + "ffff");
+                  buildTasks(null);
                 })
           ],
         );
@@ -488,8 +514,8 @@ class EditTaskState extends State<EditTask> {
         _dateTime = DateTime.now();
       }
 
-      if (isAtSameDate(deadline, DateTime.now())) {
-        return Text("*This task will repeat only today",
+      if (isAtSameDate(deadline, creationDate)) {
+        return Text("*This task will repeat only once",
             style: TextStyle(
                 fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
             textAlign: TextAlign.center);
@@ -502,6 +528,9 @@ class EditTaskState extends State<EditTask> {
           firstDate: DateTime.now(),
           lastDate: deadline.subtract(Duration(days: 1)),
           onDateChanged: (d) {
+            if (editIndex != null) {
+              dateChanged = true;
+            }
             _dateTime = d;
           });
     }
@@ -513,12 +542,13 @@ class EditTaskState extends State<EditTask> {
   Task creatTask({TaskType taskType, @required String taskName}) {
     switch (taskType) {
       case TaskType.daily:
-        var task = DailyTask(taskName: taskName);
+        var task = DailyTask(taskName: taskName, creationDate: DateTime.now());
         task.calcRepetition(deadline, DateTime.now());
         return task;
       case TaskType.once:
         var date = _dateTime == null ? DateTime.now() : _dateTime;
-        var task = OnceTask(taskName: taskName, date: date);
+        var task = OnceTask(
+            taskName: taskName, date: date, creationDate: DateTime.now());
         task.calcRepetition(deadline, DateTime.now());
         return task;
       case TaskType.weekly:
@@ -532,12 +562,14 @@ class EditTaskState extends State<EditTask> {
           }
         }
 
-        var task = WeeklyTask(taskName: taskName, weekdays: days);
+        var task = WeeklyTask(
+            taskName: taskName, weekdays: days, creationDate: DateTime.now());
         task.calcRepetition(deadline, DateTime.now());
         return task;
       case TaskType.monthly:
         var day = _dateTime == null ? DateTime.now().day : _dateTime.day;
-        var task = MonthlyTask(taskName: taskName, day: day);
+        var task = MonthlyTask(
+            taskName: taskName, day: day, creationDate: DateTime.now());
         task.calcRepetition(deadline, DateTime.now());
         return task;
     }

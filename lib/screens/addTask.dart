@@ -390,6 +390,12 @@ class AddTaskState extends State<AddTask> {
       } else if (currentTaskType == TaskType.once) {
         currentTask = widget.tasks[index] as OnceTask;
         _dateTime = currentTask.date;
+      } else if (currentTaskType == TaskType.weekly){
+        currentTask = widget.tasks[index] as WeeklyTask;
+        values = [false, false, false, false, false, false, false];
+        currentTask.weekdays.forEach((element){
+          values[element%7] = true;
+        });
       }
 
       buildTasks(index);

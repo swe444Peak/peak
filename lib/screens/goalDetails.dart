@@ -12,11 +12,10 @@ class GoalDetails extends StatelessWidget {
   Goal goal;
   GoalDetails({this.goal});
   final googleCalendar = locator<GoogleCalendar>();
-  //final _firebacseServices = locator<DatabaseServices>();
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
 
     return ChangeNotifierProvider<GoalDetailsModel>(
       create: (context) => locator<GoalDetailsModel>(),
@@ -24,39 +23,7 @@ class GoalDetails extends StatelessWidget {
         builder: (context, model, child) => Base(
           chidlPadding: EdgeInsets.fromLTRB(width * 0.06, 0, width * 0.06, 0.0),
           title: "Goal Details",
-          actions: [
-            IconButton(
-              icon: Icon(
-                Icons.edit,
-                color: Colors.white,
-              ),
-              onPressed: () =>
-                  Navigator.pushNamed(context, "editGoal", arguments: goal),
-            ),
-            IconButton(
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                ),
-                onPressed: () async {
-                  var isDeleted = await model.deleteGoal(goal);
-                  if (isDeleted) {
-                    Navigator.pop(context);
-                    if (goal.eventId!= null){
-                    var deleteDialogResponse =
-                        await model.dialogService.showConfirmationDialog(
-                      title: 'your Goal was deleted successfully!',
-                      description:
-                          'Do you want to delete this goal from your Google Calendar?',
-                      confirmationTitle: 'Yes',
-                      cancelTitle: 'No',
-                    );
-                    if (deleteDialogResponse.confirmed) {
-                      model.deletFromGooleCalendar(goal.docID);
-                    }}
-                  }
-                }),
-          ],
+          actions: actions(model, context),
           child: SingleChildScrollView(
             child: ListView(
               scrollDirection: Axis.vertical,
@@ -174,8 +141,8 @@ class GoalDetails extends StatelessWidget {
           ),
         ),
         onTap: () {
-          model.addGoalToGoogleCalendar(
-              goal.goalName, goal.creationDate, goal.deadline, goal.eventId,goal.docID);
+          model.addGoalToGoogleCalendar(goal.goalName, goal.creationDate,
+              goal.deadline, goal.eventId, goal.docID);
         },
       );
     } else {
@@ -197,6 +164,75 @@ class GoalDetails extends StatelessWidget {
         onTap: () {},
       );
     }
+  } 
+
+  List<Widget> actions(model, context) {
+    bool today = goal.deadline.day == DateTime.now().day &&
+        goal.deadline.month == DateTime.now().month &&
+        goal.deadline.year == DateTime.now().year;
+
+    if (goal.deadline.isBefore(DateTime.now()) && !today) {
+      return [
+        IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+            onPressed: () async {
+              var isDeleted = await model.deleteGoal(goal);
+              if (isDeleted) {
+                Navigator.pop(context);
+                if (goal.eventId != null) {
+                  var deleteDialogResponse =
+                      await model.dialogService.showConfirmationDialog(
+                    title: 'your Goal was deleted successfully!',
+                    description:
+                        'Do you want to delete this goal from your Google Calendar?',
+                    confirmationTitle: 'Yes',
+                    cancelTitle: 'No',
+                  );
+                  if (deleteDialogResponse.confirmed) {
+                    model.deletFromGooleCalendar(goal.docID);
+                  }
+                }
+              }
+            }),
+      ];
+    }
+    return [
+      IconButton(
+        icon: Icon(
+          Icons.edit,
+          color: Colors.white,
+        ),
+        onPressed: () =>
+            Navigator.pushNamed(context, "editGoal", arguments: goal),
+      ),
+      IconButton(
+          icon: Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+          onPressed: () async {
+            var isDeleted = await model.deleteGoal(goal);
+            if (isDeleted) {
+              Navigator.pop(context);
+              if (goal.eventId != null) {
+                var deleteDialogResponse =
+                    await model.dialogService.showConfirmationDialog(
+                  title: 'your Goal was deleted successfully!',
+                  description:
+                      'Do you want to delete this goal from your Google Calendar?',
+                  confirmationTitle: 'Yes',
+                  cancelTitle: 'No',
+                );
+                if (deleteDialogResponse.confirmed) {
+                  model.deletFromGooleCalendar(goal.docID);
+                }
+              }
+            }
+          }),
+    ];
   }
 
   Widget goalStatus() {

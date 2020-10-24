@@ -20,10 +20,10 @@ class CreateGoalModel extends ChangeNotifier {
     final googleCalendar = locator<GoogleCalendar>();
 
   bool get isValid => goalName.value != null && _dueDate.value != null;
- var result ;
+ String result ;
   ViewState get state => _state;
 
- 
+ final _firebaceService = locator<DatabaseServices>();
 
   void setState(ViewState viewState) {
     _state = viewState;
@@ -68,9 +68,11 @@ class CreateGoalModel extends ChangeNotifier {
     await googleCalendar.setEvent(name, startDate, endDate);
   }
   
- Future<void> uPdateEventId(docId){
-   DatabaseServices().updateEventId(docId.toString());
-   return docId ;
+  uPdateEventId(){
+    print("result before ");
+    print (result);
+   _firebaceService.updateEventId(result);
+  
  }
   
 }

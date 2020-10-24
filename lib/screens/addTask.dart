@@ -312,7 +312,6 @@ class AddTaskState extends State<AddTask> {
 
   _onSave() {
     setState(() {
-      print(isDatePicked);
       if (!isDatePicked) {
         widget.showError(
             "Please pick a goal due date so you can be able to add a task");
@@ -525,10 +524,11 @@ class AddTaskState extends State<AddTask> {
   Task creatTask({TaskType taskType, @required String taskName}) {
     switch (taskType) {
       case TaskType.daily:
-        return DailyTask(taskName: taskName);
+        return DailyTask(taskName: taskName, creationDate: DateTime.now());
       case TaskType.once:
         var date = _dateTime == null ? DateTime.now() : _dateTime;
-        var task = OnceTask(taskName: taskName, date: date);
+        var task = OnceTask(
+            taskName: taskName, date: date, creationDate: DateTime.now());
         task.calcRepetition(deadline, DateTime.now());
         return task;
       case TaskType.weekly:
@@ -541,13 +541,15 @@ class AddTaskState extends State<AddTask> {
             days.add(i + 1);
           }
         }
-        print(days);
-        var task = WeeklyTask(taskName: taskName, weekdays: days);
+
+        var task = WeeklyTask(
+            taskName: taskName, weekdays: days, creationDate: DateTime.now());
         task.calcRepetition(deadline, DateTime.now());
         return task;
       case TaskType.monthly:
         var day = _dateTime == null ? DateTime.now().day : _dateTime.day;
-        var task = MonthlyTask(taskName: taskName, day: day);
+        var task = MonthlyTask(
+            taskName: taskName, day: day, creationDate: DateTime.now());
         task.calcRepetition(deadline, DateTime.now());
         return task;
     }

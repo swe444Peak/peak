@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peak/enums/taskType.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/screens/shared/base.dart';
+import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/goalDetails_model.dart';
 import 'package:provider/provider.dart';
@@ -10,12 +11,13 @@ import '../locator.dart';
 class GoalDetails extends StatelessWidget {
   Goal goal;
   GoalDetails({this.goal});
- final googleCalendar = locator<GoogleCalendar>();
+  final googleCalendar = locator<GoogleCalendar>();
+  //final _firebacseServices = locator<DatabaseServices>();
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-     
+
     return ChangeNotifierProvider<GoalDetailsModel>(
       create: (context) => locator<GoalDetailsModel>(),
       child: Consumer<GoalDetailsModel>(
@@ -154,47 +156,46 @@ class GoalDetails extends StatelessWidget {
   }
 
   Widget _buildGestureDetector(model, width) {
-    if(goal.eventId==null){
-    return GestureDetector(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-            width * 0.009, width * 0.02, width * 0.009, width * 0.01),
-        child: Center(  
-          child: Text(
-            "Add this goal to my Google Calendar",
-            style: TextStyle(
-                    fontSize: width * 0.04,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline)
-                .apply(color: Colors.teal),
+    if (goal.eventId == null) {
+      return GestureDetector(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+              width * 0.009, width * 0.02, width * 0.009, width * 0.01),
+          child: Center(
+            child: Text(
+              "Add this goal to my Google Calendar",
+              style: TextStyle(
+                      fontSize: width * 0.04,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline)
+                  .apply(color: Colors.teal),
+            ),
           ),
         ),
-      ),
-      onTap: () {
-        model.addGoalToGoogleCalendar(
-            goal.goalName, goal.creationDate, goal.deadline,goal.eventId);
-      },
-    );}
-    else 
-    return GestureDetector(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-            width * 0.009, width * 0.02, width * 0.009, width * 0.01),
-        child: Center(  
-          child: Text(
-            "Already Added to Google Calendar",
-            style: TextStyle(
-                    fontSize: width * 0.04,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline)
-                .apply(color: Colors.grey),
+        onTap: () {
+          model.addGoalToGoogleCalendar(
+              goal.goalName, goal.creationDate, goal.deadline, goal.eventId,goal.docID);
+        },
+      );
+    } else {
+      return GestureDetector(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+              width * 0.009, width * 0.02, width * 0.009, width * 0.01),
+          child: Center(
+            child: Text(
+              "Already Added to Google Calendar",
+              style: TextStyle(
+                      fontSize: width * 0.04,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline)
+                  .apply(color: Colors.grey),
+            ),
           ),
         ),
-      ),
-      onTap: () {
-     
-      },
-    );
+        onTap: () {},
+      );
+    }
   }
 
   Widget goalStatus() {

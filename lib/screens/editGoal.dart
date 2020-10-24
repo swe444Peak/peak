@@ -24,10 +24,13 @@ class _EditGoalState extends State<EditGoal> {
   List<Task> tasks = [];
 
   setError(value) => setState(() => _error = value);
-
+  List<Task> tasksBeforeEdit = [];
   final GlobalKey<EditTaskState> editTaskState = GlobalKey<EditTaskState>();
 
   void initState() {
+    widget.goal.tasks.forEach((element) {
+      tasksBeforeEdit.add(element);
+    });
     _goalnamecontroller.text = widget.goal.goalName;
     _dateTime = widget.goal.deadline;
     _dueDatecontroller.text =
@@ -42,17 +45,23 @@ class _EditGoalState extends State<EditGoal> {
     var height = MediaQuery.of(context).size.height;
 
     return ChangeNotifierProvider<EditGoalModel>(
-        create: (context) => EditGoalModel(),
-        child: Consumer<EditGoalModel>(
-          builder: (context, model, child) => Base(
-            leading: IconButton(
+      create: (context) => EditGoalModel(),
+      child: Consumer<EditGoalModel>(
+        builder: (context, model, child) => Base(
+          leading: IconButton(
               icon: Icon(Icons.close),
-              onPressed: () => Navigator.pop(context),
-            ),
-            chidlPadding: EdgeInsets.fromLTRB(0, 0, 0, 0.0),
-            title: "edit Goal",
-            child: SingleChildScrollView(
-              child: Container(
+              onPressed: () {
+                setState(() {
+                  widget.goal.tasks = tasksBeforeEdit;
+                });
+                Navigator.pop(context);
+              }),
+          chidlPadding: EdgeInsets.fromLTRB(0, 0, 0, 0.0),
+          title: "edit Goal",
+          child: Column(
+            children: [
+              showAlert(),
+              Container(
                 padding: EdgeInsets.fromLTRB(
                     width * 0.06, 0.0, width * 0.06, height * 0.03),
                 child: ListView(
@@ -194,9 +203,11 @@ class _EditGoalState extends State<EditGoal> {
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Future _datePicker(BuildContext context) async {
@@ -262,7 +273,7 @@ class _EditGoalState extends State<EditGoal> {
       } else if (currentTaskType == TaskType.daily) {
         currentTask = element as DailyTask;
       }
-      if (currentTask.calcRepetition(_dateTime, DateTime.now()) == 0) {
+      if (currentTask.taskRepetition == 0) {
         isValid = false;
         return;
       }

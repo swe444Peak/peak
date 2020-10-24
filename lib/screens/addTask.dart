@@ -102,7 +102,7 @@ class AddTaskState extends State<AddTask> {
                     labelText: 'Task Name',
                     labelStyle: TextStyle( 
                      color: Colors.grey[700],
-                    fontSize:21,),
+                    fontSize:19,),
                     errorText: updateError,
                   ),
                   onChanged: (_) {

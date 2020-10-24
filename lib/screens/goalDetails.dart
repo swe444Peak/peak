@@ -52,7 +52,7 @@ class GoalDetails extends StatelessWidget {
                       cancelTitle: 'No',
                     );
                     if (deleteDialogResponse.confirmed) {
-                      model.deletFromGooleCalendar(goal.docID);
+                      model.deletFromGooleCalendar(goal.eventId);
                     }}
                   }
                 }),

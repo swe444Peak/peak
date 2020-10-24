@@ -89,10 +89,10 @@ class EditTaskState extends State<EditTask> {
                   children: [
                     Text(
                       "Edit Task",
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w300,
+                      style:  TextStyle(
+                        color: Colors.indigo[900],
+                        fontSize: 23.0,
+                       // fontWeight:  FontWeight.bold,
                       ),
                     ),
                   ],
@@ -101,6 +101,9 @@ class EditTaskState extends State<EditTask> {
                   controller: _updateController,
                   decoration: InputDecoration(
                     labelText: 'Task Name',
+                     labelStyle: TextStyle( 
+                     color: Colors.grey[700],
+                    fontSize:19,),
                     errorText: updateError,
                   ),
                   onChanged: (_) {
@@ -115,8 +118,10 @@ class EditTaskState extends State<EditTask> {
                 DropdownButtonFormField<String>(
                   isExpanded: true,
                   hint: Text("Repetition"),
-                  style: TextStyle(
-                      color: Color.fromRGBO(23, 23, 85, 1.0), fontSize: 25),
+                 style: TextStyle( 
+                     color: Colors.grey[700],
+                    fontSize:19,
+                  ),
                   value: dropdownValue,
                   onChanged: (newValue) {
                     setState(() {
@@ -179,10 +184,10 @@ class EditTaskState extends State<EditTask> {
                   children: [
                     Text(
                       "Add New Task",
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w300,
+                      style:  TextStyle(
+                        color: Colors.indigo[900],
+                        fontSize: 23.0,
+                       // fontWeight:  FontWeight.bold,
                       ),
                     ),
                   ],
@@ -191,6 +196,9 @@ class EditTaskState extends State<EditTask> {
                   controller: _taskcontroller,
                   decoration: InputDecoration(
                     labelText: 'Task Name',
+                     labelStyle: TextStyle( 
+                     color: Colors.grey[700],
+                    fontSize:19,),
                     errorText: error,
                   ),
                   onChanged: (_) {
@@ -202,9 +210,9 @@ class EditTaskState extends State<EditTask> {
                 ),
                 DropdownButtonFormField<String>(
                   hint: Text("Repetition"),
-                  style: TextStyle(
-                    color: Color.fromRGBO(23, 23, 85, 1.0),
-                    fontSize: 25,
+                 style: TextStyle( 
+                     color: Colors.grey[700],
+                    fontSize:19,
                   ),
                   value: dropdownValue,
                   onTap: () {

@@ -79,6 +79,9 @@ class _EditGoalState extends State<EditGoal> {
                           controller: _goalnamecontroller,
                           decoration: InputDecoration(
                             labelText: 'Goal Name',
+                             labelStyle: TextStyle(
+                                         color: Colors.grey[700],
+                                          fontSize: 19,),
                             errorText: model.goalName.error,
                           ),
                           onChanged: (value) => model.setGoalName(value),
@@ -96,6 +99,10 @@ class _EditGoalState extends State<EditGoal> {
                           controller: _dueDatecontroller,
                           decoration: InputDecoration(
                             labelText: "Due Date",
+                             labelStyle: TextStyle(
+                                         color: Colors.grey[700],
+                                          fontSize: 19,
+                                        ),
                             errorText: model.dueDate.error,
                             icon: Icon(Icons.calendar_today),
                           ),

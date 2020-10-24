@@ -42,6 +42,7 @@ class GoalDetails extends StatelessWidget {
                   var isDeleted = await model.deleteGoal(goal);
                   if (isDeleted) {
                     Navigator.pop(context);
+                    if (goal.eventId!= null){
                     var deleteDialogResponse =
                         await model.dialogService.showConfirmationDialog(
                       title: 'your Goal was deleted successfully!',
@@ -52,7 +53,7 @@ class GoalDetails extends StatelessWidget {
                     );
                     if (deleteDialogResponse.confirmed) {
                       model.deletFromGooleCalendar(goal.docID);
-                    }
+                    }}
                   }
                 }),
           ],

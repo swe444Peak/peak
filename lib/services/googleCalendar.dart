@@ -68,7 +68,7 @@ class GoogleCalendar {
         var calendar = CalendarApi(client);
         String calendarId = "primary";
         print("try before updating");
-        await calendar.events.update(event, calendarId, id).then((value){
+        await calendar.events.update(event,calendarId,id).then((value){
            db.eventId = value.id;
         });
       });

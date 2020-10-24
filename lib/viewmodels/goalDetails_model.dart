@@ -57,7 +57,6 @@ class GoalDetailsModel extends ChangeNotifier {
     if (dialogResponse.confirmed) {
       setState(ViewState.Busy);
       await _firstoreService.deleteGoal(goal.docID);
-       googleCalendar.deleteEvent(goal.eventId);
       setState(ViewState.Idle);
       return true;
     }

@@ -49,7 +49,7 @@ class EditGoalModel extends ChangeNotifier {
   }
 
   Future updateGoal(String goalName, DateTime creationDate, DateTime deadline,
-      List<Task> tasks, String docID) async {
+      List<Task> tasks, String docID,String eventid) async {
     int numOfTasks = 0;
     tasks.forEach((element) {
       numOfTasks += element.taskRepetition;
@@ -74,7 +74,7 @@ class EditGoalModel extends ChangeNotifier {
     );
     if (dialogResponse.confirmed) {
       setState(ViewState.Busy);
-      googleCalendar.updateEvent(goalName, creationDate, deadline, updatedGoal.eventId);
+      googleCalendar.updateEvent(goalName, creationDate, deadline, eventid);
       _firstoreService.updateEventId(updatedGoal.docID);
 
       setState(ViewState.Idle);

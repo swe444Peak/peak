@@ -3,19 +3,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:peak/enums/taskType.dart';
 
 abstract class Task {
+  DateTime creationDate;
   String taskName;
-  final TaskType taskType;
+  TaskType taskType;
   int taskRepetition;
   int achievedTasks;
-  int id;
 
   Task({
-    @required this.taskName,
-    @required this.taskType,
-    this.id,
-    this.taskRepetition,
-    this.achievedTasks = 0,
-  });
+    @required taskName,
+    @required taskType,
+    creationDate,
+    taskRepetition,
+    achievedTasks = 0,
+  }) {
+    this.taskName = taskName;
+    this.taskType = taskType;
+    this.creationDate =
+        DateTime(creationDate.year, creationDate.month, creationDate.day);
+    this.taskRepetition = taskRepetition;
+    this.achievedTasks = achievedTasks;
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -23,6 +30,7 @@ abstract class Task {
       "taskType": this.taskType.toShortString(),
       "taskRepetition": this.taskRepetition,
       "achievedTasks": this.achievedTasks,
+      "creationDate": this.creationDate,
     };
   }
 
@@ -39,11 +47,13 @@ abstract class Task {
 
   int calcRepetition(DateTime dueDate, DateTime creation);
 
-  static List<DateTime> castDates(List<dynamic> dates){
+  static List<DateTime> castDates(List<dynamic> dates) {
     List<DateTime> castedDates = new List<DateTime>();
-    dates.forEach((date) {
-      castedDates.add(date.toDate());
-     });
+    if (dates != null) {
+      dates.forEach((date) {
+        castedDates.add(date.toDate());
+      });
+    }
     return castedDates;
   }
 }
@@ -51,13 +61,17 @@ abstract class Task {
 class DailyTask extends Task {
   List<DateTime> doneDates = List<DateTime>();
   DailyTask(
-      {@required taskName, taskRepetition, achievedTasks = 0, this.doneDates, id})
+      {@required taskName,
+      taskRepetition,
+      achievedTasks = 0,
+      this.doneDates,
+      creationDate})
       : super(
             taskName: taskName,
             taskType: TaskType.daily,
-            id: id,
             taskRepetition: taskRepetition,
-            achievedTasks: achievedTasks);
+            achievedTasks: achievedTasks,
+            creationDate: creationDate);
   @override
   Map<String, dynamic> toMap() {
     return {
@@ -66,6 +80,8 @@ class DailyTask extends Task {
       "taskRepetition": this.taskRepetition,
       "achievedTasks": this.achievedTasks,
       "doneDates": this.doneDates,
+      "creationDate": Timestamp.fromMicrosecondsSinceEpoch(
+          this.creationDate.microsecondsSinceEpoch),
     };
   }
 
@@ -79,6 +95,7 @@ class DailyTask extends Task {
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
       doneDates: Task.castDates(map['doneDates']),
+      creationDate: map['creationDate'].toDate(),
     );
   }
 
@@ -95,16 +112,16 @@ class OnceTask extends Task {
   OnceTask(
       {@required taskName,
       @required this.date,
-      id,
+      creationDate,
       this.done = false,
       taskRepetition,
       achievedTasks = 0})
       : super(
           taskName: taskName,
           taskType: TaskType.once,
-          id: id,
           taskRepetition: taskRepetition,
           achievedTasks: achievedTasks,
+          creationDate: creationDate,
         );
   @override
   Map<String, dynamic> toMap() {
@@ -116,6 +133,8 @@ class OnceTask extends Task {
       "taskType": this.taskType.toShortString(),
       "taskRepetition": this.taskRepetition,
       "achievedTasks": this.achievedTasks,
+      "creationDate": Timestamp.fromMicrosecondsSinceEpoch(
+          this.creationDate.microsecondsSinceEpoch),
     };
   }
 
@@ -129,6 +148,7 @@ class OnceTask extends Task {
       date: map['date'].toDate(),
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
+      creationDate: map['creationDate'].toDate(),
     );
   }
 
@@ -156,23 +176,23 @@ class WeeklyTask extends Task {
   List<DateTime> dates = List<DateTime>();
   List<DateTime> doneDates = List<DateTime>();
   List<int> weekdays = List<int>(); /*The day of the week monday..sunday*/
-  WeeklyTask(
-      {@required taskName,
-      @required this.weekdays,
-      id,
-      taskRepetition,
-      achievedTasks = 0,
-      })
-      : super(
+  WeeklyTask({
+    @required taskName,
+    @required this.weekdays,
+    creationDate,
+    taskRepetition,
+    achievedTasks = 0,
+  }) : super(
             taskName: taskName,
             taskType: TaskType.weekly,
-            id: id,
             taskRepetition: taskRepetition,
-            achievedTasks: achievedTasks);
+            achievedTasks: achievedTasks,
+            creationDate: creationDate);
 
   WeeklyTask.withDates(
       {@required taskName,
       @required this.weekdays,
+      creationDate,
       this.dates,
       taskRepetition,
       achievedTasks = 0,
@@ -181,7 +201,8 @@ class WeeklyTask extends Task {
             taskName: taskName,
             taskType: TaskType.weekly,
             taskRepetition: taskRepetition,
-            achievedTasks: achievedTasks);
+            achievedTasks: achievedTasks,
+            creationDate: creationDate);
 
   @override
   Map<String, dynamic> toMap() {
@@ -193,6 +214,8 @@ class WeeklyTask extends Task {
       "taskRepetition": this.taskRepetition,
       "achievedTasks": this.achievedTasks,
       "doneDates": this.doneDates,
+      "creationDate": Timestamp.fromMicrosecondsSinceEpoch(
+          this.creationDate.microsecondsSinceEpoch),
     };
   }
 
@@ -208,6 +231,7 @@ class WeeklyTask extends Task {
       achievedTasks: map['achievedTasks'],
       dates: Task.castDates(map['dates']),
       doneDates: Task.castDates(map['doneDates']),
+      creationDate: map['creationDate'].toDate(),
     );
   }
 
@@ -285,30 +309,31 @@ class MonthlyTask extends Task {
   MonthlyTask({
     @required taskName,
     @required this.day,
-    id,
+    creationDate,
     taskRepetition,
     achievedTasks = 0,
   }) : super(
           taskName: taskName,
           taskType: TaskType.monthly,
-          id: id,
           taskRepetition: taskRepetition,
           achievedTasks: achievedTasks,
+          creationDate: creationDate,
         );
 
   MonthlyTask.withDates({
     @required taskName,
     @required this.day,
+    creationDate,
     this.dates,
     taskRepetition,
     achievedTasks = 0,
     this.doneDates,
   }) : super(
-          taskName: taskName,
-          taskType: TaskType.monthly,
-          taskRepetition: taskRepetition,
-          achievedTasks: achievedTasks,
-        );
+            taskName: taskName,
+            taskType: TaskType.monthly,
+            taskRepetition: taskRepetition,
+            achievedTasks: achievedTasks,
+            creationDate: creationDate);
 
   Map<String, dynamic> toMap() {
     return {
@@ -319,6 +344,8 @@ class MonthlyTask extends Task {
       "taskRepetition": this.taskRepetition,
       "achievedTasks": this.achievedTasks,
       "doneDates": this.doneDates,
+      "creationDate": Timestamp.fromMicrosecondsSinceEpoch(
+          this.creationDate.microsecondsSinceEpoch),
     };
   }
 
@@ -333,6 +360,7 @@ class MonthlyTask extends Task {
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
       doneDates: Task.castDates(map['doneDates']),
+      creationDate: map['creationDate'].toDate(),
     );
   }
 

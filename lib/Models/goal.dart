@@ -23,7 +23,8 @@ class Goal {
       List<Task> tasks,
       bool isAchieved = false,
       DateTime creationDate,
-      int numOfTasks = 0, String eventId }) {
+      int numOfTasks = 0,
+      String eventId}) {
     this.goalName = goalName;
     this.uID = uID;
     this.deadline = DateTime(deadline.year, deadline.month, deadline.day);
@@ -33,7 +34,7 @@ class Goal {
         DateTime(creationDate.year, creationDate.month, creationDate.day);
     this.numOfTasks = (numOfTasks == 0 ? clacTasks() : numOfTasks);
     this.isAchieved = (isAchieved ? isAchieved : checkAchieved());
-    this.eventId=eventId;
+    this.eventId = eventId;
   }
 
   Map<String, dynamic> toMap() {
@@ -46,7 +47,7 @@ class Goal {
       "isAchieved": (this.isAchieved ? true : this.checkAchieved()),
       "creationDate": this.creationDate,
       "numOfTasks": this.numOfTasks,
-       "eventId":this.eventId,
+      "eventId": this.eventId,
     };
   }
 
@@ -68,8 +69,7 @@ class Goal {
     });
     return mapfiedTasks;
   }
-   
-   
+
   bool checkAchieved() {
     bool checkAchieved = true;
     this.tasks.forEach((element) {
@@ -118,6 +118,7 @@ class Goal {
       var task = getTask(element);
       newList.add(task);
     });
+
     return Goal(
       goalName: map['goalName'],
       uID: map['uID'],
@@ -127,6 +128,7 @@ class Goal {
       isAchieved: map["isAchieved"],
       creationDate: map['creationDate'].toDate(),
       numOfTasks: map['numOfTasks'],
+      eventId: map['eventId'],
     );
   }
 

@@ -129,7 +129,7 @@ class HomePageState extends State<HomePage> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8),
                                     child: Text(
-                                      ((!model.empty)? "Will it looks like you have a break for today, have fun!": "Get started by adding some goals so you can have tasks to acheive!"),
+                                      ((!model.empty)? "Well it looks like you have a break for today, have fun!": "Get started by adding some goals so you can have tasks to acheive!"),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontSize: width * 0.06,

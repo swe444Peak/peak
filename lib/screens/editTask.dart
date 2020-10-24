@@ -124,8 +124,8 @@ class EditTaskState extends State<EditTask> {
                       _dateTime = DateTime.now();
                       dropdownValue = newValue;
                       currentValue = newValue;
-                      dropDownChanged = true;
                       buildTasks(editIndex);
+                      dropDownChanged = true;
                     });
                   },
                   items: repItems.map<DropdownMenuItem<String>>((value) {
@@ -387,6 +387,12 @@ class EditTaskState extends State<EditTask> {
       } else if (currentTaskType == TaskType.once) {
         currentTask = widget.tasks[index] as OnceTask;
         _dateTime = currentTask.date;
+      }else if (currentTaskType == TaskType.weekly){
+        currentTask = widget.tasks[index] as WeeklyTask;
+        values = [false, false, false, false, false, false, false];
+        currentTask.weekdays.forEach((element){
+          values[element%7] = true;
+        });
       }
 
       buildTasks(index);
@@ -415,6 +421,7 @@ class EditTaskState extends State<EditTask> {
 
           dropdownValue = null;
           currentValue = null;
+          values = [true, false, false, false, false, false, false];
           _updateController.clear();
           _dateTime = DateTime.now();
           updateError = null;
@@ -450,9 +457,6 @@ class EditTaskState extends State<EditTask> {
           WeekdaySelector(
             selectedFillColor: Colors.lightBlue[600],
             onChanged: (v) {
-              if (editIndex != null) {
-                dateChanged = true;
-              }
               setState(() {
                 if (onlyOneDay(values) && values[v % 7] == true) {
                 } else {
@@ -461,6 +465,7 @@ class EditTaskState extends State<EditTask> {
                     widget.tasks[index].taskName = _updateController.text;
                   }
                   buildTasks(index);
+                dateChanged = true;
                 }
               });
             },
@@ -497,18 +502,18 @@ class EditTaskState extends State<EditTask> {
                 firstDate: DateTime.now(),
                 lastDate: deadline.subtract(Duration(days: 1)),
                 onDateChanged: (d) {
-                  if (editIndex != null) {
-                    dateChanged = true;
-                  }
+                  
 
                   _dateTime = d;
                   print(_dateTime.toString() + "ffff");
                   buildTasks(null);
+                    dateChanged = true;
                 })
           ],
         );
       }
     } else if (currentValue == "Once") {
+      print("inside once");
       if (_dateTime == null ||
           _dateTime.isAfter(deadline.subtract(Duration(days: 1)))) {
         _dateTime = DateTime.now();
@@ -528,9 +533,8 @@ class EditTaskState extends State<EditTask> {
           firstDate: DateTime.now(),
           lastDate: deadline.subtract(Duration(days: 1)),
           onDateChanged: (d) {
-            if (editIndex != null) {
+              print("inside repeat if");
               dateChanged = true;
-            }
             _dateTime = d;
           });
     }

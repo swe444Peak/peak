@@ -64,14 +64,15 @@ class DailyTask extends Task {
       {@required taskName,
       taskRepetition,
       achievedTasks = 0,
-      this.doneDates,
-      creationDate})
-      : super(
+      doneDates,
+      creationDate}):super(
             taskName: taskName,
             taskType: TaskType.daily,
             taskRepetition: taskRepetition,
             achievedTasks: achievedTasks,
-            creationDate: creationDate);
+            creationDate: creationDate){
+        this.doneDates = doneDates ?? [] ;
+      }
   @override
   Map<String, dynamic> toMap() {
     return {
@@ -190,18 +191,22 @@ class WeeklyTask extends Task {
 
   WeeklyTask.withDates(
       {@required taskName,
-      @required this.weekdays,
+      @required weekdays,
       creationDate,
-      this.dates,
+      dates,
       taskRepetition,
       achievedTasks = 0,
-      this.doneDates})
+      doneDates})
       : super(
             taskName: taskName,
             taskType: TaskType.weekly,
             taskRepetition: taskRepetition,
             achievedTasks: achievedTasks,
-            creationDate: creationDate);
+            creationDate: creationDate){
+              this.weekdays = weekdays;
+              this.doneDates = doneDates ?? [] ;
+              this.dates = dates ;
+            }
 
   @override
   Map<String, dynamic> toMap() {
@@ -225,7 +230,7 @@ class WeeklyTask extends Task {
 
     return WeeklyTask.withDates(
       taskName: map['taskName'],
-      weekdays: List.castFrom(map['weekdays']),
+      weekdays: List.castFrom<dynamic, int>(map['weekdays']).toList(),
       taskRepetition: map["taskRepetition"],
       achievedTasks: map['achievedTasks'],
       dates: Task.castDates(map['dates']),
@@ -321,9 +326,9 @@ class MonthlyTask extends Task {
 
   MonthlyTask.withDates({
     @required taskName,
-    @required this.day,
+    @required day,
     creationDate,
-    this.dates,
+    dates,
     taskRepetition,
     achievedTasks = 0,
     this.doneDates,
@@ -332,7 +337,11 @@ class MonthlyTask extends Task {
             taskType: TaskType.monthly,
             taskRepetition: taskRepetition,
             achievedTasks: achievedTasks,
-            creationDate: creationDate);
+            creationDate: creationDate){
+              this.day = day;
+              this.doneDates = doneDates ?? [] ;
+              this.dates = dates;
+            }
 
   Map<String, dynamic> toMap() {
     return {

@@ -129,7 +129,7 @@ class GoalsListPage extends StatelessWidget {
                           backgroundColor: Colors.indigo[900],
                           progressColor: Colors.blue,
                           center: Text(
-                            "${goal.calcProgress() * 100}%",
+                            "${ (goal.calcProgress() * 100).toStringAsFixed(2)}%",
                             style: new TextStyle(
                                 color: Colors.white, fontSize: 12.0),
                           ),

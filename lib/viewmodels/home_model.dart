@@ -11,7 +11,7 @@ class HomeModel extends ChangeNotifier {
   final _firstoreService = locator<DatabaseServices>();
   ViewState _state = ViewState.Idle;
   List<Goal> _goals;
-  List<Map<String, dynamic>> _completedTasks, _incompletedTasks , _tasks ;
+  List<Map<String, dynamic>> _completedTasks = [], _incompletedTasks = [] , _tasks = [] ;
   DateTime today = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   bool empty = true;
   List<Goal> get goals => _goals;

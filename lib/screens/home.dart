@@ -106,7 +106,8 @@ class HomePageState extends State<HomePage> {
                               padding: EdgeInsets.fromLTRB(
                                   0.0, 0.0, 0.0, (width * 0.1)),
                               child: Text(
-                                (model.empty?"Oops you have no tasks yet!":"Here is your tasks for today, go clear them!"),
+                                ((model.empty || model.tasks.length == 0)?"Oops you have no tasks for today!": (model.incompTasks.length == 0)? 
+                                "Wow you finished all your tasks for today!":"Here is your tasks for today, go clear them!"),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 17.0,
@@ -123,12 +124,12 @@ class HomePageState extends State<HomePage> {
                           ? Center(
                               child: CircularProgressIndicator(),
                             )
-                          : (model.empty)
+                          : (model.empty || model.tasks.length == 0)
                               ? Center(
                                   child: Padding(
                                     padding: const EdgeInsets.all(8),
                                     child: Text(
-                                      "Get started by adding some goals so you can have tasks to acheive!",
+                                      ((!model.empty)? "Will it looks like you have a break for today, have fun!": "Get started by adding some goals so you can have tasks to acheive!"),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontSize: width * 0.06,

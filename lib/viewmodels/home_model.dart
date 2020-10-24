@@ -171,7 +171,7 @@ class HomeModel extends ChangeNotifier {
             case"once":
                         OnceTask currentTask = task as OnceTask;
                         OnceTask newTask = new OnceTask(taskName: currentTask.taskName, date: currentTask.date, 
-                        done: currentTask.done, taskRepetition: currentTask.taskRepetition, achievedTasks: currentTask.achievedTasks);
+                        done: currentTask.done, taskRepetition: currentTask.taskRepetition, achievedTasks: currentTask.achievedTasks, creationDate: currentTask.creationDate);
                         if(status){     // true => change state from done to not done
                           newTask.done = false;
                           newTask.achievedTasks--;
@@ -184,7 +184,7 @@ class HomeModel extends ChangeNotifier {
             case"daily":
                         DailyTask currentTask = task as DailyTask;
                         DailyTask newTask = new DailyTask(taskName: currentTask.taskName, doneDates: new List<DateTime>.from(currentTask.doneDates),
-                         taskRepetition: currentTask.taskRepetition, achievedTasks: currentTask.achievedTasks);
+                         taskRepetition: currentTask.taskRepetition, achievedTasks: currentTask.achievedTasks, creationDate: currentTask.creationDate);
                         if(status){
                           newTask.doneDates.remove(today);
                           newTask.achievedTasks--;
@@ -198,7 +198,7 @@ class HomeModel extends ChangeNotifier {
                         WeeklyTask currentTask = task as WeeklyTask;
                         WeeklyTask newTask = new WeeklyTask.withDates(taskName: currentTask.taskName, weekdays: new List<int>.from(currentTask.weekdays), 
                         doneDates: new List<DateTime>.from(currentTask.doneDates), taskRepetition: currentTask.taskRepetition, 
-                        achievedTasks: currentTask.achievedTasks, dates: new List<DateTime>.from(currentTask.dates));
+                        achievedTasks: currentTask.achievedTasks, dates: new List<DateTime>.from(currentTask.dates), creationDate: currentTask.creationDate);
                         if(status){
                           newTask.doneDates.remove(today);
                           newTask.achievedTasks--;
@@ -212,7 +212,7 @@ class HomeModel extends ChangeNotifier {
                         MonthlyTask currentTask = task as MonthlyTask;
                         MonthlyTask newTask = new MonthlyTask.withDates(taskName: currentTask.taskName, day: currentTask.day, achievedTasks: currentTask.achievedTasks, 
                         taskRepetition: currentTask.taskRepetition, dates: new List<DateTime>.from(currentTask.dates), 
-                        doneDates: new List<DateTime>.from(currentTask.doneDates),);
+                        doneDates: new List<DateTime>.from(currentTask.doneDates), creationDate: currentTask.creationDate);
                         if(status){
                           newTask.doneDates.remove(today);
                           newTask.achievedTasks--;

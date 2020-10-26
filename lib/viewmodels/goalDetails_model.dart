@@ -21,14 +21,16 @@ class GoalDetailsModel extends ChangeNotifier {
   }
 
   addGoalToGoogleCalendar(
-      String name, DateTime startDate, DateTime endDate, String id,String doc) {
-    googleCalendar.setEvent(name, startDate, endDate);
+      String name, DateTime startDate, DateTime endDate, String id,String doc) async {
+       await  googleCalendar.setEvent(name, startDate, endDate);
+    print ("before update******");
+    print(_firstoreService.eventId);
     _firstoreService.updateEventId(doc);
 
   }
 
   deletFromGooleCalendar(String id) {
-    if (id !=null)
+    print("ID"+id);
     googleCalendar.deleteEvent(id);
   }
 

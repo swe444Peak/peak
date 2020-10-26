@@ -82,7 +82,7 @@ class _EditProfileState extends State<EditProfile> {
                                       padding: EdgeInsets.fromLTRB(
                                           0.0, 0.0, 0.0, (width * 0.06)),
                                       child: Text(
-                                        "Edit Profile Picture",
+                                        "Edit Profile",
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 34.0,

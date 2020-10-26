@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:peak/models/task.dart';
+import 'package:random_string/random_string.dart';
 
 class Goal {
   String goalName;
@@ -13,16 +14,17 @@ class Goal {
   DateTime creationDate;
   int numOfTasks;
   int achievedTasks;
-
+  String eventId;
   Goal(
       {@required String goalName,
-      @required String uID,
+      String uID,
       @required DateTime deadline,
       String docID,
       List<Task> tasks,
       bool isAchieved = false,
       DateTime creationDate,
-      int numOfTasks = 0}) {
+      int numOfTasks = 0,
+      String eventId}) {
     this.goalName = goalName;
     this.uID = uID;
     this.deadline = DateTime(deadline.year, deadline.month, deadline.day);
@@ -32,6 +34,7 @@ class Goal {
         DateTime(creationDate.year, creationDate.month, creationDate.day);
     this.numOfTasks = (numOfTasks == 0 ? clacTasks() : numOfTasks);
     this.isAchieved = (isAchieved ? isAchieved : checkAchieved());
+    this.eventId = eventId;
   }
 
   Map<String, dynamic> toMap() {
@@ -43,6 +46,18 @@ class Goal {
       "tasks": this.mapfy(),
       "isAchieved": (this.isAchieved ? true : this.checkAchieved()),
       "creationDate": this.creationDate,
+      "numOfTasks": this.numOfTasks,
+      "eventId": this.eventId,
+    };
+  }
+
+  Map<String, dynamic> updateToMap() {
+    return {
+      "goalName": this.goalName,
+      "deadline": Timestamp.fromMicrosecondsSinceEpoch(
+          this.deadline.microsecondsSinceEpoch),
+      "tasks": this.mapfy(),
+      "isAchieved": (this.isAchieved ? true : this.checkAchieved()),
       "numOfTasks": this.numOfTasks,
     };
   }
@@ -103,6 +118,7 @@ class Goal {
       var task = getTask(element);
       newList.add(task);
     });
+
     return Goal(
       goalName: map['goalName'],
       uID: map['uID'],
@@ -112,6 +128,7 @@ class Goal {
       isAchieved: map["isAchieved"],
       creationDate: map['creationDate'].toDate(),
       numOfTasks: map['numOfTasks'],
+      eventId: map['eventId'],
     );
   }
 
@@ -124,8 +141,8 @@ class Goal {
     return totalTasks;
   }
 
-  int calcAchievedTasks(){
-    int count =0;
+  int calcAchievedTasks() {
+    int count = 0;
     this.tasks.forEach((element) {
       count += element.achievedTasks;
     }); //end forEach

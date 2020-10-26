@@ -7,7 +7,9 @@ class Base extends StatelessWidget {
   String title;
   Widget child;
   List<Widget> actions;
-  Base({this.title, this.child, this.actions});
+  EdgeInsets chidlPadding;
+  Widget leading;
+  Base({this.title, this.child, this.actions, this.chidlPadding, this.leading});
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -16,7 +18,7 @@ class Base extends StatelessWidget {
     return Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
-        bottomNavigationBar: CustomNavigationBar(1),
+        /*bottomNavigationBar: CustomNavigationBar(1),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.pushNamed(context, 'addNewGoal');
@@ -24,7 +26,7 @@ class Base extends StatelessWidget {
           child: Icon(Icons.add),
           backgroundColor: Colors.teal[400],
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,*/
         body: Stack(
           children: [
             Container(
@@ -42,16 +44,18 @@ class Base extends StatelessWidget {
                   ], begin: Alignment.topLeft, end: Alignment.bottomCenter)),
             ),
             Container(
-              child: Column(
+              child: ListView(
                 children: [
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, height * 0.09, 0, 0.0),
+                    padding:
+                        EdgeInsets.fromLTRB(0, height * 0.09, 0, height * 0.02),
                     child: AppBar(
+                      leading: leading,
                       title: Text(
                         title,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 34.0,
+                          fontSize: 32.0,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -61,8 +65,7 @@ class Base extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding:
-                        EdgeInsets.fromLTRB(width * 0.06, 0, width * 0.06, 0.0),
+                    padding: chidlPadding,
                     child: child,
                   )
                 ],

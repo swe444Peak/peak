@@ -17,28 +17,28 @@ class SettingsPage extends StatelessWidget {
   final DatabaseServices dBS = new DatabaseServices();
   final NotificationManager notifyManeger = new NotificationManager();
   final userRef = FirebaseFirestore.instance.collection('goals').get();
-  
-  
+
   //List<Task> _taskList = [];
- // UnmodifiableListView<Task> get taskList => UnmodifiableListView(_taskList);
+  // UnmodifiableListView<Task> get taskList => UnmodifiableListView(_taskList);
 
   List<Goal> _goalList = [];
   UnmodifiableListView<Goal> get goalList => UnmodifiableListView(_goalList);
 
- // List<OnceTask> _otaskList = [];
- // UnmodifiableListView<Task> get otaskList => UnmodifiableListView(_otaskList);
+  // List<OnceTask> _otaskList = [];
+  // UnmodifiableListView<Task> get otaskList => UnmodifiableListView(_otaskList);
   //List<DailyTask> _dtaskList = [];
- // UnmodifiableListView<Task> get dtaskList => UnmodifiableListView(_dtaskList);
- // List<WeeklyTask> _wtaskList = [];
+  // UnmodifiableListView<Task> get dtaskList => UnmodifiableListView(_dtaskList);
+  // List<WeeklyTask> _wtaskList = [];
   //UnmodifiableListView<Task> get wtaskList => UnmodifiableListView(_wtaskList);
   //List<MonthlyTask> _mtaskList = [];
- // UnmodifiableListView<Task> get mtaskList => UnmodifiableListView(_mtaskList);
+  // UnmodifiableListView<Task> get mtaskList => UnmodifiableListView(_mtaskList);
 
   @override
   Widget build(BuildContext context) {
     // final QuerySnapshot listTas = userRef.
     var userId = Provider.of<User>(context);
-  //  PeakUser user = new PeakUser(uid: "", name: "", notificationStatus: true);
+    //var userp = Provider.of<PeakUser>(context);
+    //  PeakUser user = new PeakUser(uid: "", name: "", notificationStatus: true);
     bool _state = true;
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
@@ -113,6 +113,36 @@ class SettingsPage extends StatelessWidget {
                               ),
 
                               child: ListTile(
+                                  leading: Icon(
+                                    Icons.perm_identity,
+                                    color: Color.fromRGBO(23, 23, 85, 1.0),
+                                    size: 32,
+                                  ),
+                                  title: Text(
+                                    "Edit Profile",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(23, 23, 85, 1.0),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.pushNamed(context, 'editProfile');
+                                  }),
+                            ),
+                          ),
+                          /*Padding(
+                            //Account
+                            padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
+                            child: Card(
+                              //card Property
+                              //color: Colors.deepPurple[900],
+                              elevation: 20,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+
+                              child: ListTile(
                                 leading: Icon(
                                   Icons.perm_identity,
                                   color: Color.fromRGBO(23, 23, 85, 1.0),
@@ -126,10 +156,13 @@ class SettingsPage extends StatelessWidget {
                                     fontSize: 18,
                                   ),
                                 ),
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.pushNamed(context, 'editAccount',
+                                      arguments: userId);
+                                },
                               ),
                             ),
-                          ),
+                          ),*/
                           Padding(
                             //Logout
                             padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),

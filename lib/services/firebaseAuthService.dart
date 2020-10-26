@@ -6,6 +6,8 @@ import 'package:peak/models/user.dart';
 class FirbaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   PeakUser currentUser;
+  var defUserPic =
+      "https://firebasestorage.googleapis.com/v0/b/peak-275b5.appspot.com/o/profile_default.png?alt=media&token=95761f67-00ef-41b8-a111-09dfdc6fe8c1";
 
   Future signUp(String username, String email, String password) async {
     try {
@@ -15,10 +17,11 @@ class FirbaseAuthService {
       if (result.user != null) {
         //creating an instance of database services to create new doc for the user with the uid
         //final DatabaseServices database = DatabaseServices(result.user);
-        currentUser = PeakUser(uid: result.user.uid, name: username);
+        currentUser =
+            PeakUser(uid: result.user.uid, name: username, picURL: defUserPic);
         await DatabaseServices(uid: result.user.uid)
-            .updateUserData(username: username);
-             
+            .updateUserData(username: username, picURL: defUserPic);
+
         return true;
       }
 
@@ -45,6 +48,10 @@ class FirbaseAuthService {
       print('Exception: $e');
       return AuthExceptionHandler.handleException(e);
     }
+  }
+
+  PeakUser getCurrentUser() {
+    return currentUser;
   }
 
   Future logout() async {

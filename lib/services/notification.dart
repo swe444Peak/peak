@@ -54,7 +54,7 @@ class NotificationManager {
     Duration sinceDeadline = deadline.difference(DateTime.now());
     int indays = sinceDeadline.inDays+2;
     var incMins = 30;
-    var addDay = 0;
+    var addDay = 1;
     for (var i = 1; i <= indays; i++) {
      // DateTime timeDaily = DateTime.now().add(Duration(days: addDay++)).add(Duration(hours: 11));
        DateTime timeDaily = DateTime.utc(DateTime.now().year,DateTime.now().month,DateTime.now().day+addDay++,8);
@@ -75,7 +75,7 @@ class NotificationManager {
     var incHour = 0;
     for (var item in dates) {
       await flutterLocalNotificationsPlugin.schedule(countNoti++, title, body,
-          item.add(Duration(minutes: incHour)).add(Duration(hours: 8)), getPlatformChannelSpecfics());
+          item.add(Duration(hours: 8)), getPlatformChannelSpecfics());
       incHour = incHour + 60;
     }
 

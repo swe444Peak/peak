@@ -7,21 +7,21 @@ import 'package:peak/models/task.dart';
 
 import '../locator.dart';
 
-class AddTask extends StatefulWidget {
+class EditTask extends StatefulWidget {
   var width;
   var height;
   Function showError;
 
   List<Task> tasks;
   DateTime deadline;
-  AddTask(Key key, this.tasks, this.width, this.height, this.showError,
+  EditTask(Key key, this.tasks, this.width, this.height, this.showError,
       this.deadline)
       : super(key: key);
   @override
-  State<StatefulWidget> createState() => new AddTaskState();
+  State<StatefulWidget> createState() => new EditTaskState();
 }
 
-class AddTaskState extends State<AddTask> {
+class EditTaskState extends State<EditTask> {
   DialogService _dialogService = locator<DialogService>();
   String repetitionError;
   var values = [true, false, false, false, false, false, false];
@@ -35,9 +35,11 @@ class AddTaskState extends State<AddTask> {
   List<Widget> tasksList = [];
   TextEditingController _taskcontroller = TextEditingController();
   TextEditingController _updateController = new TextEditingController();
-  bool isDatePicked = false;
   var repItems;
   int editIndex;
+  bool dateChanged;
+  bool dropDownChanged;
+
   @override
   Widget build(BuildContext context) {
     return new ListView(
@@ -47,18 +49,17 @@ class AddTaskState extends State<AddTask> {
   @override
   void initState() {
     super.initState();
+    deadline = widget.deadline;
     buildTasks(null);
   }
 
   List<Widget> buildTasks(int editIndex) {
-    if (isDatePicked) {
-      repItems = ['Daily', 'Weekly', 'Monthly', 'Once'];
-    } else {
-      repItems = [" "];
-    }
+    repItems = ['Daily', 'Weekly', 'Monthly', 'Once'];
 
     tasksList = [];
     if (editIndex != null) {
+      dateChanged = false;
+      dropDownChanged = false;
       //in case user wants to edit an exsting task
       if (_updateController.text.isEmpty && updateError == null) {
         _updateController =
@@ -100,9 +101,12 @@ class AddTaskState extends State<AddTask> {
                   decoration: InputDecoration(
                     labelText: 'Task Name',
                     labelStyle: TextStyle(
-                        fontSize: widget.width * 0.04, color: Colors.grey[700]),
+                      color: Colors.grey[700],
+                      fontSize: 19,
+                    ),
                     errorText: updateError,
                   ),
+                  style: TextStyle(fontSize: widget.width * 0.04),
                   onChanged: (_) {
                     setState(() {
                       if (_updateController.text.isNotEmpty) {
@@ -116,7 +120,7 @@ class AddTaskState extends State<AddTask> {
                   isExpanded: true,
                   hint: Text("Repetition"),
                   style: TextStyle(
-                      fontSize: widget.width * 0.04, color: Colors.grey[700]),
+                      color: Colors.grey[700], fontSize: widget.width * 0.04),
                   value: dropdownValue,
                   onChanged: (newValue) {
                     setState(() {
@@ -125,6 +129,7 @@ class AddTaskState extends State<AddTask> {
                       dropdownValue = newValue;
                       currentValue = newValue;
                       buildTasks(editIndex);
+                      dropDownChanged = true;
                     });
                   },
                   items: repItems.map<DropdownMenuItem<String>>((value) {
@@ -135,7 +140,9 @@ class AddTaskState extends State<AddTask> {
                     );
                   }).toList(),
                 ),
-                repeatDate(index: editIndex),
+                repeatDate(
+                    index: editIndex,
+                    creationDate: widget.tasks[editIndex].creationDate),
                 Padding(
                   padding: EdgeInsets.all(widget.width * 0.04),
                   child: ButtonTheme(
@@ -187,10 +194,9 @@ class AddTaskState extends State<AddTask> {
                   controller: _taskcontroller,
                   decoration: InputDecoration(
                     labelText: 'Task Name',
-                    labelStyle: TextStyle(
-                        fontSize: widget.width * 0.04, color: Colors.grey[700]),
                     errorText: error,
                   ),
+                  style: TextStyle(fontSize: widget.width * 0.04),
                   onChanged: (_) {
                     setState(() {
                       error = null;
@@ -201,7 +207,9 @@ class AddTaskState extends State<AddTask> {
                 DropdownButtonFormField<String>(
                   hint: Text("Repetition"),
                   style: TextStyle(
-                      fontSize: widget.width * 0.04, color: Colors.grey[700]),
+                    color: Colors.grey[700],
+                    fontSize: widget.width * 0.04,
+                  ),
                   value: dropdownValue,
                   onTap: () {
                     if (deadline == null) {
@@ -231,7 +239,8 @@ class AddTaskState extends State<AddTask> {
                   }).toList(),
                 ),
 
-                repeatDate(), //add the user selection !!!
+                repeatDate(
+                    creationDate: DateTime.now()), //add the user selection !!!
 
                 Padding(
                   padding: EdgeInsets.all(widget.width * 0.04),
@@ -272,7 +281,7 @@ class AddTaskState extends State<AddTask> {
       } else if (currentTaskType == TaskType.daily) {
         currentTask = widget.tasks[index] as DailyTask;
       }
-      if (currentTask.calcRepetition(deadline, DateTime.now()) == 0) {
+      if (currentTask.calcRepetition(deadline, currentTask.creationDate) == 0) {
         isValid = false;
       }
       tasksList.add(Card(
@@ -312,15 +321,7 @@ class AddTaskState extends State<AddTask> {
 
   _onSave() {
     setState(() {
-      if (!isDatePicked) {
-        widget.showError(
-            "Please pick a goal due date so you can be able to add a task");
-        _taskcontroller.clear();
-        dropdownValue = null;
-        currentValue = null;
-        buildTasks(null);
-      } else if (_taskcontroller.text.trim().isNotEmpty &&
-          dropdownValue != null) {
+      if (_taskcontroller.text.trim().isNotEmpty && dropdownValue != null) {
         var task = creatTask(
             taskName: _taskcontroller.text,
             taskType: currentValue.formString());
@@ -400,17 +401,25 @@ class AddTaskState extends State<AddTask> {
     setState(() {
       if (_updateController.text.trim().isNotEmpty) {
         if (currentValue.formString() == TaskType.weekly &&
-            widget.tasks[index].taskRepetition == 0) {
+            widget.tasks[index].calcRepetition(
+                    deadline, widget.tasks[index].creationDate) ==
+                0) {
           buildTasks(index);
           widget.showError(
               "Oops, the chosen days have no repetition. Please select other days that are within the due date duration");
         } else {
-          widget.tasks.removeAt(index);
-          widget.tasks.add(creatTask(
-              taskName: _updateController.text,
-              taskType: currentValue.formString()));
+          if (dateChanged || dropDownChanged) {
+            widget.tasks.removeAt(index);
+            widget.tasks.add(creatTask(
+                taskName: _updateController.text,
+                taskType: currentValue.formString()));
+          } else {
+            widget.tasks[index].taskName = _updateController.text;
+          }
+
           dropdownValue = null;
           currentValue = null;
+          values = [true, false, false, false, false, false, false];
           _updateController.clear();
           _dateTime = DateTime.now();
           updateError = null;
@@ -423,10 +432,10 @@ class AddTaskState extends State<AddTask> {
     });
   }
 
-  Widget repeatDate({int index}) {
+  Widget repeatDate({int index, creationDate}) {
     if (currentValue == "Daily") {
-      if (isAtSameDate(deadline, DateTime.now())) {
-        return Text("*This task will repeat only today",
+      if (isAtSameDate(deadline, creationDate)) {
+        return Text("*This task will repeat only once",
             style: TextStyle(
                 fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
             textAlign: TextAlign.center);
@@ -454,6 +463,7 @@ class AddTaskState extends State<AddTask> {
                     widget.tasks[index].taskName = _updateController.text;
                   }
                   buildTasks(index);
+                  dateChanged = true;
                 }
               });
             },
@@ -462,8 +472,8 @@ class AddTaskState extends State<AddTask> {
         ],
       );
     } else if (currentValue == "Monthly") {
-      if (isAtSameDate(deadline, DateTime.now())) {
-        return Text("*This task will repeat only today",
+      if (isAtSameDate(deadline, creationDate)) {
+        return Text("*This task will repeat only once",
             style: TextStyle(
                 fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
             textAlign: TextAlign.center);
@@ -472,6 +482,8 @@ class AddTaskState extends State<AddTask> {
             _dateTime.isAfter(deadline.subtract(Duration(days: 1)))) {
           _dateTime = DateTime.now();
         }
+        print(_dateTime.toString());
+        print(deadline.toString());
         return Column(
           children: [
             Text("*Pick the starting day for your monthly task",
@@ -482,25 +494,29 @@ class AddTaskState extends State<AddTask> {
                 textAlign: TextAlign.center),
             CalendarDatePicker(
                 initialDate: _dateTime == null ||
-                        _dateTime.isAfter(deadline.subtract(Duration(days: 1)))
+                        _dateTime.isBefore(deadline.subtract(Duration(days: 1)))
                     ? DateTime.now()
                     : _dateTime,
                 firstDate: DateTime.now(),
                 lastDate: deadline.subtract(Duration(days: 1)),
                 onDateChanged: (d) {
                   _dateTime = d;
+                  print(_dateTime.toString() + "ffff");
+                  buildTasks(null);
+                  dateChanged = true;
                 })
           ],
         );
       }
     } else if (currentValue == "Once") {
+      print("inside once");
       if (_dateTime == null ||
           _dateTime.isAfter(deadline.subtract(Duration(days: 1)))) {
         _dateTime = DateTime.now();
       }
 
-      if (isAtSameDate(deadline, DateTime.now())) {
-        return Text("*This task will repeat only today",
+      if (isAtSameDate(deadline, creationDate)) {
+        return Text("*This task will repeat only once",
             style: TextStyle(
                 fontFamily: 'Montserrat', fontSize: 18.0, color: Colors.teal),
             textAlign: TextAlign.center);
@@ -513,6 +529,8 @@ class AddTaskState extends State<AddTask> {
           firstDate: DateTime.now(),
           lastDate: deadline.subtract(Duration(days: 1)),
           onDateChanged: (d) {
+            print("inside repeat if");
+            dateChanged = true;
             _dateTime = d;
           });
     }
@@ -524,7 +542,9 @@ class AddTaskState extends State<AddTask> {
   Task creatTask({TaskType taskType, @required String taskName}) {
     switch (taskType) {
       case TaskType.daily:
-        return DailyTask(taskName: taskName, creationDate: DateTime.now());
+        var task = DailyTask(taskName: taskName, creationDate: DateTime.now());
+        task.calcRepetition(deadline, DateTime.now());
+        return task;
       case TaskType.once:
         var date = _dateTime == null ? DateTime.now() : _dateTime;
         var task = OnceTask(

@@ -1,10 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:peak/screens/viewProgress.dart';
+import 'package:peak/services/firebaseAuthService.dart';
 
 import 'package:provider/provider.dart';
 import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/models/user.dart';
+
+import '../locator.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -13,6 +17,7 @@ class ProfilePage extends StatelessWidget {
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
+    final _firebaseService = locator<FirbaseAuthService>();
     //User user;
 
     return StreamProvider<PeakUser>.value(
@@ -78,12 +83,14 @@ class ProfilePage extends StatelessWidget {
                     child: Center(
                       child: Column(
                         children: [
+                          // PROFILE PIC HERE
                           Container(
                             width: width * 0.4,
                             height: width * 0.4,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage('assets/profile_default.png'),
+                                image: NetworkImage(
+                                    "${Provider.of<PeakUser>(context).picURL}"),
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.circular(100),
@@ -109,6 +116,10 @@ class ProfilePage extends StatelessWidget {
                                 ),
                               ),
                             ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: width * 0.05),
+                            child: ViewProgress(),
                           ),
                         ],
                       ),

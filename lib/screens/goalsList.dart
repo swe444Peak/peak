@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peak/enums/viewState.dart';
 import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/viewmodels/goalsList_model.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -64,190 +65,179 @@ class GoalsListPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Flexible(
-                      child: (model.empty)
-                          ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                  "Your Goals list is empty\n Start adding new Goals!",
-                                  style: TextStyle(
-                                      fontSize: width * 0.06,
-                                      color: Colors.white),
-                                ),
-                              ),
-                            )
-                          : (model.goals != null)
-                              ? ListView.builder(
-                                  itemCount: model.goals.length,
-                                  itemBuilder: (context, index) {
-                                    var goal = model.goals[index];
-                                    return Card(
-                                      //card Property
-                                      elevation: 20,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                      ),
-
-                                      child: ListTile(
-                                        // leading: Icon(
-                                        //   Icons.power_settings_new,
-                                        //   color: Color.fromRGBO(23, 23, 85, 1.0),
-                                        //   size: 32,
-                                        // ),
-                                        contentPadding: EdgeInsets.fromLTRB(
-                                            width * 0.05,
-                                            height * 0.02,
-                                            0.0,
-                                            height * 0.01),
-                                        title: Text(
-                                          goal.goalName,
-                                          style: TextStyle(
-                                            color: Colors.black87,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                        subtitle: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0.0,
-                                                      height * 0.008,
-                                                      0.0,
-                                                      height * 0.008),
-                                                  child:
-                                                      new LinearPercentIndicator(
-                                                    width: width * 0.7,
-                                                    lineHeight: 14.0,
-                                                    percent:
-                                                        goal.calcProgress(),
-                                                    backgroundColor:
-                                                        Colors.indigo[900],
-                                                    progressColor: Colors.blue,
-                                                    center: Text(
-                                                      "${goal.calcProgress() * 100}%",
-                                                      style: new TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 12.0),
-                                                    ),
-                                                  ),
-                                                ),
-
-                                                // Container(
-                                                //   padding: EdgeInsets.fromLTRB(
-                                                //       0.0,
-                                                //       height * 0.02,
-                                                //       0.0,
-                                                //       height * 0.01),
-                                                //   width: width * 0.7,
-                                                //   height: width * 0.08,
-                                                //   child:
-                                                //       GradientProgressIndicator(
-                                                //     gradient:
-                                                //         Gradients.buildGradient(
-                                                //             Alignment(
-                                                //                 -1.0, -1.0),
-                                                //             Alignment(1.0, 1.0),
-                                                //             [
-                                                //           Colors.indigo[900],
-                                                //           Colors.blue
-                                                //         ]),
-                                                //     value: 0.5,
-                                                //   ),
-                                                // ),
-                                              ],
-                                            ),
-                                            Container(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0.0,
-                                                  height * 0.01,
-                                                  0.0,
-                                                  height * 0.01),
-                                              child: Row(
-                                                children: [
-                                                  Container(
-                                                    //due date
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal:
-                                                                width * 0.008),
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.assistant_photo,
-                                                          color: Colors.amber,
-                                                        ),
-                                                        Text(
-                                                            "${goal.deadline.day}/${goal.deadline.month}/${goal.deadline.year}"),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    //Tasks
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal:
-                                                                width * 0.008),
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons
-                                                              .assignment_turned_in,
-                                                          color: Colors.teal,
-                                                        ),
-                                                        Text(
-                                                            "${goal.calcAchievedTasks()}/${goal.numOfTasks}"),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    //status
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal:
-                                                                width * 0.01),
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.brightness_1,
-                                                          color: (goal
-                                                                  .isAchieved
-                                                              ? Colors.green
-                                                              : Colors
-                                                                  .red[600]),
-                                                        ),
-                                                        Text(
-                                                            "${goal.isAchieved ? "Completed" : "Incomplete"}"),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          Navigator.pushNamed(
-                                              context, "goalDetails",
-                                              arguments: goal);
-                                        },
-                                      ),
-                                    );
-                                  },
-                                )
-                              : Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                    ),
+                    Flexible(child: goalsList(model, width, height)),
                   ],
                 ),
               ),
             ],
           )),
+    );
+  }
+
+  Widget goalsList(model, width, height) {
+    if (model.state == ViewState.Busy) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    if (model.empty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(
+            "Your Goals list is empty\n Start adding new Goals!",
+            style: TextStyle(fontSize: width * 0.06, color: Colors.white),
+          ),
+        ),
+      );
+    }
+
+    if (model.goals != null) {
+      return ListView.builder(
+        itemCount: model.goals.length,
+        itemBuilder: (context, index) {
+          var goal = model.goals[index];
+          return Card(
+            //card Property
+            elevation: 20,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+
+            child: ListTile(
+              contentPadding: EdgeInsets.fromLTRB(
+                  width * 0.05, height * 0.02, 0.0, height * 0.01),
+              title: Text(
+                goal.goalName,
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 18,
+                ),
+              ),
+              subtitle: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(
+                            0.0, height * 0.008, 0.0, height * 0.008),
+                        child: new LinearPercentIndicator(
+                          width: width * 0.7,
+                          lineHeight: 14.0,
+                          percent: goal.calcProgress(),
+                          backgroundColor: Colors.indigo[900],
+                          progressColor: Colors.blue,
+                          center: Text(
+                            "${(goal.calcProgress() * 100).toStringAsFixed(2)}%",
+                            style: new TextStyle(
+                                color: Colors.white, fontSize: 12.0),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(
+                        0.0, height * 0.01, 0.0, height * 0.01),
+                    child: Row(
+                      children: [
+                        Container(
+                          //due date
+                          padding:
+                              EdgeInsets.symmetric(horizontal: width * 0.008),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.assistant_photo,
+                                color: Colors.amber,
+                              ),
+                              Text(
+                                  "${goal.deadline.day}/${goal.deadline.month}/${goal.deadline.year}"),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          //Tasks
+                          padding:
+                              EdgeInsets.symmetric(horizontal: width * 0.008),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.assignment_turned_in,
+                                color: Colors.teal,
+                              ),
+                              Text(
+                                  "${goal.calcAchievedTasks()}/${goal.numOfTasks}"),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          //status
+                          padding:
+                              EdgeInsets.symmetric(horizontal: width * 0.01),
+                          child: goalStatus(goal),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, "goalDetails", arguments: goal);
+              },
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  Widget goalStatus(goal) {
+    if (goal.isAchieved) {
+      return Row(children: [
+        Icon(
+          Icons.brightness_1,
+          color: (Colors.green),
+        ),
+        Text("Completed"),
+      ]);
+    }
+
+    bool today = goal.deadline.day == DateTime.now().day &&
+        goal.deadline.month == DateTime.now().month &&
+        goal.deadline.year == DateTime.now().year;
+
+    if (goal.deadline.isBefore(DateTime.now()) && !today) {
+      return Row(children: [
+        Icon(
+          Icons.brightness_1,
+          color: (Colors.grey),
+        ),
+        Text("Outdated"),
+      ]);
+    }
+
+    if (goal.calcProgress() == 0) {
+      return Row(
+        children: [
+          Icon(
+            Icons.brightness_1,
+            color: (Colors.red),
+          ),
+          Text("Incomplete"),
+        ],
+      );
+    }
+
+    return Row(
+      children: [
+        Icon(
+          Icons.brightness_1,
+          color: (Colors.blue),
+        ),
+        Text("In progress"),
+      ],
     );
   }
 }

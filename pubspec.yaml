@@ -21,18 +21,23 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  random_string: ^2.1.0
   lite_rolling_switch: ^0.1.1
   flutter_local_notifications: ^1.4.4+4
   bubble_bottom_bar: ^1.2.0
   gradient_widgets: ^0.5.1
   percent_indicator: "^2.1.7+2"
+  flutter_custom_clippers: ^1.1.2
   weekday_selector: ^0.4.0
   googleapis: ^0.55.0
   googleapis_auth: ^0.2.12
-  url_launcher: ^5.5.0
+  lottie: ^0.6.0
+  image_picker: ^0.6.7+12
+  firebase_storage: ^4.0.1
   flutter:
     sdk: flutter
   flutter_rounded_date_picker: 1.0.5
+  url_launcher: ^5.5.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -47,6 +52,8 @@ dependencies:
   email_validator: ^1.0.5
   stacked_services: ^0.5.4+4
   stacked: ^1.7.6
+  sleek_circular_slider: ^1.2.0+web
+
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +72,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/goalConfirm.json
     - assets/profile_default.png
     - assets/logo.png
   #   - images/a_dot_ham.jpeg

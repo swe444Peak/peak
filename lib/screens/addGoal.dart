@@ -1,16 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/enums/taskType.dart';
 
 import 'package:peak/services/databaseServices.dart';
+import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:provider/provider.dart';
+import 'package:random_string/random_string.dart';
 
 import '../locator.dart';
 import '../services/notification.dart';
 import 'addTask.dart';
+//import 'package:lottie/lottie.dart';
 
 class NewGoal extends StatefulWidget {
   @override
@@ -18,8 +22,13 @@ class NewGoal extends StatefulWidget {
 }
 
 class _NewGoalState extends State<NewGoal> {
+  var docId;
+  String eventId;
+  final googleCalendar = locator<GoogleCalendar>();
+  final _firebaseService = locator<DatabaseServices>();
   var goalsCounter = 0;
-  NotificationManager notifyManeger = new NotificationManager();
+  NotificationManager notifyManeger = NotificationManager();
+  DateTime now = DateTime.now();
   String _error;
   TextEditingController _goalnamecontroller = TextEditingController();
   TextEditingController _dueDatecontroller = TextEditingController();
@@ -112,6 +121,9 @@ class _NewGoalState extends State<NewGoal> {
                                       controller: _goalnamecontroller,
                                       decoration: InputDecoration(
                                         labelText: 'Goal Name',
+                                        labelStyle: TextStyle(
+                                            fontSize: width * 0.04,
+                                            color: Colors.grey[700]),
                                         errorText: model.goalName.error,
                                       ),
                                       onChanged: (value) =>
@@ -130,6 +142,9 @@ class _NewGoalState extends State<NewGoal> {
                                       controller: _dueDatecontroller,
                                       decoration: InputDecoration(
                                         labelText: "Due Date",
+                                        labelStyle: TextStyle(
+                                            fontSize: width * 0.04,
+                                            color: Colors.grey[700]),
                                         errorText: model.dueDate.error,
                                         icon: Icon(Icons.calendar_today),
                                       ),
@@ -156,33 +171,33 @@ class _NewGoalState extends State<NewGoal> {
                                     bool valid = isValid();
                                     if (valid && model.isValid) {
                                       if (tasks.length > 0) {
-                                        model.createGoal(
+                                        docId = model.createGoal(
                                             _goalnamecontroller.text,
                                             user?.uid,
                                             _dateTime,
                                             tasks);
+
                                         for (var item in tasks) {
                                           switch (
                                               item.taskType.toShortString()) {
                                             case 'once':
-                                               OnceTask oTask =
-                                                  item as OnceTask;
+                                              OnceTask oTask = item as OnceTask;
                                               notifyManeger
                                                   .showNotificationOnce(
                                                       'Reminder To',
                                                       item.taskName,
                                                       oTask.date);
-                                                      print("Once");
-                                                      print(oTask.date);
+                                              print("Once");
+                                              print(oTask.date);
                                               break;
                                             case 'daily':
-                                             print("Daily");
+                                              print("Daily");
                                               notifyManeger
                                                   .showDailyNotification(
                                                       'Daily Reminder',
                                                       item.taskName,
                                                       _dateTime);
-                                                       
+
                                               break;
                                             case 'weekly':
                                               WeeklyTask wTask =
@@ -210,6 +225,8 @@ class _NewGoalState extends State<NewGoal> {
                                         }
                                         Navigator.pushNamed(
                                             context, 'goalsList');
+                                        //confirm message here
+                                        goalConfirmDailog(model);
                                         notifyManeger.showDeadlineNotification(
                                             'Deadline Reminder',
                                             'The deadline for ' +
@@ -295,6 +312,48 @@ class _NewGoalState extends State<NewGoal> {
         addTaskState.currentState.buildTasks(null);
       });
     }
+  }
+
+  goalConfirmDailog(CreateGoalModel model) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("No"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Yes"),
+      onPressed: () async {
+        await model.addGoalToGoogleCalendar(
+            _goalnamecontroller.text, now, _dateTime);
+        print("after google calendar adding");
+        model.uPdateEventId();
+        Navigator.pop(context);
+      },
+    );
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          contentPadding: EdgeInsets.all(5),
+          title: Text("Added Successfully !"),
+          content: Column(
+            children: [
+              Lottie.asset('assets/goalConfirm.json', width: 200, height: 200),
+              Text(
+                  "your goal was added successfully , would you like to add it to google calendar?"),
+            ],
+          ),
+          actions: [
+            cancelButton,
+            continueButton,
+          ],
+        );
+      },
+    );
   }
 
   Widget showAlert() {

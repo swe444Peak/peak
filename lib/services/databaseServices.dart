@@ -1,14 +1,18 @@
 import 'dart:async';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
+import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
+
 import 'firebaseAuthService.dart';
 
 class DatabaseServices {
   final String uid;
+  var peakuser;
+  String eventId;
+  String eventDoc;
   DatabaseServices({this.uid});
   final StreamController<List<Goal>> _goalController =
       StreamController<List<Goal>>.broadcast();
@@ -20,12 +24,12 @@ class DatabaseServices {
 
   final _goalsCollectionReference =
       FirebaseFirestore.instance.collection("goals");
-  
 
-  Future updateUserData({String username}) async {
+  Future updateUserData({String username, String picURL}) async {
     return await userCollection.doc(uid).set({
       "username": username,
-     // "notificationStatus": true
+      "picURL": picURL,
+      // "notificationStatus": true
     });
   } //end updateUserData
 
@@ -36,22 +40,43 @@ class DatabaseServices {
     });
      }
   } //end updateUserData*/
-  
 
-  Future updateGoal({Goal goal}) async {
-    var doc;
+  Future addGoal({Goal goal}) async {
+ DocumentReference doc;
     try {
       doc = await _goalsCollectionReference.add(goal.toMap());
-      return doc;
+      eventDoc = doc.id;
+      return doc.id;
     } catch (e) {
       print("$e");
       return e.toString();
     }
   }
 
+  Future updateGoal(Goal goal) async {
+    await _goalsCollectionReference
+        .doc(goal.docID)
+        .update(goal.updateToMap())
+        .catchError((error) {
+      print(error);
+    });
+  }
+
+  Future updateEventId(String result) async {
+    print("BEFORE UPDATE");
+    print(result);
+    await _goalsCollectionReference.doc(result).update({
+      "eventId": eventId,
+    });
+  }
+
+  // Future updateEventId()async{
+
+  // }
   //creating user data stream to get user doc
 
-  Stream<PeakUser> userData(String id) {
+  Stream<PeakUser> userData([String id]) {
+    id = _firebaseService.currentUser.uid;
     return userCollection
         .doc(id)
         .snapshots()
@@ -64,7 +89,8 @@ class DatabaseServices {
     return PeakUser(
       uid: snapshot.id,
       name: snapshot.data()['username'],
-    //  notificationStatus : snapshot.data()['notificationStatus']
+      picURL: snapshot.data()['picURL'],
+      //  notificationStatus : snapshot.data()['notificationStatus']
     );
   }
 
@@ -86,5 +112,43 @@ class DatabaseServices {
     }
 
     return _goalController.stream;
+  }
+
+  Future updateAccountData(name) async {
+    return await userCollection.doc(_firebaseService.currentUser.uid).update({
+      "username": name,
+    });
+  }
+
+  Future updateProfilePic(picURL) async {
+    return await userCollection.doc(_firebaseService.currentUser.uid).update({
+      "picURL": picURL,
+    });
+  }
+
+  Future updateTask(String docId, dynamic orignalTask, dynamic editedTask) async{
+    
+    await _goalsCollectionReference.doc(docId).update(
+      {"tasks": FieldValue.arrayRemove([orignalTask.toMap()])}
+    );
+
+    await _goalsCollectionReference.doc(docId).update(
+      {"tasks": FieldValue.arrayUnion([editedTask.toMap()])}
+    );
+  }
+
+  Future deleteGoal(String documentId) async {
+    await _goalsCollectionReference.doc(documentId).delete();
+  }
+
+  PeakUser getUser() {
+    userData().listen((event) async {
+      peakuser = event;
+    });
+    while (peakuser != null) {
+      return peakuser;
+    }
+    print("problem in getUser");
+    return null;
   }
 }

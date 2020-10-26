@@ -21,7 +21,7 @@ class GoalDetails extends StatelessWidget {
       create: (context) => locator<GoalDetailsModel>(),
       child: Consumer<GoalDetailsModel>(
         builder: (context, model, child) => Base(
-          chidlPadding: EdgeInsets.fromLTRB(width * 0.06, 0, width * 0.06, 0.0),
+          childPadding: EdgeInsets.fromLTRB(width * 0.06, 0, width * 0.06, 0.0),
           title: "Goal Details",
           actions: actions(model, context),
           child: SingleChildScrollView(

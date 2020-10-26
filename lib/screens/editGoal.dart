@@ -56,7 +56,7 @@ class _EditGoalState extends State<EditGoal> {
                 });
                 Navigator.pop(context);
               }),
-          chidlPadding: EdgeInsets.fromLTRB(0, 0, 0, 0.0),
+          childPadding: EdgeInsets.fromLTRB(0, 0, 0, 0.0),
           title: "edit Goal",
           child: Column(
             children: [

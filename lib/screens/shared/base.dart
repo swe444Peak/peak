@@ -7,9 +7,9 @@ class Base extends StatelessWidget {
   String title;
   Widget child;
   List<Widget> actions;
-  EdgeInsets chidlPadding;
+  EdgeInsets childPadding;
   Widget leading;
-  Base({this.title, this.child, this.actions, this.chidlPadding, this.leading});
+  Base({this.title, this.child, this.actions, this.childPadding, this.leading});
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -65,7 +65,7 @@ class Base extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: chidlPadding,
+                    padding: childPadding,
                     child: child,
                   )
                 ],

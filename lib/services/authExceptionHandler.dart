@@ -9,7 +9,8 @@ enum AuthResultStatus {
   operationNotAllowed,
   undefined,
   tooManyRequests,
-  networkRequestFailed
+  networkRequestFailed,
+  usernameAlreadyExists,
 }
 
 class AuthExceptionHandler {
@@ -43,6 +44,9 @@ class AuthExceptionHandler {
         break;
       case "network-request-failed":
         status = AuthResultStatus.networkRequestFailed;
+        break;
+      case "permission-denied":
+        status = AuthResultStatus.usernameAlreadyExists;
         break;
       default:
         status = AuthResultStatus.undefined;
@@ -78,6 +82,10 @@ class AuthExceptionHandler {
       case AuthResultStatus.networkRequestFailed:
         errorMessage =
             "Unable to connect please check your internet connection";
+        break;
+       case AuthResultStatus.usernameAlreadyExists:
+        errorMessage =
+            "Username Already Exists";
         break;
       default:
         errorMessage = "An undefined Error happened.";

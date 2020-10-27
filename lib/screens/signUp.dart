@@ -55,7 +55,7 @@ class _SignupPageState extends State<SignupPage> {
                           height: size.height * 0.28,
                         ),
                         SizedBox(height: size.height * 0.06),
-                        buildTextFiled(_usernamecontroller, false, "name",
+                        buildTextFiled(_usernamecontroller, false, "username",
                             model.name.error, model.setName),
                         SizedBox(height: size.height * 0.01),
                         buildTextFiled(_emailcontroller, false, "email",

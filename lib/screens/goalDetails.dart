@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:peak/enums/taskType.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/screens/shared/base.dart';
-import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/goalDetails_model.dart';
 import 'package:provider/provider.dart';

@@ -1,14 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/screens/viewProgress.dart';
-import 'package:peak/services/firebaseAuthService.dart';
 
 import 'package:provider/provider.dart';
 import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/models/user.dart';
-
-import '../locator.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -17,7 +14,6 @@ class ProfilePage extends StatelessWidget {
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
-    final _firebaseService = locator<FirbaseAuthService>();
     //User user;
 
     return StreamProvider<PeakUser>.value(
@@ -33,6 +29,15 @@ class ProfilePage extends StatelessWidget {
               elevation: 0.0,
               leading: Padding(padding: EdgeInsets.only(top: 0.0)),
               actions: [
+                IconButton(
+                    icon: Icon(
+                      Icons.list,
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, 'friendsList');
+                    }),
                 IconButton(
                     icon: Icon(
                       Icons.settings,

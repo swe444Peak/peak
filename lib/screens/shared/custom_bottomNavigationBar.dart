@@ -40,7 +40,7 @@ class CustomNavigationBar extends StatelessWidget {
             Navigator.pushNamed(context, 'profile');
             break;
           case 3:
-            //Navigator.pushNamed(context, 'explore');
+            Navigator.pushNamed(context, 'friendsList');
             break;
         }
       },

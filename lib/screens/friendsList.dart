@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/models/user.dart';
+import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:provider/provider.dart';
 
@@ -23,10 +24,16 @@ class _FriendsListState extends State<FriendsList> {
           return Scaffold(
               extendBodyBehindAppBar: true,
               backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0.0,
+              bottomNavigationBar: CustomNavigationBar(3),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, 'addNewGoal');
+                },
+                child: Icon(Icons.add),
+                backgroundColor: Colors.teal[400],
               ),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.endDocked,
               body: SingleChildScrollView(
                   child: Stack(children: [
                 Container(
@@ -53,8 +60,8 @@ class _FriendsListState extends State<FriendsList> {
                     Row(
                       children: [
                         Padding(
-                          padding: EdgeInsets.fromLTRB(
-                              0.0, 0.0, 0.0, (width * 0.06)),
+                          padding:
+                              EdgeInsets.fromLTRB(0.0, 0.0, 0.0, (width * 0.1)),
                           child: Text(
                             "Friends List",
                             style: TextStyle(

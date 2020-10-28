@@ -31,15 +31,6 @@ class ProfilePage extends StatelessWidget {
               actions: [
                 IconButton(
                     icon: Icon(
-                      Icons.list,
-                      color: Colors.white,
-                      size: 35,
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, 'friendsList');
-                    }),
-                IconButton(
-                    icon: Icon(
                       Icons.settings,
                       color: Colors.white,
                     ),

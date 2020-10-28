@@ -81,14 +81,14 @@ class CustomNavigationBar extends StatelessWidget {
         BubbleBottomBarItem(
             backgroundColor: Colors.blue,
             icon: Icon(
-              Icons.search,
+              Icons.people,
               color: Colors.black87,
             ),
             activeIcon: Icon(
-              Icons.search,
+              Icons.people,
               color: Colors.blue,
             ),
-            title: Text("Explore")),
+            title: Text("Friends")),
       ],
     );
   }

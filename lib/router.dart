@@ -47,6 +47,8 @@ class Routerr {
         return MaterialPageRoute(builder: (_) => EditProfile());
       case 'forgotPassword':
         return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
+        case 'friendsList':
+        return MaterialPageRoute(builder: (_) => FriendsList());
     }
   }
 }

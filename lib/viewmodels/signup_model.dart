@@ -32,6 +32,12 @@ class SignUpModel extends ChangeNotifier {
   void setName(String name) {
     if (name.trim().isEmpty) {
       _name = ValidationItem(null, "please enter your name");
+    } else if (!validateUserName(name)) {
+      name.length < 4 || name.length > 16
+          ? _name =
+              ValidationItem(null, "username must be 4-16 characters long")
+          : _name =
+              ValidationItem(null, "username contain an unvalid character");
     } else {
       _name = ValidationItem(name, null);
     }
@@ -83,6 +89,15 @@ class SignUpModel extends ChangeNotifier {
         r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value))
+      return false;
+    else
+      return true;
+  }
+
+  bool validateUserName(String username) {
+    Pattern pattern = r'^[-\w\.\$@\*\!]{4,16}$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(username))
       return false;
     else
       return true;

@@ -107,7 +107,7 @@ class _FriendsListState extends State<FriendsList> {
                             ),
                             SizedBox(width: width * 0.03),
                             Text(
-                              "Monkey",
+                              "MonkeyDDDDDDDDDD",
                               style: TextStyle(
                                 color: Colors.black87,
                                 fontWeight: FontWeight.w400,

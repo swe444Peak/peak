@@ -6,6 +6,7 @@ import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:peak/viewmodels/editGoal_model.dart';
 import 'package:peak/viewmodels/editProfile_model.dart';
+import 'package:peak/viewmodels/friendsList_model.dart';
 import 'package:peak/viewmodels/goalDetails_model.dart';
 import 'package:peak/viewmodels/goalsList_model.dart';
 import 'package:peak/viewmodels/home_model.dart';
@@ -29,4 +30,5 @@ void setupLocator() {
   locator.registerFactory(() => EditGoalModel());
   locator.registerFactory(() => EditProfileModel());
   locator.registerFactory(() => ViewProgressModel());
+  locator.registerFactory(() => FriendsListModel());
 }

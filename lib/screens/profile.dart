@@ -62,15 +62,15 @@ class ProfilePage extends StatelessWidget {
                     //margin: EdgeInsets.fromLTRB(0, 0.0, 0.0, 0.0),
                     decoration: BoxDecoration(
                         //color: Colors.indigo[500],
-                        borderRadius: BorderRadius.vertical(
-                            bottom: Radius.circular(
-                                200)) /*.only(bottomLeft: Radius.circular(150))*/,
+                        //borderRadius: BorderRadius.vertical(
+                        //bottom: Radius.circular(
+                        //200)) /*.only(bottomLeft: Radius.circular(150))*/,
                         gradient: LinearGradient(
                             colors: [
-                              Colors.teal[400],
-                              Colors.indigo[600],
-                              Colors.deepPurple[900]
-                            ],
+                          Colors.teal[400],
+                          Colors.indigo[600],
+                          Colors.deepPurple[900]
+                        ],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter)),
                   ),

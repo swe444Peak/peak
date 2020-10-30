@@ -129,7 +129,9 @@ class _FriendsListState extends State<FriendsList> {
                     ),
                   ]),
                 ),
-              ])));
+              ])
+              )
+              );
         });
   }
 }

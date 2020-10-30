@@ -6,6 +6,7 @@ import 'package:peak/screens/forgoPassword.dart';
 import 'package:peak/screens/friendsList.dart';
 import 'package:peak/screens/goalDetails.dart';
 import 'package:peak/screens/home.dart';
+import 'package:peak/screens/searchForFriend.dart';
 import 'package:peak/screens/settings.dart';
 import 'package:peak/screens/profile.dart';
 import 'package:peak/screens/goalsList.dart';
@@ -50,6 +51,8 @@ class Routerr {
         return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
       case 'friendsList':
         return MaterialPageRoute(builder: (_) => FriendsList());
+      case 'searchForFriend':
+        return MaterialPageRoute(builder: (_) => SearchForFriend());
     }
   }
 }

@@ -117,7 +117,7 @@ class DatabaseServices {
     return _goalController.stream;
   }
 
-  Future<List<String>> getFriendsids() async {
+  Future<List<String>> getFriendsids() {
     List<String> friends = [];
 
     if (_firebaseService.currentUser != null) {

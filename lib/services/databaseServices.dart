@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:peak/Models/user.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
-
 import 'firebaseAuthService.dart';
 
 class DatabaseServices {
@@ -17,6 +17,9 @@ class DatabaseServices {
   final StreamController<List<Goal>> _goalController =
       StreamController<List<Goal>>.broadcast();
   final _firebaseService = locator<FirbaseAuthService>();
+
+  final StreamController<List<PeakUser>> _userController =
+      StreamController<List<PeakUser>>.broadcast();
 
   //collection reference
   final CollectionReference userCollection =
@@ -110,9 +113,32 @@ class DatabaseServices {
         }
       });
     }
+ 
 
     return _goalController.stream;
   }
+
+ getUsers(){
+
+  
+
+    _goalsCollectionReference
+          .snapshots()
+          .listen((usersSs) {
+        if (usersSs.docs.isNotEmpty) {
+          var users = usersSs.docs
+              .map((snapshot) => PeakUser.fromJson(snapshot.data(), snapshot.id))
+              .toList();
+          _userController.add(users);
+        } else {
+          _userController.add(List<PeakUser>());
+        }
+      });
+
+
+   return _userController.stream;
+ 
+ }
 
   Future updateAccountData(name) async {
     return await userCollection.doc(_firebaseService.currentUser.uid).update({

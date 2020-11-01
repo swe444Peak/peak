@@ -11,7 +11,7 @@ import '../models/goal.dart';
 import '../models/task.dart';
 import '../models/user.dart';
 import '../services/databaseServices.dart';
-import 'addGoal.dart';
+
 
 class SettingsPage extends StatelessWidget {
   final DatabaseServices dBS = new DatabaseServices();

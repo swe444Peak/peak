@@ -10,4 +10,5 @@ class PeakUser {
 
   PeakUser(
       {@required this.uid, this.name, this.picURL}); //this.notificationStatus
+
 }

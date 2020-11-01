@@ -8,5 +8,14 @@ class Friends {
   Friends({
     @required this.userid1,
     @required this.userid2,
+    this.fname,
   });
+
+  static String getid1(Map<String, dynamic> map) {
+    return map['userid1'];
+  }
+
+  static String getid2(Map<String, dynamic> map) {
+    return map['userid2'];
+  }
 }

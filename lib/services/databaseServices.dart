@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:peak/models/friends.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
 import 'package:peak/models/task.dart';
@@ -25,6 +26,8 @@ class DatabaseServices {
   final _goalsCollectionReference =
       FirebaseFirestore.instance.collection("goals");
 
+  final _friendsCollection = FirebaseFirestore.instance.collection("friends");
+
   Future updateUserData({String username, String picURL}) async {
     return await userCollection.doc(uid).set({
       "username": username,
@@ -42,7 +45,7 @@ class DatabaseServices {
   } //end updateUserData*/
 
   Future addGoal({Goal goal}) async {
- DocumentReference doc;
+    DocumentReference doc;
     try {
       doc = await _goalsCollectionReference.add(goal.toMap());
       eventDoc = doc.id;
@@ -114,6 +117,61 @@ class DatabaseServices {
     return _goalController.stream;
   }
 
+  Future<List<String>> getFriendsids() async {
+    List<String> friends = [];
+
+    if (_firebaseService.currentUser != null) {
+      _friendsCollection
+          .where("userid1", isEqualTo: _firebaseService.currentUser.uid)
+          .snapshots()
+          .listen((friendsSnapshots) {
+        if (friendsSnapshots.docs.isNotEmpty) {
+          print('in not empty 1');
+          friends = friendsSnapshots.docs
+              .map((snapshot) => Friends.getid2(snapshot.data()))
+              .toList();
+          print(friends.length);
+        }
+      });
+
+      _friendsCollection
+          .where("userid2", isEqualTo: _firebaseService.currentUser.uid)
+          .snapshots()
+          .listen((friendsSnapshots) {
+        if (friendsSnapshots.docs.isNotEmpty) {
+          print('in not empty 2');
+          var list2 = friendsSnapshots.docs
+              .map((snapshot) => Friends.getid1(snapshot.data()))
+              .toList();
+          friends.addAll(list2);
+          print(friends.length);
+        }
+        print("after");
+        print(friends.length);
+        return friends;
+      });
+    }
+    print('delay');
+    return Future.delayed(Duration(seconds: 5), () => friends);
+  }
+
+  Future<PeakUser> getUserProfile(String id) {
+    PeakUser user;
+    print("here");
+    if (_firebaseService.currentUser != null) {
+      print("not null");
+      userCollection.doc(id).snapshots().listen((usersSnapshots) {
+        var snapshot = usersSnapshots.data();
+        user = new PeakUser(
+            uid: id, name: snapshot["username"], picURL: snapshot["picURL"]);
+        print("holllaa");
+        return user;
+      });
+    }
+    print('delay2');
+    return Future.delayed(Duration(seconds: 5), () => user);
+  }
+
   Future updateAccountData(name) async {
     return await userCollection.doc(_firebaseService.currentUser.uid).update({
       "username": name,
@@ -126,15 +184,15 @@ class DatabaseServices {
     });
   }
 
-  Future updateTask(String docId, dynamic orignalTask, dynamic editedTask) async{
-    
-    await _goalsCollectionReference.doc(docId).update(
-      {"tasks": FieldValue.arrayRemove([orignalTask.toMap()])}
-    );
+  Future updateTask(
+      String docId, dynamic orignalTask, dynamic editedTask) async {
+    await _goalsCollectionReference.doc(docId).update({
+      "tasks": FieldValue.arrayRemove([orignalTask.toMap()])
+    });
 
-    await _goalsCollectionReference.doc(docId).update(
-      {"tasks": FieldValue.arrayUnion([editedTask.toMap()])}
-    );
+    await _goalsCollectionReference.doc(docId).update({
+      "tasks": FieldValue.arrayUnion([editedTask.toMap()])
+    });
   }
 
   Future deleteGoal(String documentId) async {

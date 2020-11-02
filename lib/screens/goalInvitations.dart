@@ -11,6 +11,7 @@ class _GoalInvitationsState extends State<GoalInvitations> {
   Widget build(BuildContext context) {
     return Base(
       title: "Invitations",
+      childPadding: EdgeInsets.fromLTRB(0, 0, 0, 0.0),
     );
   }
 }

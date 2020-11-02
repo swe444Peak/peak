@@ -13,6 +13,7 @@ import 'package:peak/viewmodels/goalsList_model.dart';
 import 'package:peak/viewmodels/home_model.dart';
 import 'package:peak/viewmodels/login_model.dart';
 import 'package:peak/viewmodels/signup_model.dart';
+import 'package:peak/viewmodels/viewBadges_model.dart';
 import 'package:peak/viewmodels/viewProgress_model.dart';
 
 GetIt locator = GetIt.instance;
@@ -31,6 +32,7 @@ void setupLocator() {
   locator.registerFactory(() => EditGoalModel());
   locator.registerFactory(() => EditProfileModel());
   locator.registerFactory(() => ViewProgressModel());
+  locator.registerFactory(() => ViewBadgesModel());
   locator.registerFactory(() => FriendsListModel());
   locator.registerFactory(() => SearchForFriendModel());
 }

@@ -63,6 +63,14 @@ class GoalsListPage extends StatelessWidget {
                             ),
                           ),
                         ),
+                        IconButton(
+                            icon: Icon(
+                              Icons.view_list,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.pushNamed(context, "goalInvitations");
+                            })
                       ],
                     ),
                     Flexible(child: goalsList(model, width, height)),

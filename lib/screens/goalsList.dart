@@ -50,6 +50,7 @@ class GoalsListPage extends StatelessWidget {
                 child: Column(
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Padding(
                           padding: EdgeInsets.fromLTRB(
@@ -63,6 +64,14 @@ class GoalsListPage extends StatelessWidget {
                             ),
                           ),
                         ),
+                        IconButton(
+                            icon: Icon(
+                              Icons.view_list,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.pushNamed(context, "goalInvitations");
+                            })
                       ],
                     ),
                     Flexible(child: goalsList(model, width, height)),

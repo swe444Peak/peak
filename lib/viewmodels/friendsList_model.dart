@@ -21,15 +21,6 @@ class FriendsListModel extends ChangeNotifier {
     notifyListeners();
   }
 
-/*
-  readfriendsist() {
-    Future.delayed(Duration(seconds: 5));
-    getFriendsData();
-    notifyListeners();
-    setState(ViewState.Idle);
-  }
-*/
-
   readfriendslist() {
     setState(ViewState.Busy);
     _firstoreService.getFriendsids().listen((friendsData) {
@@ -49,14 +40,4 @@ class FriendsListModel extends ChangeNotifier {
       setState(ViewState.Idle);
     }, onError: (error) => print(error));
   }
-/*
-  getFriendsData() {
-    print("in hereeeeee");
-    for (int i = 0; i < _ids.length; i++) {
-      print(_ids[i]);
-      var friend = _firstoreService.getUserProfile(_ids[i]);
-      _friends.add(friend);
-    }
-  }
-  */
 }

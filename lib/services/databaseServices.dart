@@ -118,11 +118,8 @@ class DatabaseServices {
     return _goalController.stream;
   }
 
- getUsers(){
-
-  
-
-    _goalsCollectionReference
+ Stream getUsers(){
+    userCollection
           .snapshots()
           .listen((usersSs) {
         if (usersSs.docs.isNotEmpty) {
@@ -134,10 +131,7 @@ class DatabaseServices {
           _userController.add(List<PeakUser>());
         }
       });
-
-
    return _userController.stream;
- 
  }
 
   Future updateAccountData(name) async {

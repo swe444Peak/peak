@@ -17,6 +17,10 @@ class DatabaseServices {
   DatabaseServices({this.uid});
   final StreamController<List<Goal>> _goalController =
       StreamController<List<Goal>>.broadcast();
+  final StreamController<List<String>> _idsController =
+      StreamController<List<String>>.broadcast();
+  final StreamController<List<PeakUser>> _friendsController =
+      StreamController<List<PeakUser>>.broadcast();
   final _firebaseService = locator<FirbaseAuthService>();
 
   //collection reference
@@ -117,9 +121,10 @@ class DatabaseServices {
     return _goalController.stream;
   }
 
-  Future<List<String>> getFriendsids() {
-    List<String> friends = [];
-
+  PeakUser cast<PeakUser>(x) => x is PeakUser ? x : null;
+  List<String> friendsids;
+  Stream getFriendsids() {
+    friendsids = [];
     if (_firebaseService.currentUser != null) {
       _friendsCollection
           .where("userid1", isEqualTo: _firebaseService.currentUser.uid)
@@ -127,49 +132,66 @@ class DatabaseServices {
           .listen((friendsSnapshots) {
         if (friendsSnapshots.docs.isNotEmpty) {
           print('in not empty 1');
-          friends = friendsSnapshots.docs
+          var friends1 = friendsSnapshots.docs
               .map((snapshot) => Friends.getid2(snapshot.data()))
               .toList();
-          print(friends.length);
+          if (friends1 != null) {
+            friendsids.addAll(friends1);
+            print('in 1');
+            print(friends1.length);
+          }
         }
-      });
 
-      _friendsCollection
-          .where("userid2", isEqualTo: _firebaseService.currentUser.uid)
-          .snapshots()
-          .listen((friendsSnapshots) {
-        if (friendsSnapshots.docs.isNotEmpty) {
-          print('in not empty 2');
-          var list2 = friendsSnapshots.docs
-              .map((snapshot) => Friends.getid1(snapshot.data()))
-              .toList();
-          friends.addAll(list2);
-          print(friends.length);
-        }
-        print("after");
-        print(friends.length);
-        return friends;
+        futurething2();
+        Timer(Duration(seconds: 1), () {
+          print("add to controller");
+          futurething(friendsids);
+        });
       });
     }
-    print('delay');
-    return Future.delayed(Duration(seconds: 5), () => friends);
+    return _friendsController.stream;
   }
 
-  Future<PeakUser> getUserProfile(String id) {
-    PeakUser user;
-    print("here");
-    if (_firebaseService.currentUser != null) {
-      print("not null");
-      userCollection.doc(id).snapshots().listen((usersSnapshots) {
-        var snapshot = usersSnapshots.data();
-        user = new PeakUser(
-            uid: id, name: snapshot["username"], picURL: snapshot["picURL"]);
-        print("holllaa");
-        return user;
-      });
+  futurething2() {
+    _friendsCollection
+        .where("userid2", isEqualTo: _firebaseService.currentUser.uid)
+        .snapshots()
+        .listen((friendsSnapshots) {
+      if (friendsSnapshots.docs.isNotEmpty) {
+        print('in not empty 2');
+        var friends2 = friendsSnapshots.docs
+            .map((snapshot) => Friends.getid1(snapshot.data()))
+            .toList();
+        if (friends2 != null) {
+          friendsids.addAll(friends2);
+          print('in 2');
+          print(friends2.length);
+        }
+      }
+    });
+  }
+
+  futurething(friendsids) async {
+    List<PeakUser> users = [];
+    for (int i = 0; i < friendsids.length; i++) {
+      print(friendsids[i]);
+      PeakUser user = await getUserProfile(friendsids[i]);
+      users.add(user);
     }
-    print('delay2');
-    return Future.delayed(Duration(seconds: 5), () => user);
+    _friendsController.add(users);
+  }
+
+  getUserProfile(String id) async {
+    var user;
+    await userCollection.doc(id).get().then((docRef) {
+      var userdata = docRef.data();
+      user = new PeakUser(
+          uid: id, name: userdata["username"], picURL: userdata["picURL"]);
+    });
+    print("returning user");
+    print(user.name);
+    print(user.picURL);
+    return user;
   }
 
   Future updateAccountData(name) async {

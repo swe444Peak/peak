@@ -73,15 +73,6 @@ class _FriendsListState extends State<FriendsList> {
                           ),
                         ),
                       ),
-                      IconButton(
-                          icon: Icon(
-                            Icons.add,
-                            size: 30,
-                          ),
-                          color: Colors.white,
-                          onPressed: () {
-                            //ll
-                          }),
                     ],
                   ),
                   Flexible(child: friendsList(model, width, height)),
@@ -155,7 +146,7 @@ class _FriendsListState extends State<FriendsList> {
                             fontSize: 18,
                           ),
                         ),
-                        //Spacer(),
+                        Spacer(),
                         IconButton(
                             padding: EdgeInsets.fromLTRB(
                                 0.0, height * 0.01, 0.0, height * 0.01),

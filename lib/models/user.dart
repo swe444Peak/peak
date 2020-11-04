@@ -11,4 +11,11 @@ class PeakUser {
   PeakUser(
       {@required this.uid, this.name, this.picURL}); //this.notificationStatus
 
+  static PeakUser fromJson(Map<String, dynamic> map, String docID) {
+    if (map == null) {
+      return null;
+    }
+
+    return PeakUser(uid: docID, name: map["username"], picURL: map["picURL"]);
+  }
 }

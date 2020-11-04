@@ -21,30 +21,42 @@ class FriendsListModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  readfriendslist() async {
-    setState(ViewState.Busy);
-
-    List<String> fIDs = await _firstoreService.getFriendsids();
-
-    print("heree $fIDs.length");
-    if (fIDs.length > 0) {
-      print('larger than 0');
-      empty = false;
-      getFriendsData(fIDs);
-    } else {
-      print(fIDs.length);
-      empty = true;
-    }
+/*
+  readfriendsist() {
+    Future.delayed(Duration(seconds: 5));
+    getFriendsData();
     notifyListeners();
     setState(ViewState.Idle);
   }
+*/
 
-  getFriendsData(List<String> ids) async {
-    print("in hereeeeee");
-    for (int i = 0; i < ids.length; i++) {
-      print(ids[i]);
-      _friends.add(await _firstoreService.getUserProfile(ids[i]));
-    }
-    print(_friends[0]);
+  readfriendslist() {
+    setState(ViewState.Busy);
+    _firstoreService.getFriendsids().listen((friendsData) {
+      List<PeakUser> friends = friendsData;
+      if (friends != null) {
+        if (friends.length > 0) {
+          print('larger than 0');
+          empty = false;
+          _friends = friends;
+          print(_friends[0].name);
+          print(_friends.length);
+        } else {
+          empty = true;
+        }
+        notifyListeners();
+      }
+      setState(ViewState.Idle);
+    }, onError: (error) => print(error));
   }
+/*
+  getFriendsData() {
+    print("in hereeeeee");
+    for (int i = 0; i < _ids.length; i++) {
+      print(_ids[i]);
+      var friend = _firstoreService.getUserProfile(_ids[i]);
+      _friends.add(friend);
+    }
+  }
+  */
 }

@@ -21,30 +21,24 @@ class FriendsListModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  readfriendslist() async {
+  readfriendslist() {
     setState(ViewState.Busy);
-
-    List<String> fIDs = await _firstoreService.getFriendsids();
-
-    print("heree $fIDs.length");
-    if (fIDs.length > 0) {
-      print('larger than 0');
-      empty = false;
-      getFriendsData(fIDs);
-    } else {
-      print(fIDs.length);
-      empty = true;
-    }
-    notifyListeners();
-    setState(ViewState.Idle);
+    _firstoreService.getFriendsids().listen((friendsData) {
+      List<PeakUser> friends = friendsData;
+      if (friends != null) {
+        if (friends.length > 0) {
+          print('larger than 0');
+          empty = false;
+          _friends = friends;
+          print(_friends[0].name);
+          print(_friends.length);
+        } else {
+          empty = true;
+        }
+        notifyListeners();
+      }
+      setState(ViewState.Idle);
+    }, onError: (error) => print(error));
   }
 
-  getFriendsData(List<String> ids) async {
-    print("in hereeeeee");
-    for (int i = 0; i < ids.length; i++) {
-      print(ids[i]);
-      _friends.add(await _firstoreService.getUserProfile(ids[i]));
-    }
-    print(_friends[0]);
-  }
 }

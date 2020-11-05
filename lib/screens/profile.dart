@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:peak/screens/viewBadges.dart';
 import 'package:peak/screens/viewProgress.dart';
 
 import 'package:provider/provider.dart';
@@ -113,6 +114,10 @@ class ProfilePage extends StatelessWidget {
                               ),
                             ],
                           ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: height*0.01, horizontal: width * 0.2),
+                            child: ViewBadges(),
+                            ),
                           Padding(
                             padding: EdgeInsets.only(top: width * 0.05),
                             child: ViewProgress(),

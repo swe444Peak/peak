@@ -114,8 +114,8 @@ class DatabaseServices {
     return _goalController.stream;
   }
 
-  getUsers() {
-    _goalsCollectionReference.snapshots().listen((usersSs) {
+  Stream getUsers() {
+    userCollection.snapshots().listen((usersSs) {
       if (usersSs.docs.isNotEmpty) {
         var users = usersSs.docs
             .map((snapshot) => PeakUser.fromJson(snapshot.data(), snapshot.id))
@@ -125,7 +125,6 @@ class DatabaseServices {
         _userController.add(List<PeakUser>());
       }
     });
-
     return _userController.stream;
   }
 
@@ -188,27 +187,5 @@ class DatabaseServices {
       print(e.toString());
       return e.toString();
     }
-  }
-
-  Future AcceptGoalInvite(Invation invation) async {
-    DocumentReference goalDocRef =
-        _goalsCollectionReference.doc(invation.goalDocIds.first);
-    DocumentReference invationDoctRef =
-        invationsCollection.doc(invation.invationDocId);
-
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot snapshot = await transaction.get(goalDocRef);
-      Goal goal = Goal.fromJson(snapshot.data(), snapshot.id);
-
-      transaction.update(invationDoctRef, {"status": invation.status});
-      Goal newGoal = Goal(
-        goalName: goal.goalName,
-        uID: invation.receiverId,
-        deadline: goal.deadline,
-        tasks: goal.tasks,
-        creationDate: goal.creationDate,
-        numOfTasks: goal.numOfTasks,
-      );
-    });
   }
 }

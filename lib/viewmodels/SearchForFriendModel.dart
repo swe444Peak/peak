@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:peak/Models/user.dart';
+import 'package:peak/models/user.dart';
 import 'package:peak/enums/viewState.dart';
 import 'package:peak/models/validationItem.dart';
 import 'package:peak/services/databaseServices.dart';
@@ -9,7 +9,7 @@ import '../locator.dart';
 class SearchForFriendModel extends ChangeNotifier {
    final _firstoreService = locator<DatabaseServices>();
   ViewState _state = ViewState.Idle;
-  List<PeakUser> _usersList;
+  List<PeakUser> _usersList=[];
   bool empty= false;
   ViewState get state => _state;
   List<PeakUser> get users => _usersList;
@@ -19,15 +19,15 @@ class SearchForFriendModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  readSearchedlist() {
+  readSearchedlist() async {
     _firstoreService.getUsers().listen((searchedData){
+
       List<PeakUser> searchedUser = searchedData;
       if (searchedUser != null) {
         if (searchedUser.length > 0) {
-          print("There is users");
           empty = false;
           _usersList = searchedUser;
-          sortUsers();
+       //   sortUsers();
         } else {
           empty = true;
         }

@@ -138,16 +138,28 @@ class _FriendsListState extends State<FriendsList> {
                         ),
                         Spacer(),
                         IconButton(
-                            padding: EdgeInsets.fromLTRB(
-                                0.0, height * 0.01, 0.0, height * 0.01),
-                            icon: Icon(
-                              Icons.delete,
-                              size: 30,
-                            ),
-                            color: Colors.red[900],
-                            onPressed: () async { //// I wrote here
+                          padding: EdgeInsets.fromLTRB(
+                              0.0, height * 0.01, 0.0, height * 0.01),
+                          icon: Icon(
+                            Icons.delete,
+                            size: 30,
+                          ),
+                          color: Colors.red[900],
+                          onPressed: () => setState(() async {
                             await model.deleteFriend(currentId, friend.uid);
-                                }),
+                            model.friends.removeAt(index);
+                          }),
+                          /*
+                            onPressed: () async {
+                              //// I wrote here
+                              if (await model.deleteFriend(
+                                  currentId, friend.uid)) {
+                                setState(() {
+                                  model.friends.removeAt(index);
+                                });
+                              }
+                              */
+                        ),
                       ],
                     ),
                     leading: Container(

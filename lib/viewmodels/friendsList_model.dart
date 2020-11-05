@@ -42,8 +42,9 @@ class FriendsListModel extends ChangeNotifier {
       setState(ViewState.Idle);
     }, onError: (error) => print(error));
   }
+
   ///// I wrote here
-   Future deleteFriend(String uid1, String uid2) async {
+  Future<bool> deleteFriend(String uid1, String uid2) async {
     var dialogResponse = await dialogService.showConfirmationDialog(
       title: 'Are you sure?',
       description: 'Do you really want to delete this friend?',
@@ -54,6 +55,8 @@ class FriendsListModel extends ChangeNotifier {
       setState(ViewState.Busy);
       await _firstoreService.deleteFriend(uid1, uid2);
       setState(ViewState.Idle);
+      return true;
     }
+    return false;
   }
 }

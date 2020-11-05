@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:peak/models/friends.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
 import 'package:peak/models/invation.dart';
@@ -16,6 +17,10 @@ class DatabaseServices {
   DatabaseServices({this.uid});
   final StreamController<List<Goal>> _goalController =
       StreamController<List<Goal>>.broadcast();
+  final StreamController<List<String>> _idsController =
+      StreamController<List<String>>.broadcast();
+  final StreamController<List<PeakUser>> _friendsController =
+      StreamController<List<PeakUser>>.broadcast();
   final _firebaseService = locator<FirbaseAuthService>();
 
   final StreamController<List<PeakUser>> _userController =
@@ -30,6 +35,7 @@ class DatabaseServices {
 
   CollectionReference invationsCollection =
       FirebaseFirestore.instance.collection("invations");
+  final _friendsCollection = FirebaseFirestore.instance.collection("friends");
 
   Future updateUserData({String username, String picURL}) async {
     return await userCollection.doc(uid).set({
@@ -125,6 +131,78 @@ class DatabaseServices {
       }
     });
     return _userController.stream;
+  }
+
+  List<String> friendsids;
+  Stream getFriendsids() {
+    friendsids = [];
+    if (_firebaseService.currentUser != null) {
+      _friendsCollection
+          .where("userid1", isEqualTo: _firebaseService.currentUser.uid)
+          .snapshots()
+          .listen((friendsSnapshots) {
+        if (friendsSnapshots.docs.isNotEmpty) {
+          print('in not empty 1');
+          var friends1 = friendsSnapshots.docs
+              .map((snapshot) => Friends.getid2(snapshot.data()))
+              .toList();
+          if (friends1 != null) {
+            friendsids.addAll(friends1);
+            print('in 1');
+            print(friends1.length);
+          }
+        }
+
+        futurething2();
+        Timer(Duration(seconds: 1), () {
+          print("add to controller");
+          futurething(friendsids);
+        });
+      });
+    }
+    return _friendsController.stream;
+  }
+
+  futurething2() {
+    _friendsCollection
+        .where("userid2", isEqualTo: _firebaseService.currentUser.uid)
+        .snapshots()
+        .listen((friendsSnapshots) {
+      if (friendsSnapshots.docs.isNotEmpty) {
+        print('in not empty 2');
+        var friends2 = friendsSnapshots.docs
+            .map((snapshot) => Friends.getid1(snapshot.data()))
+            .toList();
+        if (friends2 != null) {
+          friendsids.addAll(friends2);
+          print('in 2');
+          print(friends2.length);
+        }
+      }
+    });
+  }
+
+  futurething(friendsids) async {
+    List<PeakUser> users = [];
+    for (int i = 0; i < friendsids.length; i++) {
+      print(friendsids[i]);
+      PeakUser user = await getUserProfile(friendsids[i]);
+      users.add(user);
+    }
+    _friendsController.add(users);
+  }
+
+  getUserProfile(String id) async {
+    var user;
+    await userCollection.doc(id).get().then((docRef) {
+      var userdata = docRef.data();
+      user = new PeakUser(
+          uid: id, name: userdata["username"], picURL: userdata["picURL"]);
+    });
+    print("returning user");
+    print(user.name);
+    print(user.picURL);
+    return user;
   }
 
   Future updateAccountData(name) async {

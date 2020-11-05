@@ -20,77 +20,79 @@ initState() {}
 class _FriendsListState extends State<FriendsList> {
   @override
   Widget build(BuildContext context) {
-    var userId = Provider.of<User>(context);
+    var user = Provider.of<User>(context);
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
-    return ViewModelBuilder<FriendsListModel>.reactive(
-        viewModelBuilder: () => locator<FriendsListModel>(),
-        onModelReady: (model) => model.readflist(),
-        builder: (context, model, child) => Scaffold(
-            extendBodyBehindAppBar: true,
-            backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
-            bottomNavigationBar: CustomNavigationBar(3),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Navigator.pushNamed(context, 'addNewGoal');
-              },
-              child: Icon(Icons.add),
-              backgroundColor: Colors.teal[400],
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.endDocked,
-            body: Stack(children: [
-              Container(
-                width: width * 0.8,
-                height: width * 0.6,
-                margin: EdgeInsets.fromLTRB(0, 0.0, width * 0.2, 0.0),
-                decoration: BoxDecoration(
-                    color: Colors.indigo[500],
-                    borderRadius:
-                        BorderRadius.only(bottomRight: Radius.circular(400)),
-                    gradient: LinearGradient(colors: [
-                      Colors.teal[400],
-                      Colors.indigo[600],
-                      Colors.deepPurple[900]
-                    ], begin: Alignment.topLeft, end: Alignment.bottomCenter)),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(
-                    width * 0.06, height * 0.12, width * 0.06, 0.0),
-                child: Column(children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding:
-                            EdgeInsets.fromLTRB(0.0, 0.0, 0.0, (width * 0.1)),
-                        child: Text(
-                          "Friends List",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 34.0,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                          icon: Icon(
-                            Icons.add,
-                            size: 30,
-                          ),
-                          color: Colors.white,
-                          onPressed: () {
-                            //ll
-                          }),
-                    ],
+
+    return StreamProvider<PeakUser>.value(
+        initialData: PeakUser(uid: "", name: ""),
+        value: DatabaseServices().userData(user.uid),
+        builder: (context, snapshot) {
+          return ViewModelBuilder<FriendsListModel>.reactive(
+              viewModelBuilder: () => locator<FriendsListModel>(),
+              onModelReady: (model) => model.readfriendslist(),
+              builder: (context, model, child) => Scaffold(
+                  extendBodyBehindAppBar: true,
+                  backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
+                  bottomNavigationBar: CustomNavigationBar(3),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, 'addNewGoal');
+                    },
+                    child: Icon(Icons.add),
+                    backgroundColor: Colors.teal[400],
                   ),
-                  Flexible(child: friendsList(model, width, height)),
-                ]),
-              ),
-            ])));
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.endDocked,
+                  body: Stack(children: [
+                    Container(
+                      width: width * 0.8,
+                      height: width * 0.6,
+                      margin: EdgeInsets.fromLTRB(0, 0.0, width * 0.2, 0.0),
+                      decoration: BoxDecoration(
+                          color: Colors.indigo[500],
+                          borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(400)),
+                          gradient: LinearGradient(
+                              colors: [
+                                Colors.teal[400],
+                                Colors.indigo[600],
+                                Colors.deepPurple[900]
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomCenter)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(
+                          width * 0.06, height * 0.12, width * 0.06, 0.0),
+                      child: Column(children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  0.0, 0.0, 0.0, (width * 0.1)),
+                              child: Text(
+                                "Friends List",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 34.0,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Flexible(
+                            child:
+                                friendsList(model, width, height, user?.uid)),
+                      ]),
+                    ),
+                  ])));
+        });
   }
 
-  Widget friendsList(model, width, height) {
+  Widget friendsList(model, width, height, currentId) {
     if (model.state == ViewState.Busy) {
       return Center(
         child: CircularProgressIndicator(),
@@ -101,7 +103,7 @@ class _FriendsListState extends State<FriendsList> {
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Text(
-            "Your are lonely \n Start being social! \n pathetic!",
+            "You don't have any friends!",
             style: TextStyle(fontSize: width * 0.06, color: Colors.white),
           ),
         ),
@@ -109,71 +111,70 @@ class _FriendsListState extends State<FriendsList> {
     }
     if (model.friends != null) {
       return ListView.builder(
-          //itemCount: model.goals.length,
+          itemCount: model.friends.length,
           itemBuilder: (context, index) {
-        //var goal = model.goals[index];
-        return Card(
-            //card Property
-            elevation: 20,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(width * 0.008),
-              child: ListTile(
-                contentPadding: EdgeInsets.fromLTRB(
-                    width * 0.05, height * 0.02, 0.0, height * 0.01),
-                title: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(
-                          0.0, height * 0.008, 0.0, height * 0.008),
-                      //width: width * 0.15,
-                      //height: width * 0.15,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                              "https://static0.cbrimages.com/wordpress/wp-content/uploads/2019/09/One-Piece-Monkey-D.-Luffy-Cropped.jpg"),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(100),
-                        boxShadow: [
-                          new BoxShadow(
-                            color: Colors.black26,
-                            offset: new Offset(0.0, -8.0),
-                            blurRadius: 40.0,
-                            spreadRadius: 1.0,
-                          )
-                        ],
-                      ),
-                    ),
-                    //SizedBox(width: width * 0.03),
-                    Text(
-                      "MonkeyDD",
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 18,
-                      ),
-                    ),
-                    //Spacer(),
-                    IconButton(
-                        padding: EdgeInsets.fromLTRB(
-                            0.0, height * 0.01, 0.0, height * 0.01),
-                        icon: Icon(
-                          Icons.delete,
-                          size: 30,
-                        ),
-                        color: Colors.red[900],
-                        onPressed: () {}),
-                  ],
+            var friend = model.friends[index];
+            return Card(
+                //card Property
+                elevation: 20,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
-                onTap: () {
-                  //Navigator.pushNamed(context, "goalDetails", arguments: goal);
-                },
-              ),
-            ));
-      });
+                child: Padding(
+                  padding: EdgeInsets.all(width * 0.008),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.fromLTRB(
+                        width * 0.05, height * 0.02, 0.0, height * 0.01),
+                    title: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.fromLTRB(
+                              0.0, height * 0.008, 0.0, height * 0.008),
+                          //width: width * 0.15,
+                          //height: width * 0.15,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(friend.picURL),
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius: BorderRadius.circular(100),
+                            boxShadow: [
+                              new BoxShadow(
+                                color: Colors.black26,
+                                offset: new Offset(0.0, -8.0),
+                                blurRadius: 40.0,
+                                spreadRadius: 1.0,
+                              )
+                            ],
+                          ),
+                        ),
+                        //SizedBox(width: width * 0.03),
+                        Text(
+                          friend.name,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                          ),
+                        ),
+                        Spacer(),
+                        IconButton(
+                            padding: EdgeInsets.fromLTRB(
+                                0.0, height * 0.01, 0.0, height * 0.01),
+                            icon: Icon(
+                              Icons.delete,
+                              size: 30,
+                            ),
+                            color: Colors.red[900],
+                            onPressed: () {}),
+                      ],
+                    ),
+                    onTap: () {
+                      //Navigator.pushNamed(context, "goalDetails", arguments: goal);
+                    },
+                  ),
+                ));
+          });
     }
     return Text("issue");
   }

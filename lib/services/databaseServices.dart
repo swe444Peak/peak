@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:peak/Models/user.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
 import 'package:peak/models/invation.dart';
-import 'package:peak/models/task.dart';
+import 'package:peak/enums/InvationStatus.dart';
 import 'package:peak/models/user.dart';
 import 'firebaseAuthService.dart';
 
@@ -171,7 +170,7 @@ class DatabaseServices {
     try {
       DocumentReference goalDocReference = _goalsCollectionReference.doc();
       invations.forEach((invation) {
-        invation.goalDocIds.add(goalDocReference.id);
+        invation.creatorgoalDocId = goalDocReference.id;
       });
 
       batch.set(goalDocReference, goal.toMap()); //add goal
@@ -185,6 +184,56 @@ class DatabaseServices {
       return true;
     } catch (e) {
       print(e.toString());
+      return e.toString();
+    }
+  }
+
+  Future acceptGoalInvite(Invation invation) async {
+    DocumentReference goalDocRef =
+        _goalsCollectionReference.doc(invation.creatorgoalDocId);
+    DocumentReference invationDocRef =
+        invationsCollection.doc(invation.invationDocId);
+    try {
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot snapshot = await transaction.get(goalDocRef);
+        Goal goal = Goal.fromJson(snapshot.data(), snapshot.id);
+
+        transaction.update(
+            invationDocRef, {"status": invation.status.toShortString()});
+
+        Goal newGoal = Goal(
+            goalName: goal.goalName,
+            uID: invation.receiverId,
+            deadline: goal.deadline,
+            tasks: goal.tasks,
+            creationDate: goal.creationDate,
+            numOfTasks: goal.numOfTasks,
+            competitors: goal.competitors);
+        DocumentReference newGoalDocRef = _goalsCollectionReference.doc();
+        newGoal.competitors.add(newGoalDocRef.id);
+
+        goal.competitors.forEach((element) {
+          DocumentReference goalRef = _goalsCollectionReference.doc(element);
+          dynamic id = newGoalDocRef.id;
+          transaction
+              .update(goalRef, {"competitors": FieldValue.arrayUnion(id)});
+        });
+
+        transaction.set(newGoalDocRef, newGoal.toMap());
+      });
+      return true;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future declinedGoalInvite(Invation invation) async {
+    try {
+      await invationsCollection
+          .doc(invation.invationDocId)
+          .update({"status": invation.status.toShortString()});
+      return true;
+    } catch (e) {
       return e.toString();
     }
   }

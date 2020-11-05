@@ -1,26 +1,27 @@
 import 'dart:core';
+import 'package:peak/enums/InvationStatus.dart';
 
 class Invation {
   String creatorId;
   String receiverId;
-  bool status;
-  List<String> goalDocIds;
+  InvationStatus status;
+  String creatorgoalDocId;
   String invationDocId;
 
-  Invation({creatorId, receiverId, status, goalDocIds, invationDocId}) {
+  Invation({creatorId, receiverId, status, creatorgoalDocId, invationDocId}) {
     this.creatorId = creatorId;
     this.receiverId = receiverId;
     this.status = status;
     this.invationDocId = invationDocId;
-    this.goalDocIds = goalDocIds == null ? List<String>() : goalDocIds;
+    this.creatorgoalDocId = creatorgoalDocId;
   }
 
   Map<String, dynamic> toMap() {
     return {
       "creatorId": this.creatorId,
       "receiverId": this.receiverId,
-      "status": this.status,
-      "goalDocIds": this.goalDocIds,
+      "status": this.status.toShortString(),
+      "creatorgoalDocId": this.creatorgoalDocId,
     };
   }
 
@@ -28,8 +29,8 @@ class Invation {
     return Invation(
       creatorId: map["creatorId"],
       receiverId: map["receiverId"],
-      status: map["status"],
-      goalDocIds: map["goalDocIds"].toList(),
+      status: map["status"].formString(),
+      creatorgoalDocId: map["creatorgoa)lDocId"],
       invationDocId: map["invationDocId"],
     );
   }

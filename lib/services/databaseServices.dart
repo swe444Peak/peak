@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:peak/Models/user.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
+import 'package:peak/models/invation.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'firebaseAuthService.dart';
@@ -22,11 +23,14 @@ class DatabaseServices {
       StreamController<List<PeakUser>>.broadcast();
 
   //collection reference
-  final CollectionReference userCollection =
+  CollectionReference userCollection =
       FirebaseFirestore.instance.collection("users");
 
-  final _goalsCollectionReference =
+  CollectionReference _goalsCollectionReference =
       FirebaseFirestore.instance.collection("goals");
+
+  CollectionReference invationsCollection =
+      FirebaseFirestore.instance.collection("invations");
 
   Future updateUserData({String username, String picURL}) async {
     return await userCollection.doc(uid).set({
@@ -45,7 +49,7 @@ class DatabaseServices {
   } //end updateUserData*/
 
   Future addGoal({Goal goal}) async {
- DocumentReference doc;
+    DocumentReference doc;
     try {
       doc = await _goalsCollectionReference.add(goal.toMap());
       eventDoc = doc.id;
@@ -73,11 +77,6 @@ class DatabaseServices {
     });
   }
 
-  // Future updateEventId()async{
-
-  // }
-  //creating user data stream to get user doc
-
   Stream<PeakUser> userData([String id]) {
     id = _firebaseService.currentUser.uid;
     return userCollection
@@ -85,8 +84,6 @@ class DatabaseServices {
         .snapshots()
         .map((event) => _userDataFromSnapshot(event));
   }
-
-  //extract user data from snapshot
 
   PeakUser _userDataFromSnapshot(DocumentSnapshot snapshot) {
     return PeakUser(
@@ -113,32 +110,24 @@ class DatabaseServices {
         }
       });
     }
- 
 
     return _goalController.stream;
   }
 
- getUsers(){
+  getUsers() {
+    _goalsCollectionReference.snapshots().listen((usersSs) {
+      if (usersSs.docs.isNotEmpty) {
+        var users = usersSs.docs
+            .map((snapshot) => PeakUser.fromJson(snapshot.data(), snapshot.id))
+            .toList();
+        _userController.add(users);
+      } else {
+        _userController.add(List<PeakUser>());
+      }
+    });
 
-  
-
-    _goalsCollectionReference
-          .snapshots()
-          .listen((usersSs) {
-        if (usersSs.docs.isNotEmpty) {
-          var users = usersSs.docs
-              .map((snapshot) => PeakUser.fromJson(snapshot.data(), snapshot.id))
-              .toList();
-          _userController.add(users);
-        } else {
-          _userController.add(List<PeakUser>());
-        }
-      });
-
-
-   return _userController.stream;
- 
- }
+    return _userController.stream;
+  }
 
   Future updateAccountData(name) async {
     return await userCollection.doc(_firebaseService.currentUser.uid).update({
@@ -152,15 +141,15 @@ class DatabaseServices {
     });
   }
 
-  Future updateTask(String docId, dynamic orignalTask, dynamic editedTask) async{
-    
-    await _goalsCollectionReference.doc(docId).update(
-      {"tasks": FieldValue.arrayRemove([orignalTask.toMap()])}
-    );
+  Future updateTask(
+      String docId, dynamic orignalTask, dynamic editedTask) async {
+    await _goalsCollectionReference.doc(docId).update({
+      "tasks": FieldValue.arrayRemove([orignalTask.toMap()])
+    });
 
-    await _goalsCollectionReference.doc(docId).update(
-      {"tasks": FieldValue.arrayUnion([editedTask.toMap()])}
-    );
+    await _goalsCollectionReference.doc(docId).update({
+      "tasks": FieldValue.arrayUnion([editedTask.toMap()])
+    });
   }
 
   Future deleteGoal(String documentId) async {
@@ -176,5 +165,50 @@ class DatabaseServices {
     }
     print("problem in getUser");
     return null;
+  }
+
+  Future inviteFriends(List<Invation> invations, Goal goal) async {
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    try {
+      DocumentReference goalDocReference = _goalsCollectionReference.doc();
+      invations.forEach((invation) {
+        invation.goalDocIds.add(goalDocReference.id);
+      });
+
+      batch.set(goalDocReference, goal.toMap()); //add goal
+
+      invations.forEach((invation) {
+        DocumentReference invationDocReference = invationsCollection.doc();
+        batch.set(invationDocReference, invation.toMap()); //invite all friends
+      });
+
+      batch.commit();
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return e.toString();
+    }
+  }
+
+  Future AcceptGoalInvite(Invation invation) async {
+    DocumentReference goalDocRef =
+        _goalsCollectionReference.doc(invation.goalDocIds.first);
+    DocumentReference invationDoctRef =
+        invationsCollection.doc(invation.invationDocId);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(goalDocRef);
+      Goal goal = Goal.fromJson(snapshot.data(), snapshot.id);
+
+      transaction.update(invationDoctRef, {"status": invation.status});
+      Goal newGoal = Goal(
+        goalName: goal.goalName,
+        uID: invation.receiverId,
+        deadline: goal.deadline,
+        tasks: goal.tasks,
+        creationDate: goal.creationDate,
+        numOfTasks: goal.numOfTasks,
+      );
+    });
   }
 }

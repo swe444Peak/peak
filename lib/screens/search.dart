@@ -83,8 +83,7 @@ class FriendSearch extends SearchDelegate<PeakUser> {
       if (item.name != null &&
           item.picURL != null &&
           item.name.contains(query) &&
-          _firstoreService.getUser().uid != item.uid) 
-          filtiredUsers.add(item);
+          _firstoreService.getUser().uid != item.uid) filtiredUsers.add(item);
     }
 
     // filtiredUsers = filtiredUsers.where((element) => element.name.toLowerCase().contains(query))
@@ -114,7 +113,7 @@ class FriendSearch extends SearchDelegate<PeakUser> {
       );
     }
     if (query.isNotEmpty && filtiredUsers.isEmpty) {
-     return  Center(
+      return Center(
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Text(
@@ -166,7 +165,9 @@ class FriendSearch extends SearchDelegate<PeakUser> {
                               size: 30,
                             ),
                             color: Colors.indigo[600],
-                            onPressed: () {}),
+                            onPressed: () {
+                              //searchModel.addFriend(user.uid, currentId); //neeed current id
+                            }),
                       ],
                     ),
                     leading: Container(

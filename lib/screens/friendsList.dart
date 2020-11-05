@@ -127,28 +127,7 @@ class _FriendsListState extends State<FriendsList> {
                         width * 0.05, height * 0.02, 0.0, height * 0.01),
                     title: Row(
                       children: [
-                        Container(
-                          padding: EdgeInsets.fromLTRB(
-                              0.0, height * 0.008, 0.0, height * 0.008),
-                          //width: width * 0.15,
-                          //height: width * 0.15,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(friend.picURL),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.circular(100),
-                            boxShadow: [
-                              new BoxShadow(
-                                color: Colors.black26,
-                                offset: new Offset(0.0, -8.0),
-                                blurRadius: 40.0,
-                                spreadRadius: 1.0,
-                              )
-                            ],
-                          ),
-                        ),
-                        //SizedBox(width: width * 0.03),
+                        SizedBox(width: width * 0.03),
                         Text(
                           friend.name,
                           style: TextStyle(
@@ -168,6 +147,27 @@ class _FriendsListState extends State<FriendsList> {
                             color: Colors.red[900],
                             onPressed: () {}),
                       ],
+                    ),
+                    leading: Container(
+                      padding: EdgeInsets.fromLTRB(
+                          0.0, height * 0.008, 0.0, height * 0.008),
+                      width: width * 0.15,
+                      height: width * 0.15,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(friend.picURL),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(100),
+                        boxShadow: [
+                          new BoxShadow(
+                            color: Colors.black26,
+                            offset: new Offset(0.0, -8.0),
+                            blurRadius: 40.0,
+                            spreadRadius: 1.0,
+                          )
+                        ],
+                      ),
                     ),
                     onTap: () {
                       //Navigator.pushNamed(context, "goalDetails", arguments: goal);

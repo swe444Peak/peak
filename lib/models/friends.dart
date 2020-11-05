@@ -18,4 +18,8 @@ class Friends {
   static String getid2(Map<String, dynamic> map) {
     return map['userid2'];
   }
+
+  Map<String, dynamic> toMap() {
+    return {"userid1": this.userid1, "userid2": this.userid2};
+  }
 }

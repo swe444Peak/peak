@@ -35,7 +35,8 @@ class DatabaseServices {
 
   CollectionReference invationsCollection =
       FirebaseFirestore.instance.collection("invations");
-  final _friendsCollection = FirebaseFirestore.instance.collection("friends");
+  CollectionReference _friendsCollection =
+      FirebaseFirestore.instance.collection("friends");
 
   Future updateUserData({String username, String picURL}) async {
     return await userCollection.doc(uid).set({
@@ -314,5 +315,9 @@ class DatabaseServices {
     } catch (e) {
       return e.toString();
     }
+  }
+
+  Future addFriendship(Friends friends) async {
+    var doc = await _friendsCollection.add(friends.toMap());
   }
 }

@@ -20,68 +20,79 @@ initState() {}
 class _FriendsListState extends State<FriendsList> {
   @override
   Widget build(BuildContext context) {
-    var userId = Provider.of<User>(context);
+    var user = Provider.of<User>(context);
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
-    return ViewModelBuilder<FriendsListModel>.reactive(
-        viewModelBuilder: () => locator<FriendsListModel>(),
-        onModelReady: (model) => model.readfriendslist(),
-        builder: (context, model, child) => Scaffold(
-            extendBodyBehindAppBar: true,
-            backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
-            bottomNavigationBar: CustomNavigationBar(3),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Navigator.pushNamed(context, 'addNewGoal');
-              },
-              child: Icon(Icons.add),
-              backgroundColor: Colors.teal[400],
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.endDocked,
-            body: Stack(children: [
-              Container(
-                width: width * 0.8,
-                height: width * 0.6,
-                margin: EdgeInsets.fromLTRB(0, 0.0, width * 0.2, 0.0),
-                decoration: BoxDecoration(
-                    color: Colors.indigo[500],
-                    borderRadius:
-                        BorderRadius.only(bottomRight: Radius.circular(400)),
-                    gradient: LinearGradient(colors: [
-                      Colors.teal[400],
-                      Colors.indigo[600],
-                      Colors.deepPurple[900]
-                    ], begin: Alignment.topLeft, end: Alignment.bottomCenter)),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(
-                    width * 0.06, height * 0.12, width * 0.06, 0.0),
-                child: Column(children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding:
-                            EdgeInsets.fromLTRB(0.0, 0.0, 0.0, (width * 0.1)),
-                        child: Text(
-                          "Friends List",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 34.0,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ],
+
+    return StreamProvider<PeakUser>.value(
+        initialData: PeakUser(uid: "", name: ""),
+        value: DatabaseServices().userData(user.uid),
+        builder: (context, snapshot) {
+          return ViewModelBuilder<FriendsListModel>.reactive(
+              viewModelBuilder: () => locator<FriendsListModel>(),
+              onModelReady: (model) => model.readfriendslist(),
+              builder: (context, model, child) => Scaffold(
+                  extendBodyBehindAppBar: true,
+                  backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
+                  bottomNavigationBar: CustomNavigationBar(3),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, 'addNewGoal');
+                    },
+                    child: Icon(Icons.add),
+                    backgroundColor: Colors.teal[400],
                   ),
-                  Flexible(child: friendsList(model, width, height)),
-                ]),
-              ),
-            ])));
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.endDocked,
+                  body: Stack(children: [
+                    Container(
+                      width: width * 0.8,
+                      height: width * 0.6,
+                      margin: EdgeInsets.fromLTRB(0, 0.0, width * 0.2, 0.0),
+                      decoration: BoxDecoration(
+                          color: Colors.indigo[500],
+                          borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(400)),
+                          gradient: LinearGradient(
+                              colors: [
+                                Colors.teal[400],
+                                Colors.indigo[600],
+                                Colors.deepPurple[900]
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomCenter)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(
+                          width * 0.06, height * 0.12, width * 0.06, 0.0),
+                      child: Column(children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  0.0, 0.0, 0.0, (width * 0.1)),
+                              child: Text(
+                                "Friends List",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 34.0,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Flexible(
+                            child:
+                                friendsList(model, width, height, user?.uid)),
+                      ]),
+                    ),
+                  ])));
+        });
   }
 
-  Widget friendsList(model, width, height) {
+  Widget friendsList(model, width, height, currentId) {
     if (model.state == ViewState.Busy) {
       return Center(
         child: CircularProgressIndicator(),

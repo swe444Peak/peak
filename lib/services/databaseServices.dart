@@ -320,4 +320,71 @@ class DatabaseServices {
   Future addFriendship(Friends friends) async {
     var doc = await _friendsCollection.add(friends.toMap());
   }
+  Future deleteFriend(String uid1, String uid2) async {
+
+  String docID ='';
+   bool found = false;
+    if (_firebaseService.currentUser != null) {
+      _friendsCollection
+          .where("userid1", isEqualTo: uid1)
+          .snapshots()
+          .listen((friendsSnapshots) async{
+        if (friendsSnapshots.docs.isNotEmpty) {
+          print('in not empty 1');
+          var friends1 = friendsSnapshots.docs
+              .map((snapshot) => Friends. delGetid(snapshot.data(), snapshot.id))
+              .toList();
+          if (friends1 != null) {
+            for(int i =0; i < friends1.length; i++ ){
+             if(friends1[i].userid2 == uid2){
+               found = true;
+               docID = friends1[i].docID;
+               break;
+             } 
+
+            }// loop
+          }
+        }
+        if(!found){
+         deleteFriend2(uid1,uid2);}
+         else{
+           await _friendsCollection.doc(docID).delete();
+         }
+        
+  
+      }// listen
+        );
+    }
+  }
+  
+  Future deleteFriend2(String uid1, String uid2) async { ///// baaaaack
+   
+  String docID ='';
+    if (_firebaseService.currentUser != null) {
+      _friendsCollection
+          .where("userid1", isEqualTo: uid2)
+          .snapshots()
+          .listen((friendsSnapshots) async{
+        if (friendsSnapshots.docs.isNotEmpty) {
+          print('in not empty 2');
+          var friends = friendsSnapshots.docs
+              .map((snapshot) => Friends. delGetid(snapshot.data(), snapshot.id))
+              .toList();
+          if (friends != null) {
+            for(int i =0; i < friends.length; i++ ){
+             if(friends[i].userid2 == uid1){
+               docID = friends[i].docID;
+               break;
+             } 
+
+            }// loop
+          }
+        }
+
+    await _friendsCollection.doc(docID).delete();
+  
+    }// listen
+    );
+}
+  }
 }

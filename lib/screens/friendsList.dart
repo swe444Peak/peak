@@ -145,7 +145,9 @@ class _FriendsListState extends State<FriendsList> {
                               size: 30,
                             ),
                             color: Colors.red[900],
-                            onPressed: () {}),
+                            onPressed: () async { //// I wrote here
+                            await model.deleteFriend(currentId, friend.uid);
+                                }),
                       ],
                     ),
                     leading: Container(

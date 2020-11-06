@@ -41,8 +41,8 @@ class CustomNavigationBar extends StatelessWidget {
             Navigator.pushNamed(context, 'profile');
             break;
           case 3:
-           // showSearch(context: context, delegate: FriendSearch());
-            Navigator.pushNamed(context, 'friendsList');
+          // showSearch(context: context, delegate: FriendSearch());
+           Navigator.pushNamed(context, 'friendsList');
             break;
         }
       },

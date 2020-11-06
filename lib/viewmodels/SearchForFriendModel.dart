@@ -13,14 +13,24 @@ class SearchForFriendModel extends ChangeNotifier {
   bool empty= false;
   ViewState get state => _state;
   List<PeakUser> get users => _usersList;
+  bool isTheyFriends= false;
+
 
   void setState(ViewState viewState) {
     _state = viewState;
     notifyListeners();
   }
+  isFriends(String uid1,String uid2) async {
+    await _firstoreService.friendsCollection.where('userid1',isEqualTo: uid1).where('userid2',isEqualTo: uid2).get().then((value) {
+      if(value.docs.isNotEmpty)
+      isTheyFriends=true;
+      else
+       isTheyFriends=false;
+    });
+  } 
 
   readSearchedlist() async {
-    _firstoreService.getUsers().listen((searchedData){
+    _firstoreService.getAllUsers().listen((searchedData){
 
       List<PeakUser> searchedUser = searchedData;
       if (searchedUser != null) {

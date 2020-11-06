@@ -238,7 +238,7 @@ class FriendSearch extends SearchDelegate<PeakUser> {
                           ),
                         ),
                         Spacer(),
-                        whichIcon(context),
+                        whichIcon(context,_firstoreService.getUser().uid,user.uid),
                       ],
                     ),
                     leading: Container(
@@ -274,7 +274,7 @@ class FriendSearch extends SearchDelegate<PeakUser> {
        
   }
 
-  Widget whichIcon(BuildContext context){
+  Widget whichIcon(BuildContext context, String uid1, String uid2){
      var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;

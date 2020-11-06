@@ -247,10 +247,19 @@ class DatabaseServices {
   }
 
    Future<bool> isFriends(String uid1, String uid2) async {
-    await _friendsCollection.where('userid1',isEqualTo: uid1).where('userid1',isEqualTo: uid2).get()
+     bool fr=false ;
+    await _friendsCollection.where('userid1',isEqualTo: uid1).where('userid2',isEqualTo: uid2).get()
      .then((value) {if(value.docs.isNotEmpty)
-     return true;});
-     return false;
+    fr = true;
+    
+    });
+    if(!fr){
+    await _friendsCollection.where('userid1',isEqualTo: uid2).where('userid2',isEqualTo: uid1).get()
+     .then((value) {if(value.docs.isNotEmpty)
+    fr = true;
+    });}
+
+     return fr;
    }
   Future inviteFriends(List<Invation> invations, Goal goal) async {
     WriteBatch batch = FirebaseFirestore.instance.batch();
@@ -328,6 +337,8 @@ class DatabaseServices {
   Future addFriendship(Friends friends) async {
     var doc = await _friendsCollection.add(friends.toMap());
   }
+
+
   Future deleteFriend(String uid1, String uid2) async {
 
   String docID ='';

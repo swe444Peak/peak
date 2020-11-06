@@ -103,18 +103,8 @@ class FriendSearch extends SearchDelegate<PeakUser> {
                         ),
                       ),
                       Spacer(),
-                      IconButton(
-                          padding: EdgeInsets.fromLTRB(
-                              0.0, height * 0.01, 0.0, height * 0.01),
-                          icon: Icon(
-                            Icons.person_add,
-                            size: 30,
-                          ),
-                          color: Colors.indigo[600],
-                          onPressed: () {
-                            searchModel.addFriend(
-                                user.uid, _firstoreService.getUser().uid);
-                          }),
+                      whichIcon(
+                          context, _firstoreService.getUser().uid, user.uid),
                     ],
                   ),
                   leading: Container(
@@ -280,6 +270,8 @@ class FriendSearch extends SearchDelegate<PeakUser> {
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
+    searchModel.isFriends(uid1, uid2);
+    print(searchModel.isTheyFriends);
     if (searchModel.isTheyFriends)
       return Icon(
         Icons.person_add,

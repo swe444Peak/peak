@@ -69,6 +69,7 @@ class _FriendsListState extends State<FriendsList> {
                       padding: EdgeInsets.fromLTRB(
                           0, height * 0.09, 0, height * 0.02),
                       child: AppBar(
+                        leading: Container(),
                         title: Text(
                           "Friends List",
                           style: TextStyle(

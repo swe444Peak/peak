@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/enums/viewState.dart';
 import 'package:peak/models/user.dart';
+import 'package:peak/screens/search.dart';
+import 'package:peak/screens/shared/base.dart';
 import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/viewmodels/friendsList_model.dart';
@@ -63,26 +65,39 @@ class _FriendsListState extends State<FriendsList> {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomCenter)),
                     ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          0, height * 0.09, 0, height * 0.02),
+                      child: AppBar(
+                        title: Text(
+                          "Friends List",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 32.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        backgroundColor: Colors.transparent,
+                        elevation: 0.0,
+                        actions: [
+                          IconButton(
+                            padding: EdgeInsets.fromLTRB(
+                                0.0, height * 0.01, 0.0, height * 0.01),
+                            icon: Icon(
+                              Icons.search,
+                              size: 30,
+                            ),
+                            color: Colors.white,
+                            onPressed: () => showSearch(
+                                context: context, delegate: FriendSearch()),
+                          ),
+                        ],
+                      ),
+                    ),
                     Container(
                       padding: EdgeInsets.fromLTRB(
-                          width * 0.06, height * 0.12, width * 0.06, 0.0),
+                          width * 0.06, height * 0.2, width * 0.06, 0.0),
                       child: Column(children: [
-                        Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(
-                                  0.0, 0.0, 0.0, (width * 0.1)),
-                              child: Text(
-                                "Friends List",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 34.0,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                         Flexible(
                             child:
                                 friendsList(model, width, height, user?.uid)),
@@ -149,16 +164,6 @@ class _FriendsListState extends State<FriendsList> {
                             await model.deleteFriend(currentId, friend.uid);
                             model.friends.removeAt(index);
                           }),
-                          /*
-                            onPressed: () async {
-                              //// I wrote here
-                              if (await model.deleteFriend(
-                                  currentId, friend.uid)) {
-                                setState(() {
-                                  model.friends.removeAt(index);
-                                });
-                              }
-                              */
                         ),
                       ],
                     ),

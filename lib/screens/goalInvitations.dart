@@ -219,7 +219,17 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                   ? Center(
                       child: CircularProgressIndicator(),
                     )
-                  : ListView.builder(
+                  :(model.invitations == null)? 
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        "Your Goals list is empty\n Start adding new Goals!",
+                        style: TextStyle(
+                            fontSize: width * 0.06, color: Colors.white),
+                      ),
+                    ),
+                  ) : ListView.builder(
                       itemCount: model.invitations.length,
                       itemBuilder: (context, index) {
                         Invitation invitation = model.invitations[index];
@@ -280,75 +290,75 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                 ),
                               ],
                             ), //end of subtitle
-                            trailing: Row(
-                              children: [
-                                IconButton(
-                                    icon: Icon(Icons.check_circle),
-                                    color: Colors.green,
-                                    onPressed: () {
-                                      bool result = model.acceptGoalInvite(
-                                          new Invitation(
-                                              creatorId: invitation.creatorId,
-                                              receiverId: invitation.receiverId,
-                                              status: invitation.status,
-                                              creatorgoalDocId:
-                                                  invitation.creatorgoalDocId,
-                                              invationDocId:
-                                                  invitation.invationDocId,
-                                              goalName: invitation.goalName,
-                                              goalDueDate: new DateTime(
-                                                  invitation.goalDueDate.year,
-                                                  invitation.goalDueDate.month,
-                                                  invitation.goalDueDate.day),
-                                              numOfTasks:
-                                                  invitation.numOfTasks));
-                                      if (result) {
-                                        dialogService.showDialog(
-                                            title: "Hooray!!",
-                                            description:
-                                                "You have a new shared goal waitting for you in your goals list, go ahead and achieve it");
-                                      }
-                                    }),
-                                IconButton(
-                                    icon: Icon(Icons.cancel),
-                                    color: Colors.red,
-                                    onPressed: () async{
-                                      var declineDialogResponse =
-                                          await dialogService.showConfirmationDialog(
-                                        title: 'Declie Invitation',
-                                        description:
-                                            'Are you sure you want to decline ${invitation.goalName} invitation?',
-                                        confirmationTitle: 'Yes',
-                                        cancelTitle: 'No',
-                                      );
-                                      if (declineDialogResponse.confirmed){
-                                        bool result = model.declinedGoalInvite(
-                                            new Invitation(
-                                                creatorId: invitation.creatorId,
-                                                receiverId:
-                                                    invitation.receiverId,
-                                                status: invitation.status,
-                                                creatorgoalDocId:
-                                                    invitation.creatorgoalDocId,
-                                                invationDocId:
-                                                    invitation.invationDocId,
-                                                goalName: invitation.goalName,
-                                                goalDueDate: new DateTime(
-                                                    invitation.goalDueDate.year,
-                                                    invitation
-                                                        .goalDueDate.month,
-                                                    invitation.goalDueDate.day),
-                                                numOfTasks:
-                                                    invitation.numOfTasks));
-                                      if (result) {
-                                        dialogService.showDialog(
-                                            title: "Maybe next time",
-                                            description:
-                                                "It's Wise to choose your fights carefully");
-                                      }}
-                                    }),
-                              ],
-                            ),
+                            // trailing: Row(
+                            //   children: [
+                            //     IconButton(
+                            //         icon: Icon(Icons.check_circle),
+                            //         color: Colors.green,
+                            //         onPressed: () {
+                            //           bool result = model.acceptGoalInvite(
+                            //               new Invitation(
+                            //                   creatorId: invitation.creatorId,
+                            //                   receiverId: invitation.receiverId,
+                            //                   status: invitation.status,
+                            //                   creatorgoalDocId:
+                            //                       invitation.creatorgoalDocId,
+                            //                   invationDocId:
+                            //                       invitation.invationDocId,
+                            //                   goalName: invitation.goalName,
+                            //                   goalDueDate: new DateTime(
+                            //                       invitation.goalDueDate.year,
+                            //                       invitation.goalDueDate.month,
+                            //                       invitation.goalDueDate.day),
+                            //                   numOfTasks:
+                            //                       invitation.numOfTasks));
+                            //           if (result) {
+                            //             dialogService.showDialog(
+                            //                 title: "Hooray!!",
+                            //                 description:
+                            //                     "You have a new shared goal waitting for you in your goals list, go ahead and achieve it");
+                            //           }
+                            //         }),
+                            //     IconButton(
+                            //         icon: Icon(Icons.cancel),
+                            //         color: Colors.red,
+                            //         onPressed: () async{
+                            //           var declineDialogResponse =
+                            //               await dialogService.showConfirmationDialog(
+                            //             title: 'Declie Invitation',
+                            //             description:
+                            //                 'Are you sure you want to decline ${invitation.goalName} invitation?',
+                            //             confirmationTitle: 'Yes',
+                            //             cancelTitle: 'No',
+                            //           );
+                            //           if (declineDialogResponse.confirmed){
+                            //             bool result = model.declinedGoalInvite(
+                            //                 new Invitation(
+                            //                     creatorId: invitation.creatorId,
+                            //                     receiverId:
+                            //                         invitation.receiverId,
+                            //                     status: invitation.status,
+                            //                     creatorgoalDocId:
+                            //                         invitation.creatorgoalDocId,
+                            //                     invationDocId:
+                            //                         invitation.invationDocId,
+                            //                     goalName: invitation.goalName,
+                            //                     goalDueDate: new DateTime(
+                            //                         invitation.goalDueDate.year,
+                            //                         invitation
+                            //                             .goalDueDate.month,
+                            //                         invitation.goalDueDate.day),
+                            //                     numOfTasks:
+                            //                         invitation.numOfTasks));
+                            //           if (result) {
+                            //             dialogService.showDialog(
+                            //                 title: "Maybe next time",
+                            //                 description:
+                            //                     "It's Wise to choose your fights carefully");
+                            //           }}
+                            //         }),
+                            //   ],
+                            // ),
                           ),
                         );
                       }),

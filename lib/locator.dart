@@ -12,6 +12,7 @@ import 'package:peak/viewmodels/goalDetails_model.dart';
 import 'package:peak/viewmodels/goalsList_model.dart';
 import 'package:peak/viewmodels/home_model.dart';
 import 'package:peak/viewmodels/login_model.dart';
+import 'package:peak/viewmodels/receivedInvitations_model.dart';
 import 'package:peak/viewmodels/sentInvitations_model.dart';
 import 'package:peak/viewmodels/signup_model.dart';
 import 'package:peak/viewmodels/viewBadges_model.dart';
@@ -37,4 +38,5 @@ void setupLocator() {
   locator.registerFactory(() => FriendsListModel());
   locator.registerFactory(() => SearchForFriendModel());
   locator.registerFactory(() => SentInvitationsModel());
+  locator.registerFactory(() => ReceivedInvitationsModel());
 }

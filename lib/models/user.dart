@@ -26,6 +26,9 @@ class PeakUser {
   }
 
   static List<Badge> badgesFromJson(List<dynamic> jBages){
+    if(jBages == null){
+      return [];
+    }
     List<Badge> badges = List<Badge>();
     jBages.forEach((b) {
       badges.add(Badge.fromJson(b));

@@ -86,7 +86,7 @@ class DatabaseServices {
   }
 
   Stream<PeakUser> userData([String id]) {
-    if (id.isEmpty) id = _firebaseService.currentUser.uid;
+    id = _firebaseService.currentUser.uid;
     return userCollection
         .doc(id)
         .snapshots()
@@ -97,9 +97,9 @@ class DatabaseServices {
     return PeakUser.fromJson(snapshot.data(), snapshot.id);
   }
 
-  List<PeakUser> getUsers(List<String> uids) {
+  Future<List<PeakUser>> getUsers(List<String> uids) async{
     try {
-      userCollection
+      await userCollection
           .where(FieldPath.documentId, whereIn: uids)
           .get()
           .then((value) {
@@ -108,9 +108,11 @@ class DatabaseServices {
               .map(
                   (snapshot) => PeakUser.fromJson(snapshot.data(), snapshot.id))
               .toList();
+              print("here $users");
           return users;
         }
       });
+      print("here ");
       return null;
     } catch (e) {
       return null;
@@ -288,6 +290,7 @@ class DatabaseServices {
     WriteBatch batch = FirebaseFirestore.instance.batch();
     try {
       DocumentReference goalDocReference = _goalsCollectionReference.doc();
+      goal.competitors.add(goalDocReference.id);
       invations.forEach((invation) {
         invation.creatorgoalDocId = goalDocReference.id;
       });

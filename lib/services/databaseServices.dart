@@ -39,7 +39,10 @@ class DatabaseServices {
   CollectionReference _friendsCollection =
       FirebaseFirestore.instance.collection("friends");
 
-  Future updateUserData({String username, String picURL, List<Map<String,dynamic>> badges}) async {
+  Future updateUserData(
+      {String username,
+      String picURL,
+      List<Map<String, dynamic>> badges}) async {
     return await userCollection.doc(uid).set({
       "username": username,
       "picURL": picURL,
@@ -97,23 +100,21 @@ class DatabaseServices {
     return PeakUser.fromJson(snapshot.data(), snapshot.id);
   }
 
-  Future<List<PeakUser>> getUsers(List<String> uids) async{
+  Future<List<PeakUser>> getUsers(List<String> uids) async {
+    List<PeakUser> users = [];
     try {
       await userCollection
           .where(FieldPath.documentId, whereIn: uids)
           .get()
           .then((value) {
         if (value.docs.isNotEmpty) {
-          List<PeakUser> users = value.docs
+          users = value.docs
               .map(
                   (snapshot) => PeakUser.fromJson(snapshot.data(), snapshot.id))
               .toList();
-              print("here $users");
-          return users;
         }
       });
-      print("here ");
-      return null;
+      return users;
     } catch (e) {
       return null;
     }
@@ -239,7 +240,8 @@ class DatabaseServices {
     });
   }
 
-  Future updateTask(String docId, dynamic orignalTask, dynamic editedTask) async {
+  Future updateTask(
+      String docId, dynamic orignalTask, dynamic editedTask) async {
     await _goalsCollectionReference.doc(docId).update({
       "tasks": FieldValue.arrayRemove([orignalTask.toMap()])
     });

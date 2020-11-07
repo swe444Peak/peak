@@ -7,6 +7,7 @@ import 'package:peak/locator.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'firebaseAuthService.dart';
+import 'package:peak/models/badges.dart';
 
 class DatabaseServices {
   final String uid;
@@ -28,10 +29,11 @@ class DatabaseServices {
   final _goalsCollectionReference =
       FirebaseFirestore.instance.collection("goals");
 
-  Future updateUserData({String username, String picURL}) async {
+  Future updateUserData({String username, String picURL, List<Map<String,dynamic>> badges}) async {
     return await userCollection.doc(uid).set({
       "username": username,
       "picURL": picURL,
+      "badges": badges,
       // "notificationStatus": true
     });
   } //end updateUserData
@@ -89,12 +91,7 @@ class DatabaseServices {
   //extract user data from snapshot
 
   PeakUser _userDataFromSnapshot(DocumentSnapshot snapshot) {
-    return PeakUser(
-      uid: snapshot.id,
-      name: snapshot.data()['username'],
-      picURL: snapshot.data()['picURL'],
-      //  notificationStatus : snapshot.data()['notificationStatus']
-    );
+    return PeakUser.fromJson(snapshot.data(), snapshot.id);
   }
 
   Stream getGoals() {

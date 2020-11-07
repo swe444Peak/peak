@@ -40,6 +40,7 @@ class SentInvitationsModel extends ChangeNotifier {
               userIds = [];
             }
           });
+          filterInvitations();
         } else {
           empty = true;
         }

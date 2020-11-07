@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:peak/models/Invitation.dart';
 import 'package:peak/models/friends.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
-import 'package:peak/models/invation.dart';
+
 import 'package:peak/enums/InvationStatus.dart';
 import 'package:peak/models/user.dart';
 import 'firebaseAuthService.dart';
@@ -263,7 +264,7 @@ class DatabaseServices {
     return fr;
   }
 
-  Future inviteFriends(List<Invation> invations, Goal goal) async {
+  Future inviteFriends(List<Invitation> invations, Goal goal) async {
     WriteBatch batch = FirebaseFirestore.instance.batch();
     try {
       DocumentReference goalDocReference = _goalsCollectionReference.doc();
@@ -286,7 +287,7 @@ class DatabaseServices {
     }
   }
 
-  Future acceptGoalInvite(Invation invation) async {
+  Future acceptGoalInvite(Invitation invation) async {
     DocumentReference goalDocRef =
         _goalsCollectionReference.doc(invation.creatorgoalDocId);
     DocumentReference invationDocRef =
@@ -326,7 +327,7 @@ class DatabaseServices {
     }
   }
 
-  Future declinedGoalInvite(Invation invation) async {
+  Future declinedGoalInvite(Invitation invation) async {
     try {
       await invationsCollection
           .doc(invation.invationDocId)
@@ -338,8 +339,8 @@ class DatabaseServices {
   }
 
   Stream getReceivedInvations() {
-    StreamController<List<Invation>> invationsController =
-        StreamController<List<Invation>>.broadcast();
+    StreamController<List<Invitation>> invationsController =
+        StreamController<List<Invitation>>.broadcast();
     if (_firebaseService.currentUser != null) {
       invationsCollection
           .where("receiverId", isEqualTo: _firebaseService.currentUser.uid)
@@ -347,12 +348,12 @@ class DatabaseServices {
           .listen((invationsSnapshots) {
         if (invationsSnapshots.docs.isNotEmpty) {
           var invations = invationsSnapshots.docs
-              .map(
-                  (snapshot) => Invation.fromJson(snapshot.data(), snapshot.id))
+              .map((snapshot) =>
+                  Invitation.fromJson(snapshot.data(), snapshot.id))
               .toList();
           invationsController.add(invations);
         } else {
-          invationsController.add(List<Invation>());
+          invationsController.add(List<Invitation>());
         }
       });
     }

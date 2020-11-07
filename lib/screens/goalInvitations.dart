@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:peak/screens/shared/base.dart';
 
 class GoalInvitations extends StatefulWidget {
   @override

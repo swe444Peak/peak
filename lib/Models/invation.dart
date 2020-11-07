@@ -7,13 +7,27 @@ class Invation {
   InvationStatus status;
   String creatorgoalDocId;
   String invationDocId;
+  String goalName;
+  DateTime goalDueDate;
+  int numOfTasks;
 
-  Invation({creatorId, receiverId, status, creatorgoalDocId, invationDocId}) {
+  Invation(
+      {creatorId,
+      receiverId,
+      status,
+      creatorgoalDocId,
+      invationDocId,
+      goalName,
+      goalDueDate,
+      numOfTasks}) {
     this.creatorId = creatorId;
     this.receiverId = receiverId;
     this.status = status;
     this.invationDocId = invationDocId;
     this.creatorgoalDocId = creatorgoalDocId;
+    this.goalName = goalName;
+    this.goalDueDate = goalDueDate;
+    this.numOfTasks = numOfTasks;
   }
 
   Map<String, dynamic> toMap() {
@@ -22,6 +36,9 @@ class Invation {
       "receiverId": this.receiverId,
       "status": this.status.toShortString(),
       "creatorgoalDocId": this.creatorgoalDocId,
+      "goalName": this.goalName,
+      "goalDueDate": this.goalDueDate,
+      "numOfTasks": this.numOfTasks,
     };
   }
 
@@ -32,6 +49,9 @@ class Invation {
       status: map["status"].formString(),
       creatorgoalDocId: map["creatorgoa)lDocId"],
       invationDocId: map["invationDocId"],
+      goalName: map["goalName"],
+      goalDueDate: map["goalDueDate"],
+      numOfTasks: map["numOfTasks"],
     );
   }
 }

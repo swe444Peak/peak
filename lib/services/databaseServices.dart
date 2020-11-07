@@ -97,6 +97,26 @@ class DatabaseServices {
     return PeakUser.fromJson(snapshot.data(), snapshot.id);
   }
 
+  List<PeakUser> getUsers(List<String> uids) {
+    try {
+      userCollection
+          .where(FieldPath.documentId, whereIn: uids)
+          .get()
+          .then((value) {
+        if (value.docs.isNotEmpty) {
+          List<PeakUser> users = value.docs
+              .map(
+                  (snapshot) => PeakUser.fromJson(snapshot.data(), snapshot.id))
+              .toList();
+          return users;
+        }
+      });
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Stream getGoals() {
     StreamController<List<Goal>> _goalController =
         StreamController<List<Goal>>.broadcast();
@@ -371,8 +391,8 @@ class DatabaseServices {
           .listen((invationsSnapshots) {
         if (invationsSnapshots.docs.isNotEmpty) {
           var invations = invationsSnapshots.docs
-              .map(
-                  (snapshot) => Invitation.fromJson(snapshot.data(), snapshot.id))
+              .map((snapshot) =>
+                  Invitation.fromJson(snapshot.data(), snapshot.id))
               .toList();
           invationsController.add(invations);
         } else {

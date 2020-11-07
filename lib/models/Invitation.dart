@@ -1,7 +1,7 @@
 import 'dart:core';
 import 'package:peak/enums/InvationStatus.dart';
 
-class Invation {
+class Invitation {
   String creatorId;
   String receiverId;
   InvationStatus status;
@@ -11,7 +11,7 @@ class Invation {
   DateTime goalDueDate;
   int numOfTasks;
 
-  Invation(
+  Invitation(
       {creatorId,
       receiverId,
       status,
@@ -42,8 +42,8 @@ class Invation {
     };
   }
 
-  static Invation fromJson(Map<String, dynamic> map, String invationDocId) {
-    return Invation(
+  static Invitation fromJson(Map<String, dynamic> map, String invationDocId) {
+    return Invitation(
       creatorId: map["creatorId"],
       receiverId: map["receiverId"],
       status: map["status"].formString(),

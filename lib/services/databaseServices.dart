@@ -100,6 +100,26 @@ class DatabaseServices {
     );
   }
 
+  List<PeakUser> getUsers(List<String> uids) {
+    try {
+      userCollection
+          .where(FieldPath.documentId, whereIn: uids)
+          .get()
+          .then((value) {
+        if (value.docs.isNotEmpty) {
+          List<PeakUser> users = value.docs
+              .map(
+                  (snapshot) => PeakUser.fromJson(snapshot.data(), snapshot.id))
+              .toList();
+          return users;
+        }
+      });
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Stream getGoals() {
     StreamController<List<Goal>> _goalController =
         StreamController<List<Goal>>.broadcast();
@@ -366,8 +386,8 @@ class DatabaseServices {
   }
 
   Stream getSentInvations() {
-    StreamController<List<Invation>> invationsController =
-        StreamController<List<Invation>>.broadcast();
+    StreamController<List<Invitation>> invationsController =
+        StreamController<List<Invitation>>.broadcast();
     if (_firebaseService.currentUser != null) {
       invationsCollection
           .where("creatorId", isEqualTo: _firebaseService.currentUser.uid)
@@ -375,12 +395,12 @@ class DatabaseServices {
           .listen((invationsSnapshots) {
         if (invationsSnapshots.docs.isNotEmpty) {
           var invations = invationsSnapshots.docs
-              .map(
-                  (snapshot) => Invation.fromJson(snapshot.data(), snapshot.id))
+              .map((snapshot) =>
+                  Invitation.fromJson(snapshot.data(), snapshot.id))
               .toList();
           invationsController.add(invations);
         } else {
-          invationsController.add(List<Invation>());
+          invationsController.add(List<Invitation>());
         }
       });
     }

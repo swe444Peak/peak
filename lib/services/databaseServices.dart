@@ -338,7 +338,7 @@ class DatabaseServices {
     }
   }
 
-  Stream getReceivedInvations() {
+  Stream<List<Invitation>> getReceivedInvations() {
     StreamController<List<Invitation>> invationsController =
         StreamController<List<Invitation>>.broadcast();
     if (_firebaseService.currentUser != null) {
@@ -362,8 +362,8 @@ class DatabaseServices {
   }
 
   Stream getSentInvations() {
-    StreamController<List<Invation>> invationsController =
-        StreamController<List<Invation>>.broadcast();
+    StreamController<List<Invitation>> invationsController =
+        StreamController<List<Invitation>>.broadcast();
     if (_firebaseService.currentUser != null) {
       invationsCollection
           .where("creatorId", isEqualTo: _firebaseService.currentUser.uid)
@@ -372,11 +372,11 @@ class DatabaseServices {
         if (invationsSnapshots.docs.isNotEmpty) {
           var invations = invationsSnapshots.docs
               .map(
-                  (snapshot) => Invation.fromJson(snapshot.data(), snapshot.id))
+                  (snapshot) => Invitation.fromJson(snapshot.data(), snapshot.id))
               .toList();
           invationsController.add(invations);
         } else {
-          invationsController.add(List<Invation>());
+          invationsController.add(List<Invitation>());
         }
       });
     }

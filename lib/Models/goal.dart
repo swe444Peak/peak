@@ -133,7 +133,9 @@ class Goal {
         creationDate: map['creationDate'].toDate(),
         numOfTasks: map['numOfTasks'],
         eventId: map['eventId'],
-        competitors: map['competitors'].toList());
+        competitors: map['competitors'] != null
+            ? map['competitors'].cast<String>()
+            : null);
   }
 
   int clacTasks() {

@@ -75,7 +75,7 @@ class FriendSearch extends SearchDelegate<PeakUser> {
           item.name == query &&
           _firstoreService.getUser().uid != item.uid) filtiredUsers.add(item);
     }
-
+    if(query.isNotEmpty && filtiredUsers.isNotEmpty){
     return ListView.builder(
         itemCount: filtiredUsers.length,
         itemBuilder: (context, index) {
@@ -133,7 +133,59 @@ class FriendSearch extends SearchDelegate<PeakUser> {
                   },
                 ),
               ));
-        });
+        });}
+          if (query.isEmpty) {
+      return Column(
+        children: [
+          Padding(padding: const EdgeInsets.only(top: 150.0)),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text("Lets find some friend \n Enter a name",
+                  style: TextStyle(fontSize: width * 0.07, color: Colors.grey),
+                  textAlign: TextAlign.center),
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Icon(
+                Icons.search_outlined,
+                color: Colors.teal[100],
+                size: 100,
+              ),
+            ),
+          )
+        ],
+      );
+    }
+    if (query.isNotEmpty && filtiredUsers.isEmpty) {
+      return Column(
+        children: [
+          Padding(padding: const EdgeInsets.only(top: 150.0)),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                "No Resuts...",
+                style: TextStyle(fontSize: width * 0.07, color: Colors.grey),
+              ),
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Icon(
+                Icons.search_off,
+                color: Colors.teal[100],
+                size: 100,
+              ),
+            ),
+          )
+        ],
+      );
+    }
+
   }
 
   @override
@@ -141,12 +193,14 @@ class FriendSearch extends SearchDelegate<PeakUser> {
     searchModel.readSearchedlist();
     final users = searchModel.users;
     List<PeakUser> filtiredUsers = [];
+    List<bool> isFriend = [];
 
     for (var item in users) {
       if (item.name != null &&
           item.picURL != null &&
           item.name.contains(query) &&
-          _firstoreService.getUser().uid != item.uid) filtiredUsers.add(item);
+          _firstoreService.getUser().uid != item.uid)
+           filtiredUsers.add(item);
     }
 
     var screenSize = MediaQuery.of(context).size;
@@ -209,6 +263,8 @@ class FriendSearch extends SearchDelegate<PeakUser> {
           itemCount: filtiredUsers.length,
           itemBuilder: (context, index) {
             var user = filtiredUsers[index];
+            searchModel.isFriends( _firstoreService.getUser().uid, user.uid);
+            Widget fIcon =whichIcon(context,_firstoreService.getUser().uid, user.uid);
             return Card(
                 //card Property
                 elevation: 20,
@@ -232,8 +288,9 @@ class FriendSearch extends SearchDelegate<PeakUser> {
                           ),
                         ),
                         Spacer(),
-                        whichIcon(
-                            context, _firstoreService.getUser().uid, user.uid),
+                        // whichIcon(
+                        //     context, _firstoreService.getUser().uid, user.uid),
+                        fIcon,
                       ],
                     ),
                     leading: Container(
@@ -272,7 +329,7 @@ class FriendSearch extends SearchDelegate<PeakUser> {
     var height = screenSize.height;
     searchModel.isFriends(uid1, uid2);
     print(searchModel.isTheyFriends);
-    if (searchModel.isTheyFriends)
+   if (searchModel.isTheyFriends)
       return Icon(
         Icons.person_add,
         size: 30,

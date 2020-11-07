@@ -217,8 +217,7 @@ class DatabaseServices {
     });
   }
 
-  Future updateTask(
-      String docId, dynamic orignalTask, dynamic editedTask) async {
+  Future updateTask(String docId, dynamic orignalTask, dynamic editedTask) async {
     await _goalsCollectionReference.doc(docId).update({
       "tasks": FieldValue.arrayRemove([orignalTask.toMap()])
     });

@@ -53,8 +53,8 @@ class Routerr {
         return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
       case 'friendsList':
         return MaterialPageRoute(builder: (_) => FriendsList());
-      case 'search':
-        return MaterialPageRoute(builder: (_) => Search());
+      // case 'search':
+      //   return MaterialPageRoute(builder: (_) => Search());
       case 'goalInvitations':
         return MaterialPageRoute(builder: (_) => GoalInvitations());
     }

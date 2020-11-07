@@ -129,6 +129,7 @@ class _SearchForFriendState extends State<SearchForFriend> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListView.builder(
+                  
                    itemCount: searchedList.length,
                         itemBuilder: (BuildContext context, int index) =>
                             userCard(context,width,height, searchedList[index]),
@@ -304,101 +305,5 @@ class _SearchForFriendState extends State<SearchForFriend> {
     return Text("issue");
   }
 
-  // Widget buildSearch(context, width, height) {
-  //   return new StreamBuilder(
-  //     stream: FirebaseFirestore.instance
-  //         .collection('users')
-  //         .where('username', isEqualTo: _searchController.text)
-  //         .snapshots(),
-  //     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-  //       return !snapshot.hasData
-  //           ? Center(
-  //               child: Padding(
-  //                 padding: const EdgeInsets.all(8),
-  //                 child: Text(
-  //                   "No Results",
-  //                   style:
-  //                       TextStyle(fontSize: width * 0.06, color: Colors.white),
-  //                 ),
-  //               ),
-  //             )
-  //           : ListView(
-  //               children: snapshot.data.docs.map((document) {
-  //                 ListView.builder(
-  //                     scrollDirection: Axis.vertical,
-  //                     shrinkWrap: true,
-  //                     itemCount: snapshot.data.docs.length,
-  //                     itemBuilder: (context, index) {
-  //                       //var goal = model.goals[index];
-  //                       return Card(
-  //                           //card Property
-  //                           elevation: 20,
-  //                           shape: RoundedRectangleBorder(
-  //                             borderRadius: BorderRadius.circular(20.0),
-  //                           ),
-  //                           child: Padding(
-  //                             padding: EdgeInsets.all(width * 0.008),
-  //                             child: ListTile(
-  //                               contentPadding: EdgeInsets.fromLTRB(
-  //                                   width * 0.05,
-  //                                   height * 0.02,
-  //                                   0.0,
-  //                                   height * 0.01),
-  //                               title: Row(
-  //                                 children: [
-  //                                   Container(
-  //                                     padding: EdgeInsets.fromLTRB(0.0,
-  //                                         height * 0.008, 0.0, height * 0.008),
-  //                                     //width: width * 0.15,
-  //                                     //height: width * 0.15,
-  //                                     decoration: BoxDecoration(
-  //                                       image: DecorationImage(
-  //                                         image: NetworkImage(
-  //                                             document.data()["picURL"]),
-  //                                         fit: BoxFit.cover,
-  //                                       ),
-  //                                       borderRadius:
-  //                                           BorderRadius.circular(100),
-  //                                       boxShadow: [
-  //                                         new BoxShadow(
-  //                                           color: Colors.black26,
-  //                                           offset: new Offset(0.0, -8.0),
-  //                                           blurRadius: 40.0,
-  //                                           spreadRadius: 1.0,
-  //                                         )
-  //                                       ],
-  //                                     ),
-  //                                   ),
-  //                                   //SizedBox(width: width * 0.03),
-  //                                   Text(
-  //                                     document.data()['username'],
-  //                                     style: TextStyle(
-  //                                       color: Colors.black87,
-  //                                       fontWeight: FontWeight.w400,
-  //                                       fontSize: 18,
-  //                                     ),
-  //                                   ),
-  //                                   //Spacer(),
-  //                                   IconButton(
-  //                                       padding: EdgeInsets.fromLTRB(0.0,
-  //                                           height * 0.01, 0.0, height * 0.01),
-  //                                       icon: Icon(
-  //                                         Icons.delete,
-  //                                         size: 30,
-  //                                       ),
-  //                                       color: Colors.red[900],
-  //                                       onPressed: () {}),
-  //                                 ],
-  //                               ),
-  //                               onTap: () {
-  //                                 //Navigator.pushNamed(context, "goalDetails", arguments: goal);
-  //                               },
-  //                             ),
-  //                           ));
-  //                     });
-  //               }).toList(),
-  //             );
-  //     },
-  //   );
-  // }
+
 }

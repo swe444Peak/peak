@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
+import 'package:peak/screens/search.dart';
 
 class CustomNavigationBar extends StatelessWidget {
   final int Index;
@@ -40,7 +41,8 @@ class CustomNavigationBar extends StatelessWidget {
             Navigator.pushNamed(context, 'profile');
             break;
           case 3:
-            Navigator.pushNamed(context, 'friendsList');
+          // showSearch(context: context, delegate: FriendSearch());
+           Navigator.pushNamed(context, 'friendsList');
             break;
         }
       },

@@ -47,7 +47,7 @@ class Invitation {
       creatorId: map["creatorId"],
       receiverId: map["receiverId"],
       status: formString(map["status"]),
-      creatorgoalDocId: map["creatorgoa)lDocId"],
+      creatorgoalDocId: map["creatorgoalDocId"],
       invationDocId: map["invationDocId"],
       goalName: map["goalName"],
       goalDueDate: map["goalDueDate"].toDate(),

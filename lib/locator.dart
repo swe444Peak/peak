@@ -4,6 +4,7 @@ import 'package:peak/services/dialogService.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/SearchForFriendModel.dart';
+import 'package:peak/viewmodels/addCompetitors_model.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:peak/viewmodels/editGoal_model.dart';
 import 'package:peak/viewmodels/editProfile_model.dart';
@@ -39,4 +40,5 @@ void setupLocator() {
   locator.registerFactory(() => SearchForFriendModel());
   locator.registerFactory(() => SentInvitationsModel());
   locator.registerFactory(() => ReceivedInvitationsModel());
+  locator.registerFactory(() => AddCompetitorsModel());
 }

@@ -20,19 +20,37 @@ class ReceivedInvitationsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void readInvitations(){
+  void readInvitations() {
     setState(ViewState.Busy);
-    // Goal goal = Goal(goalName: "user1 goal8", uID: "W8RKLSV8Gya8NN5Qx9FbovYBlxV2", deadline: DateTime(2020,11,15), creationDate: DateTime(2020,11,8), tasks: [DailyTask(taskName: "t1",creationDate: DateTime(2020,11,8))],competitors: [],);
-    // Invitation inv = Invitation(creatorId: "W8RKLSV8Gya8NN5Qx9FbovYBlxV2", receiverId: "DZr1HX3nOEZlvLSjaEMCZ9Uvag43",status: InvationStatus.Pending,goalName: goal.goalName,goalDueDate: goal.deadline,numOfTasks: goal.numOfTasks);
+
+    // Goal goal = Goal(
+    //   goalName: "EDIT GOAL",
+    //   uID: "W8RKLSV8Gya8NN5Qx9FbovYBlxV2",
+    //   deadline: DateTime(2020, 11, 15),
+    //   creationDate: DateTime.now(),
+    //   tasks: [DailyTask(taskName: "t1", creationDate: DateTime.now())],
+    //   competitors: [],
+    // );
+    // Invitation inv = Invitation(
+    //     creatorId: "W8RKLSV8Gya8NN5Qx9FbovYBlxV2",
+    //     receiverId: "DZr1HX3nOEZlvLSjaEMCZ9Uvag43",
+    //     status: InvationStatus.Pending,
+    //     goalName: goal.goalName,
+    //     goalDueDate: goal.deadline,
+    //     numOfTasks: goal.numOfTasks);
+
     // _firstoreService.inviteFriends([inv], goal);
+
+
     _firstoreService.getReceivedInvations().listen((invitationData) {
-      if(invitationData.isNotEmpty){
+      if (invitationData.isNotEmpty) {
+        print("inv: $_invitations     dat: $invitationData");
         _invitations = invitationData;
       }
       notifyListeners();
       setState(ViewState.Idle);
-     }, onError: (error) => print(error));
-  }//end readInvitations()
+    }, onError: (error) => print(error));
+  } //end readInvitations()
 
   Future<bool> acceptGoalInvite(Invitation invitation)async{
     setState(ViewState.Busy);
@@ -43,12 +61,12 @@ class ReceivedInvitationsModel extends ChangeNotifier {
       notifyListeners();
       setState(ViewState.Idle);
       return true;
-    }else{
+    } else {
       print(result);
       setState(ViewState.Idle);
       return false;
-    }//end else
-  }//end acceptGoalInvite()
+    } //end else
+  } //end acceptGoalInvite()
 
   Future<bool> declinedGoalInvite(Invitation invitation)async{
     setState(ViewState.Busy);
@@ -56,12 +74,6 @@ class ReceivedInvitationsModel extends ChangeNotifier {
     result = await _firstoreService.declinedGoalInvite(invitation);
     if(result == true){
       notifyListeners();
-      setState(ViewState.Idle);
-      return true;
-    }else{
-      print(result);
-      setState(ViewState.Idle);
-      return false;
-    }//end else
-  }//end declinedGoalInvite()
+}
+  }
 }

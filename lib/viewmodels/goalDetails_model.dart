@@ -56,7 +56,7 @@ class GoalDetailsModel extends ChangeNotifier {
     );
     if (dialogResponse.confirmed) {
       setState(ViewState.Busy);
-      await _firstoreService.deleteGoal(goal.docID);
+      await _firstoreService.deleteGoal(goal);
       setState(ViewState.Idle);
       return true;
     }

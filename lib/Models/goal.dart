@@ -126,7 +126,7 @@ class Goal {
       var task = getTask(element);
       newList.add(task);
     });
-
+    
     return Goal(
         goalName: map['goalName'],
         uID: map['uID'],

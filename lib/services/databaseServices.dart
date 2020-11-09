@@ -72,12 +72,27 @@ class DatabaseServices {
   }
 
   Future updateGoal(Goal goal) async {
-    await _goalsCollectionReference
-        .doc(goal.docID)
-        .update(goal.updateToMap())
-        .catchError((error) {
-      print(error);
-    });
+    if (goal.competitors == null) {
+      await _goalsCollectionReference
+          .doc(goal.docID)
+          .update(goal.updateToMap())
+          .catchError((error) {
+        print(error);
+      });
+    } else {
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+      try {
+        goal.competitors.forEach((element) {
+          DocumentReference goalDocReference =
+              _goalsCollectionReference.doc(element);
+          batch.update(goalDocReference, goal.updateToMap());
+        });
+        batch.commit();
+      } catch (e) {
+        print(e);
+        return e.toString();
+      }
+    }
   }
 
   Future updateEventId(String result) async {
@@ -262,8 +277,31 @@ class DatabaseServices {
     });
   }
 
-  Future deleteGoal(String documentId) async {
-    await _goalsCollectionReference.doc(documentId).delete();
+ 
+  Future deleteGoal(Goal goal) async {
+    if (goal.competitors == null) {
+      await _goalsCollectionReference.doc(goal.docID).delete();
+    } else {
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+      try {
+        DocumentReference goalDocRef =
+            _goalsCollectionReference.doc(goal.docID);
+
+        goal.competitors.forEach((element) {
+          DocumentReference goalDocReference =
+              _goalsCollectionReference.doc(element);
+          batch.update(goalDocReference, {
+            "competitors": FieldValue.arrayRemove([goal.docID])
+          });
+
+        batch.delete(goalDocRef);
+        });
+        batch.commit();
+      } catch (e) {
+        print(e);
+        return e.toString();
+      }
+    }
   }
 
   PeakUser getUser() {

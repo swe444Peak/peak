@@ -5,6 +5,7 @@ import 'package:peak/enums/viewState.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/dialogService.dart';
+import 'package:peak/services/firebaseAuthService.dart';
 import 'package:peak/services/googleCalendar.dart';
 
 import '../locator.dart';
@@ -13,6 +14,7 @@ class GoalDetailsModel extends ChangeNotifier {
   final googleCalendar = locator<GoogleCalendar>();
   DialogService dialogService = locator<DialogService>();
   final _firstoreService = locator<DatabaseServices>();
+  final _firebaseService = locator<FirbaseAuthService>();
   ViewState _state = ViewState.Idle;
   ViewState get state => _state;
   void setState(ViewState viewState) {
@@ -20,17 +22,13 @@ class GoalDetailsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  addGoalToGoogleCalendar(
-      String name, DateTime startDate, DateTime endDate, String id,String doc) async {
-       await  googleCalendar.setEvent(name, startDate, endDate);
-    print ("before update******");
-    print(_firstoreService.eventId);
+  addGoalToGoogleCalendar(String name, DateTime startDate, DateTime endDate,
+      String id, String doc) async {
+    await googleCalendar.setEvent(name, startDate, endDate);
     _firstoreService.updateEventId(doc);
-
   }
 
   deletFromGooleCalendar(String id) {
-    print("ID"+id);
     googleCalendar.deleteEvent(id);
   }
 
@@ -63,5 +61,10 @@ class GoalDetailsModel extends ChangeNotifier {
       return true;
     }
     return false;
+  }
+
+  String uid() {
+    if (_firebaseService.currentUser != null)
+      return _firebaseService.currentUser.uid;
   }
 }

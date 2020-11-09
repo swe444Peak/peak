@@ -290,6 +290,7 @@ class DatabaseServices {
 
   Future inviteFriends(List<Invitation> invations, Goal goal) async {
     WriteBatch batch = FirebaseFirestore.instance.batch();
+    goal.creatorId = _firebaseService.currentUser.uid;
     try {
       DocumentReference goalDocReference = _goalsCollectionReference.doc();
       goal.competitors.add(goalDocReference.id);
@@ -332,7 +333,8 @@ class DatabaseServices {
             tasks: goal.tasks,
             creationDate: goal.creationDate,
             numOfTasks: goal.numOfTasks,
-            competitors: goal.competitors);
+            competitors: goal.competitors,
+            creatorId: goal.creatorId);
 
         DocumentReference newGoalDocRef = _goalsCollectionReference.doc();
         newGoal.competitors.add(newGoalDocRef.id);

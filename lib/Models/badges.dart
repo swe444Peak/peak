@@ -5,8 +5,9 @@ class Badge {
   int goal;
   int counter;
   bool status;
+  bool congrate;
 
-  Badge({this.name, this.description, this.goal, this.counter, this.status});
+  Badge({this.name, this.description, this.goal, this.counter, this.status, this.congrate});
 
   static Badge fromJson(Map<String, dynamic> map){
     return Badge(
@@ -14,7 +15,8 @@ class Badge {
       description: map["description"],
       goal: map["goal"],
       counter: map["counter"],
-      status: map["status"]
+      status: map["status"],
+      //congrate: map["congrate"]
       );
   }
 
@@ -24,23 +26,26 @@ class Badge {
       "description": this.description,
       "goal": this.goal,
       "counter": this.counter,
-      "status": this.status
+      "status": this.status,
+      //"congrate": this.congrate,
     };
   }
 
-  bool updateStatus({bool increment=true, int amount=1}){ //updates the status and return the new status if no chane return the same
+  bool updateStatus({bool increment=true, int amount=1}){ //updates the status and return if bool needs update
     if(!increment){
       counter -= amount;
       if(status)
         status = false;
+      return true;
     }
     if(!status){
       counter += amount;
       if(goal == counter)
         status = true;
+      return true;
     }
 
-    return status;
+    return false;
   }
 
 }

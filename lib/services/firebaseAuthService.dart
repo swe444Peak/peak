@@ -57,7 +57,12 @@ class FirbaseAuthService {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       currentUser = PeakUser(uid: result.user.uid);
+      
       if (result.user != null) {
+        DatabaseServices().userData().listen((user) { 
+        if(user != null)
+        currentUser = user;
+        });
         return true;
       }
 

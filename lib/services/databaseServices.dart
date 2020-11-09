@@ -249,6 +249,17 @@ class DatabaseServices {
     });
   }
 
+  Future updateBadge(Badge oldBadge, Badge newBadge)async{
+    String id = _firebaseService.currentUser.uid;
+    await userCollection.doc(id).update({
+      "badges": FieldValue.arrayRemove([oldBadge.toMap()])
+    });
+
+    await userCollection.doc(id).update({
+      "badges": FieldValue.arrayUnion([newBadge.toMap()])
+    });
+  }
+
   Future deleteGoal(String documentId) async {
     await _goalsCollectionReference.doc(documentId).delete();
   }
@@ -311,6 +322,7 @@ class DatabaseServices {
   }
 
   Future acceptGoalInvite(Invitation invation) async {
+    
     DocumentReference goalDocRef =
         _goalsCollectionReference.doc(invation.creatorgoalDocId);
     DocumentReference invationDocRef =
@@ -319,10 +331,8 @@ class DatabaseServices {
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         DocumentSnapshot snapshot = await transaction.get(goalDocRef);
         Goal goal = Goal.fromJson(snapshot.data(), snapshot.id);
-
         transaction.update(
             invationDocRef, {"status": invation.status.toShortString()});
-
         Goal newGoal = Goal(
             goalName: goal.goalName,
             uID: invation.receiverId,
@@ -333,19 +343,19 @@ class DatabaseServices {
             competitors: goal.competitors);
 
         DocumentReference newGoalDocRef = _goalsCollectionReference.doc();
-        newGoal.competitors.add(newGoalDocRef.id);
         dynamic id = newGoalDocRef.id;
 
         goal.competitors.forEach((element) {
           DocumentReference goalRef = _goalsCollectionReference.doc(element);
           transaction
-              .update(goalRef, {"competitors": FieldValue.arrayUnion(id)});
+              .update(goalRef, {"competitors": FieldValue.arrayUnion([id])});
         });
-
+        newGoal.competitors.add(newGoalDocRef.id);
         transaction.set(newGoalDocRef, newGoal.toMap());
       });
       return true;
     } catch (e) {
+      print("the error was in ${e.toString()}");
       return e.toString();
     }
   }
@@ -367,6 +377,7 @@ class DatabaseServices {
     if (_firebaseService.currentUser != null) {
       invationsCollection
           .where("receiverId", isEqualTo: _firebaseService.currentUser.uid)
+          .where("status", isEqualTo:"Pending")
           .snapshots()
           .listen((invationsSnapshots) {
         if (invationsSnapshots.docs.isNotEmpty) {

@@ -227,6 +227,40 @@ class _NewGoalState extends State<NewGoal> {
                                             context, 'goalsList');
                                         //confirm message here
                                         goalConfirmDailog(model);
+                                        bool badge = model.updateBadge();
+                                        if (badge) {
+                                          showDialog(
+                                            context: context,
+                                            useRootNavigator: false,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                scrollable: true,
+                                                contentPadding:
+                                                    EdgeInsets.all(50),
+                                                title: Text(
+                                                    "Wow you won new badge !"),
+                                                content: Column(
+                                                  children: [
+                                                    Image.asset(
+                                                      "assets/badges/first_goal_colored.png",
+                                                      width: width * 0.5,
+                                                    ),
+                                                    Text(
+                                                        "You won the First goal badge, go check it out in your profile !"),
+                                                  ],
+                                                ),
+                                                actions: [
+                                                  FlatButton(
+                                                    child: Text("Ok"),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  )
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        }//end if 
                                         notifyManeger.showDeadlineNotification(
                                             'Deadline Reminder',
                                             'The deadline for ' +

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:peak/enums/viewState.dart';
+import 'package:peak/models/badges.dart';
+import 'package:peak/models/user.dart';
 import 'package:peak/models/validationItem.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/models/task.dart';
+import 'package:peak/services/firebaseAuthService.dart';
 import 'package:peak/services/googleCalendar.dart';
 import 'package:random_string/random_string.dart';
 
@@ -14,7 +17,7 @@ class CreateGoalModel extends ChangeNotifier {
   ValidationItem _dueDate = ValidationItem(null, null);
 
   ViewState _state = ViewState.Idle;
-
+  PeakUser user;
   ValidationItem get goalName => _goalName;
   ValidationItem get dueDate => _dueDate;
     final googleCalendar = locator<GoogleCalendar>();
@@ -22,7 +25,7 @@ class CreateGoalModel extends ChangeNotifier {
   bool get isValid => goalName.value != null && _dueDate.value != null;
  String result ;
   ViewState get state => _state;
-
+ final _firebaseAuthService = locator<FirbaseAuthService>();
  final _firebaceService = locator<DatabaseServices>();
 
   void setState(ViewState viewState) {
@@ -73,6 +76,25 @@ class CreateGoalModel extends ChangeNotifier {
     print (result);
    _firebaceService.updateEventId(result);
   
+ }
+
+ bool updateBadge(){
+   user = _firebaseAuthService.currentUser;
+   print("current user ${user.name}");
+   Badge oldBadge ;
+   user.badges.forEach((badge) {
+     if(badge.name.compareTo("First goal") == 0)
+      oldBadge = badge;
+    });
+
+   Badge newBadge = Badge(name: oldBadge.name, description: oldBadge.description, 
+   goal: oldBadge.goal, counter: oldBadge.counter, status: oldBadge.status,);
+   bool update = newBadge.updateStatus();
+   if(update){
+     _firebaceService.updateBadge(oldBadge, newBadge);
+     return newBadge.status;
+   }
+   return false;
  }
   
 }

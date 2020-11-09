@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/enums/taskType.dart';
+import 'package:peak/screens/addCompetitors.dart';
 
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/googleCalendar.dart';
@@ -33,6 +34,7 @@ class _NewGoalState extends State<NewGoal> {
   TextEditingController _dueDatecontroller = TextEditingController();
   DateTime _dateTime;
   List<Task> tasks = [];
+  List<PeakUser> addedFriends = [];
   bool isEnabled = true;
   setError(value) => setState(() => _error = value);
   setEnabled(value) => setState(() => isEnabled = value);
@@ -170,8 +172,10 @@ class _NewGoalState extends State<NewGoal> {
                                         width * 0.02,
                                         width * 0.02),
                                     child: ListTile(
-                                      trailing: Icon(Icons.keyboard_arrow_right,
-                                          color: Colors.indigo[900]),
+                                      trailing: IconButton(icon: Icon(Icons.keyboard_arrow_right,
+                                          color: Colors.indigo[900]), onPressed: (){
+                                            Navigator.pushNamed(context, 'addCompetitors', arguments: addedFriends);
+                                            }),
                                       title: Text("Add Competitors",
                                           style: TextStyle(
                                               fontSize: width * 0.045,

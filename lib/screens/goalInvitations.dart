@@ -337,6 +337,9 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                               numOfTasks:
                                                   invitation.numOfTasks));
                                       if (result) {
+                                        setState(() {
+                                          model.readInvitations();
+                                        });
                                         dialogService.showDialog(
                                             title: "Hooray!!",
                                             description:
@@ -377,6 +380,9 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                                 numOfTasks:
                                                     invitation.numOfTasks));
                                       if (result) {
+                                        setState(() {
+                                          model.readInvitations();
+                                        });
                                         dialogService.showDialog(
                                             title: "Maybe next time",
                                             description:

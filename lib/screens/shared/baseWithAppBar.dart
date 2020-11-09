@@ -17,17 +17,22 @@ class BaseWithAppBar extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+        appBar: AppBar(
+                      leading: leading,
+                      title: Text(
+                        title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 32.0,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0.0,
+                      actions: actions,
+                    ),
         extendBodyBehindAppBar: true,
         backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
-        /*bottomNavigationBar: CustomNavigationBar(1),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, 'addNewGoal');
-          },
-          child: Icon(Icons.add),
-          backgroundColor: Colors.teal[400],
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,*/
         body: Stack(
           children: [
             Container(
@@ -45,32 +50,14 @@ class BaseWithAppBar extends StatelessWidget {
                   ], begin: Alignment.topLeft, end: Alignment.bottomCenter)),
             ),
             Container(
-              child: ListView(
-                children: [
-                  Padding(
-                    padding:
-                        EdgeInsets.fromLTRB(0, height * 0.09, 0, height * 0.02),
-                    child: AppBar(
-                      leading: leading,
-                      title: Text(
-                        title,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 32.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0.0,
-                      actions: actions,
+              height: height*0.5, ////////edit here if height is so small
+              child:
+                  SingleChildScrollView(
+                                      child: Padding(
+                      padding: childPadding,
+                      child: child,
                     ),
-                  ),
-                  Padding(
-                    padding: childPadding,
-                    child: child,
                   )
-                ],
-              ),
             ),
           ],
         ));

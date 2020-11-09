@@ -475,4 +475,28 @@ class DatabaseServices {
               );
     }
   }
+
+  Stream getCompetitors() {
+    StreamController<List<Friends>> competitorsController =
+        StreamController<List<Friends>>.broadcast();
+
+    if (_firebaseService.currentUser != null) {
+      _friendsCollection
+          .where("userid2", isEqualTo: _firebaseService.currentUser.uid)
+          .where("userid1", isEqualTo: _firebaseService.currentUser.uid)
+          .snapshots()
+          .listen((competitorsSnapshots) {
+        if (competitorsSnapshots.docs.isNotEmpty) {
+          var competitors = competitorsSnapshots.docs
+              .map((snapshot) => Friends.delGetid(snapshot.data(), snapshot.id))
+              .toList();
+          competitorsController.add(competitors);
+        } else {
+          competitorsController.add(List<Friends>());
+        }
+      });
+    }
+
+    return competitorsController.stream;
+  }
 }

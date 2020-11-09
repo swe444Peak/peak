@@ -101,14 +101,14 @@ class SentInvitations extends StatelessWidget {
                   )
                 : ListView.builder(
                     itemCount: model.goalDoc.length, // goal doc id
-                    itemBuilder: (context, index) => getCard(model, index),
+                    itemBuilder: (context, index) =>
+                        getCard(model, index, width),
                   ),
       ),
     );
   }
 
-  Widget getCard(model, index) {
-    print(model.goalDoc);
+  Widget getCard(model, index, width) {
     List<Invitation> invitations = model.getInvitations(model.goalDoc[index]);
     return Card(
       elevation: 20,
@@ -116,27 +116,42 @@ class SentInvitations extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: ExpansionTile(
-        title: Text(
-          invitations.first.goalName,
-          style: TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.w400,
-            fontSize: 18,
+        title: Padding(
+          padding: EdgeInsets.all(width * 0.01),
+          child: Text(
+            invitations.first.goalName,
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.w400,
+              fontSize: 18,
+            ),
           ),
         ),
         subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
-              Icons.assistant_photo,
-              color: Colors.amber,
+            Padding(
+              padding: EdgeInsets.all(width * 0.01),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.assistant_photo,
+                    color: Colors.amber,
+                  ),
+                  Text(
+                      "${invitations.first.goalDueDate.day}/${invitations.first.goalDueDate.month}/${invitations.first.goalDueDate.year}"),
+                ],
+              ),
             ),
-            Text(
-                "${invitations.first.goalDueDate.day}/${invitations.first.goalDueDate.month}/${invitations.first.goalDueDate.year}"),
-            Icon(
-              Icons.assignment_turned_in,
-              color: Colors.teal,
+            Row(
+              children: [
+                Icon(
+                  Icons.assignment_turned_in,
+                  color: Colors.teal,
+                ),
+                Text("${invitations.first.numOfTasks}"),
+              ],
             ),
-            Text("${invitations.first.numOfTasks}"),
           ],
         ),
         children: List<Widget>.generate(

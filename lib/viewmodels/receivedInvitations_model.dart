@@ -41,7 +41,6 @@ class ReceivedInvitationsModel extends ChangeNotifier {
 
     // _firstoreService.inviteFriends([inv], goal);
 
-
     _firstoreService.getReceivedInvations().listen((invitationData) {
       if (invitationData.isNotEmpty) {
         print("inv: $_invitations     dat: $invitationData");
@@ -52,12 +51,12 @@ class ReceivedInvitationsModel extends ChangeNotifier {
     }, onError: (error) => print(error));
   } //end readInvitations()
 
-  Future<bool> acceptGoalInvite(Invitation invitation)async{
+  Future<bool> acceptGoalInvite(Invitation invitation) async {
     setState(ViewState.Busy);
     dynamic result;
-    
+
     result = await _firstoreService.acceptGoalInvite(invitation);
-    if(result == true){
+    if (result == true) {
       notifyListeners();
       setState(ViewState.Idle);
       return true;
@@ -68,12 +67,12 @@ class ReceivedInvitationsModel extends ChangeNotifier {
     } //end else
   } //end acceptGoalInvite()
 
-  Future<bool> declinedGoalInvite(Invitation invitation)async{
+  Future<bool> declinedGoalInvite(Invitation invitation) async {
     setState(ViewState.Busy);
     dynamic result;
     result = await _firstoreService.declinedGoalInvite(invitation);
-    if(result == true){
+    if (result == true) {
       notifyListeners();
-}
+    }
   }
 }

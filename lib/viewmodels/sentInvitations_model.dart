@@ -23,7 +23,7 @@ class SentInvitationsModel extends ChangeNotifier {
     users = [];
     List<String> userIds = [];
     setState(ViewState.Busy);
-    _firstoreService.getSentInvations().listen((invitationData) async{
+    _firstoreService.getSentInvations().listen((invitationData) async {
       List<Invitation> updatedInvations = invitationData;
       if (updatedInvations != null) {
         if (updatedInvations.length > 0) {
@@ -31,18 +31,20 @@ class SentInvitationsModel extends ChangeNotifier {
 
           invitations = updatedInvations;
 
-          invitations.forEach((element) async{
+          invitations.forEach((element) async {
             if (userIds.length < 10)
               userIds.add(element.receiverId);
             else {
-              List<PeakUser> fetchedUsers = await _firstoreService.getUsers(userIds);
+              List<PeakUser> fetchedUsers =
+                  await _firstoreService.getUsers(userIds);
               users.addAll(fetchedUsers);
               userIds = [];
             }
           });
-          if(users.isEmpty){
-            List<PeakUser> fetchedUsers = await _firstoreService.getUsers(userIds);
-              users.addAll(fetchedUsers);
+          if (users.isEmpty) {
+            List<PeakUser> fetchedUsers =
+                await _firstoreService.getUsers(userIds);
+            users.addAll(fetchedUsers);
           }
           filterInvitations();
         } else {
@@ -64,12 +66,13 @@ class SentInvitationsModel extends ChangeNotifier {
 
   List<Invitation> getInvitations(String goalDocId) {
     return invitations
-        .where((element) => element.creatorgoalDocId == goalDocId).toList();
+        .where((element) => element.creatorgoalDocId == goalDocId)
+        .toList();
   }
 
   PeakUser getUser(String uid) {
     return users.firstWhere((element) {
-        return element.uid.compareTo(uid)==0;
-        });
-        }
+      return element.uid.compareTo(uid) == 0;
+    });
+  }
 }

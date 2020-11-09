@@ -39,7 +39,10 @@ class DatabaseServices {
   CollectionReference _friendsCollection =
       FirebaseFirestore.instance.collection("friends");
 
-  Future updateUserData({String username, String picURL, List<Map<String,dynamic>> badges}) async {
+  Future updateUserData(
+      {String username,
+      String picURL,
+      List<Map<String, dynamic>> badges}) async {
     return await userCollection.doc(uid).set({
       "username": username,
       "picURL": picURL,
@@ -97,23 +100,21 @@ class DatabaseServices {
     return PeakUser.fromJson(snapshot.data(), snapshot.id);
   }
 
-  Future<List<PeakUser>> getUsers(List<String> uids) async{
+  Future<List<PeakUser>> getUsers(List<String> uids) async {
+    List<PeakUser> users = [];
     try {
       await userCollection
           .where(FieldPath.documentId, whereIn: uids)
           .get()
           .then((value) {
         if (value.docs.isNotEmpty) {
-          List<PeakUser> users = value.docs
+          users = value.docs
               .map(
                   (snapshot) => PeakUser.fromJson(snapshot.data(), snapshot.id))
               .toList();
-              print("here $users");
-          return users;
         }
       });
-      print("here ");
-      return null;
+      return users;
     } catch (e) {
       return null;
     }
@@ -239,7 +240,8 @@ class DatabaseServices {
     });
   }
 
-  Future updateTask(String docId, dynamic orignalTask, dynamic editedTask) async {
+  Future updateTask(
+      String docId, dynamic orignalTask, dynamic editedTask) async {
     await _goalsCollectionReference.doc(docId).update({
       "tasks": FieldValue.arrayRemove([orignalTask.toMap()])
     });
@@ -299,6 +301,7 @@ class DatabaseServices {
 
   Future inviteFriends(List<Invitation> invations, Goal goal) async {
     WriteBatch batch = FirebaseFirestore.instance.batch();
+    goal.creatorId = _firebaseService.currentUser.uid;
     try {
       DocumentReference goalDocReference = _goalsCollectionReference.doc();
       goal.competitors.add(goalDocReference.id);
@@ -340,7 +343,8 @@ class DatabaseServices {
             tasks: goal.tasks,
             creationDate: goal.creationDate,
             numOfTasks: goal.numOfTasks,
-            competitors: goal.competitors);
+            competitors: goal.competitors,
+            creatorId: goal.creatorId);
 
         DocumentReference newGoalDocRef = _goalsCollectionReference.doc();
         dynamic id = newGoalDocRef.id;
@@ -483,5 +487,29 @@ class DatabaseServices {
       } // listen
               );
     }
+  }
+
+  Stream getCompetitors() {
+    StreamController<List<Friends>> competitorsController =
+        StreamController<List<Friends>>.broadcast();
+
+    if (_firebaseService.currentUser != null) {
+      _friendsCollection
+          .where("userid2", isEqualTo: _firebaseService.currentUser.uid)
+          .where("userid1", isEqualTo: _firebaseService.currentUser.uid)
+          .snapshots()
+          .listen((competitorsSnapshots) {
+        if (competitorsSnapshots.docs.isNotEmpty) {
+          var competitors = competitorsSnapshots.docs
+              .map((snapshot) => Friends.delGetid(snapshot.data(), snapshot.id))
+              .toList();
+          competitorsController.add(competitors);
+        } else {
+          competitorsController.add(List<Friends>());
+        }
+      });
+    }
+
+    return competitorsController.stream;
   }
 }

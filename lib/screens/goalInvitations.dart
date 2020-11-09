@@ -101,13 +101,14 @@ class SentInvitations extends StatelessWidget {
                   )
                 : ListView.builder(
                     itemCount: model.goalDoc.length, // goal doc id
-                    itemBuilder: (context, index) => getCard(model, index),
+                    itemBuilder: (context, index) =>
+                        getCard(model, index, width),
                   ),
       ),
     );
   }
 
-  Widget getCard(model, index) {
+  Widget getCard(model, index, width) {
     List<Invitation> invitations = model.getInvitations(model.goalDoc[index]);
     return Card(
       elevation: 20,
@@ -115,27 +116,42 @@ class SentInvitations extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: ExpansionTile(
-        title: Text(
-          invitations.first.goalName,
-          style: TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.w400,
-            fontSize: 18,
+        title: Padding(
+          padding: EdgeInsets.all(width * 0.01),
+          child: Text(
+            invitations.first.goalName,
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.w400,
+              fontSize: 18,
+            ),
           ),
         ),
         subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
-              Icons.assistant_photo,
-              color: Colors.amber,
+            Padding(
+              padding: EdgeInsets.all(width * 0.01),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.assistant_photo,
+                    color: Colors.amber,
+                  ),
+                  Text(
+                      "${invitations.first.goalDueDate.day}/${invitations.first.goalDueDate.month}/${invitations.first.goalDueDate.year}"),
+                ],
+              ),
             ),
-            Text(
-                "${invitations.first.goalDueDate.day}/${invitations.first.goalDueDate.month}/${invitations.first.goalDueDate.year}"),
-            Icon(
-              Icons.assignment_turned_in,
-              color: Colors.teal,
+            Row(
+              children: [
+                Icon(
+                  Icons.assignment_turned_in,
+                  color: Colors.teal,
+                ),
+                Text("${invitations.first.numOfTasks}"),
+              ],
             ),
-            Text("${invitations.first.numOfTasks}"),
           ],
         ),
         children: List<Widget>.generate(
@@ -163,7 +179,7 @@ class ReceiverStatus extends StatelessWidget {
 
     return Container(
       child: Card(
-        elevation: 20,
+        elevation: 10,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
         ),
@@ -184,9 +200,9 @@ class ReceiverStatus extends StatelessWidget {
               boxShadow: [
                 new BoxShadow(
                   color: Colors.black26,
-                  offset: new Offset(0.0, -8.0),
-                  blurRadius: 40.0,
-                  spreadRadius: 1.0,
+                  offset: new Offset(0.0, -0.0001),
+                  blurRadius: 10.0,
+                  spreadRadius: 0.0002,
                 )
               ],
             ),
@@ -219,74 +235,79 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                   ? Center(
                       child: CircularProgressIndicator(),
                     )
-                  :(model.invitations == null)? 
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        "You have no invitations yet!",
-                        style: TextStyle(
-                            fontSize: width * 0.06, color: Colors.white),
-                      ),
-                    ),
-                  ) : ListView.builder(
-                      itemCount: model.invitations.length,
-                      itemBuilder: (context, index) {
-                        Invitation invitation = model.invitations[index];
-                        return Card(
-                          elevation: 20,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.fromLTRB(width * 0.05,
-                                height * 0.02, 0.0, height * 0.01),
-                            title: Text(
-                              invitation.goalName,
+                  : (model.invitations == null)
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              "You have no invitations yet!",
                               style: TextStyle(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18,
-                              ),
+                                  fontSize: width * 0.06, color: Colors.white),
                             ),
-                            subtitle: Column(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      0.0, height * 0.01, 0.0, height * 0.01),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        //due date
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: width * 0.008),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.assistant_photo,
-                                              color: Colors.amber,
-                                            ),
-                                            Text(
-                                                "${invitation.goalDueDate.day}/${invitation.goalDueDate.month}/${invitation.goalDueDate.year}"),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        //Tasks
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: width * 0.008),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.assignment_turned_in,
-                                              color: Colors.teal,
-                                            ),
-                                            Text("${invitation.numOfTasks}"),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: model.invitations.length,
+                          itemBuilder: (context, index) {
+                            Invitation invitation = model.invitations[index];
+                            return Card(
+                              elevation: 20,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              child: ListTile(
+                                contentPadding: EdgeInsets.fromLTRB(
+                                    width * 0.05,
+                                    height * 0.02,
+                                    0.0,
+                                    height * 0.01),
+                                title: Text(
+                                  invitation.goalName,
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 18,
                                   ),
+                                ),
+                                subtitle: Column(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(0.0,
+                                          height * 0.01, 0.0, height * 0.01),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            //due date
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: width * 0.008),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.assistant_photo,
+                                                  color: Colors.amber,
+                                                ),
+                                                Text(
+                                                    "${invitation.goalDueDate.day}/${invitation.goalDueDate.month}/${invitation.goalDueDate.year}"),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            //Tasks
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: width * 0.008),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.assignment_turned_in,
+                                                  color: Colors.teal,
+                                                ),
+                                                Text(
+                                                    "${invitation.numOfTasks}"),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                 ),
                               ],
                             ), //end of subtitle

@@ -14,7 +14,6 @@ import 'package:random_string/random_string.dart';
 import '../locator.dart';
 import '../services/notification.dart';
 import 'addTask.dart';
-//import 'package:lottie/lottie.dart';
 
 class NewGoal extends StatefulWidget {
   @override
@@ -25,7 +24,7 @@ class _NewGoalState extends State<NewGoal> {
   var docId;
   String eventId;
   final googleCalendar = locator<GoogleCalendar>();
-  final _firebaseService = locator<DatabaseServices>();
+
   var goalsCounter = 0;
   NotificationManager notifyManeger = NotificationManager();
   DateTime now = DateTime.now();
@@ -156,6 +155,27 @@ class _NewGoalState extends State<NewGoal> {
                                               .setDueDate(_dateTime.toString());
                                         });
                                       },
+                                    ),
+                                  ),
+                                ),
+                                Card(
+                                  elevation: 20,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                        width * 0.04,
+                                        width * 0.02,
+                                        width * 0.02,
+                                        width * 0.02),
+                                    child: ListTile(
+                                      trailing: Icon(Icons.keyboard_arrow_right,
+                                          color: Colors.indigo[900]),
+                                      title: Text("Add Competitors",
+                                          style: TextStyle(
+                                              fontSize: width * 0.045,
+                                              color: Colors.indigo[900])),
                                     ),
                                   ),
                                 ),

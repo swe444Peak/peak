@@ -49,7 +49,7 @@ class EditGoalModel extends ChangeNotifier {
   }
 
   Future updateGoal(String goalName, DateTime creationDate, DateTime deadline,
-      List<Task> tasks, String docID, String eventId) async {
+      List<Task> tasks, String docID, String eventId,String creatorId,List<String>competitors ) async {
     int numOfTasks = 0;
     tasks.forEach((element) {
       numOfTasks += element.taskRepetition;
@@ -61,7 +61,10 @@ class EditGoalModel extends ChangeNotifier {
         docID: docID,
         tasks: tasks,
         creationDate: creationDate,
-        numOfTasks: numOfTasks);
+        numOfTasks: numOfTasks,
+        creatorId: creatorId,
+        competitors: competitors,
+        );
     setState(ViewState.Busy);
     var result = await _firstoreService.updateGoal(updatedGoal);
     setState(ViewState.Idle);

@@ -93,7 +93,7 @@ class SentInvitations extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Text(
-                        "Your Goals list is empty\n Start adding new Goals!",
+                        "You have no sent invitations yet!",
                         style: TextStyle(
                             fontSize: width * 0.06, color: Colors.white),
                       ),
@@ -139,7 +139,9 @@ class SentInvitations extends StatelessWidget {
                     color: Colors.amber,
                   ),
                   Text(
-                      "${invitations.first.goalDueDate.day}/${invitations.first.goalDueDate.month}/${invitations.first.goalDueDate.year}"),
+                    "${invitations.first.goalDueDate.day}/${invitations.first.goalDueDate.month}/${invitations.first.goalDueDate.year}",
+                    style: TextStyle(color: Colors.grey[700]),
+                  ),
                 ],
               ),
             ),
@@ -149,7 +151,10 @@ class SentInvitations extends StatelessWidget {
                   Icons.assignment_turned_in,
                   color: Colors.teal,
                 ),
-                Text("${invitations.first.numOfTasks}"),
+                Text(
+                  "${invitations.first.numOfTasks}",
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
               ],
             ),
           ],
@@ -385,15 +390,16 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                         });
                                         dialogService.showDialog(
                                             title: "Maybe next time",
-                                            description:
-                                                "It's Wise to choose your fights carefully");
-                                      }}
-                                    }),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
+                                                  description:
+                                                      "It's Wise to choose your fights carefully");
+                                            }
+                                          }
+                                        }),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
             ));
   }
 }

@@ -134,6 +134,8 @@ class _EditGoalState extends State<EditGoal> {
                               tasks,
                               widget.goal.docID,
                               widget.goal.eventId,
+                              widget.goal.creatorId,
+                              widget.goal.competitors
                             );
                             for (var item in tasks) {
                               switch (item.taskType.toShortString()) {

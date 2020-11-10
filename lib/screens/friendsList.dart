@@ -90,7 +90,7 @@ class _FriendsListState extends State<FriendsList> {
                             ),
                             color: Colors.white,
                             onPressed: () => showSearch(
-                                context: context, delegate: FriendSearch()),
+                                context: context, delegate: FriendSearch(model.friends)),
                           ),
                         ],
                       ),

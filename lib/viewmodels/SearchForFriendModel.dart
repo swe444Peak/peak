@@ -8,6 +8,7 @@ import 'package:peak/services/databaseServices.dart';
 import '../locator.dart';
 
 class SearchForFriendModel extends ChangeNotifier {
+  
   final _firstoreService = locator<DatabaseServices>();
   ViewState _state = ViewState.Idle;
   List<PeakUser> _usersList = [];

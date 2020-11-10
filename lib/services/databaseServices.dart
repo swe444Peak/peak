@@ -84,7 +84,8 @@ class DatabaseServices {
   }
 
   Stream<PeakUser> userData([String id]) {
-    if (id.isEmpty) id = _firebaseService.currentUser.uid;
+   if (id.isEmpty) 
+   id = _firebaseService.currentUser.uid;
     return userCollection
         .doc(id)
         .snapshots()

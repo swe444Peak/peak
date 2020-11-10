@@ -8,22 +8,20 @@ import 'package:peak/models/friends.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/services/databaseServices.dart';
+import 'package:peak/services/firebaseAuthService.dart';
 import 'package:peak/viewmodels/SearchForFriendModel.dart';
 import 'package:peak/viewmodels/friendsList_model.dart';
 
 class FriendSearch extends SearchDelegate<PeakUser> {
-  
-  setState(){
-
-  }
+   final _firebaseAuthService = locator<FirbaseAuthService>();
   FriendsListModel friendsListModel = locator<FriendsListModel>();
   SearchForFriendModel searchModel = locator<SearchForFriendModel>();
-  final _firstoreService = locator<DatabaseServices>();
-  List<PeakUser> searchedUsers = [];
+ // final _firstoreService = locator<DatabaseServices>();
+  List<PeakUser> _friends = [];
 
-  double right;
-
-  double top;
+  FriendSearch(List<PeakUser> friends){
+_friends = friends;
+  }
 
   List<PeakUser> loadSearchedUsers() {
     List<PeakUser> result = <PeakUser>[
@@ -69,81 +67,81 @@ class FriendSearch extends SearchDelegate<PeakUser> {
 
   @override
   Widget buildResults(BuildContext context) {
-    
-
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
+
     searchModel.readSearchedlist();
     final users = searchModel.users;
-    List<PeakUser> filtiredUsers = [];
 
+    List<PeakUser> filtiredUsers = [];
     for (var item in users) {
       if (item.name != null &&
           item.picURL != null &&
           item.name == query &&
-          _firstoreService.getUser().uid != item.uid) filtiredUsers.add(item);
+          _firebaseAuthService.currentUser.uid != item.uid) filtiredUsers.add(item);
     }
-    if(query.isNotEmpty && filtiredUsers.isNotEmpty){
-    return ListView.builder(
-        itemCount: filtiredUsers.length,
-        itemBuilder: (context, index) {
-          var user = filtiredUsers[index];
-          return Card(
-              //card Property
-              elevation: 20,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(width * 0.008),
-                child: ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(
-                      width * 0.05, height * 0.02, 0.0, height * 0.01),
-                  title: Row(
-                    children: [
-                      SizedBox(width: width * 0.03),
-                      Text(
-                        user.name,
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 18,
+    if (query.isNotEmpty && filtiredUsers.isNotEmpty) {
+      return ListView.builder(
+          itemCount: filtiredUsers.length,
+          itemBuilder: (context, index) {
+            var user = filtiredUsers[index];
+            return Card(
+                //card Property
+                elevation: 20,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(width * 0.008),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.fromLTRB(
+                        width * 0.05, height * 0.02, 0.0, height * 0.01),
+                    title: Row(
+                      children: [
+                        SizedBox(width: width * 0.03),
+                        Text(
+                          user.name,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                          ),
                         ),
-                      ),
-                      Spacer(),
-                      whichIcon(
-                          context, _firstoreService.getUser().uid, user.uid,user),
-                    ],
-                  ),
-                  leading: Container(
-                    width: width * 0.15,
-                    height: width * 0.15,
-                    padding: EdgeInsets.fromLTRB(
-                        0.0, height * 0.008, 0.0, height * 0.008),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(user.picURL),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(100),
-                      boxShadow: [
-                        new BoxShadow(
-                          color: Colors.black26,
-                          offset: new Offset(0.0, -8.0),
-                          blurRadius: 40.0,
-                          spreadRadius: 1.0,
-                        )
+                        Spacer(),
+                        whichIcon(context, _firebaseAuthService.currentUser.uid,
+                            user.uid, user),
                       ],
                     ),
+                    leading: Container(
+                      width: width * 0.15,
+                      height: width * 0.15,
+                      padding: EdgeInsets.fromLTRB(
+                          0.0, height * 0.008, 0.0, height * 0.008),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(user.picURL),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(100),
+                        boxShadow: [
+                          new BoxShadow(
+                            color: Colors.black26,
+                            offset: new Offset(0.0, -8.0),
+                            blurRadius: 40.0,
+                            spreadRadius: 1.0,
+                          )
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      //Navigator.pushNamed(context, "goalDetails", arguments: goal);
+                    },
                   ),
-                  onTap: () {
-                    //Navigator.pushNamed(context, "goalDetails", arguments: goal);
-                  },
-                ),
-              ));
-        });}
-          if (query.isEmpty) {
+                ));
+          });
+    }
+    if (query.isEmpty) {
       return Column(
         children: [
           Padding(padding: const EdgeInsets.only(top: 150.0)),
@@ -194,7 +192,7 @@ class FriendSearch extends SearchDelegate<PeakUser> {
         ],
       );
     }
-
+    return Container();
   }
 
   @override
@@ -202,14 +200,14 @@ class FriendSearch extends SearchDelegate<PeakUser> {
     searchModel.readSearchedlist();
     final users = searchModel.users;
     List<PeakUser> filtiredUsers = [];
-    List<bool> isFriend = [];
-
+   
+     
     for (var item in users) {
       if (item.name != null &&
           item.picURL != null &&
-           item.name.contains(query)  &&
-          _firstoreService.getUser().uid != item.uid)
-           filtiredUsers.add(item);
+          item.name.contains(query) &&item.uid!=null && _firebaseAuthService.currentUser.uid != item.uid)
+         // _firstoreService.getUser().uid != item.uid) 
+          filtiredUsers.add(item);
     }
 
     var screenSize = MediaQuery.of(context).size;
@@ -268,84 +266,107 @@ class FriendSearch extends SearchDelegate<PeakUser> {
       );
     }
     if (query.isNotEmpty && filtiredUsers.isNotEmpty) {
-      return Container();
-    //   return ListView.builder(
-    //       itemCount: filtiredUsers.length,
-    //       itemBuilder: (context, index) {
-    //         var user = filtiredUsers[index];
-    //        // Widget fIcon =whichIcon(context,_firstoreService.getUser().uid, user.uid,user);
-    //         return Card(
-    //             //card Property
-    //             elevation: 20,
-    //             shape: RoundedRectangleBorder(
-    //               borderRadius: BorderRadius.circular(20.0),
-    //             ),
-    //             child: Padding(
-    //               padding: EdgeInsets.all(width * 0.008),
-    //               child: ListTile(
-    //                 contentPadding: EdgeInsets.fromLTRB(
-    //                     width * 0.05, height * 0.02, 0.0, height * 0.01),
-    //                 title: Row(
-    //                   children: [
-    //                     SizedBox(width: width * 0.03),
-    //                     Text(
-    //                       user.name,
-    //                       style: TextStyle(
-    //                         color: Colors.black87,
-    //                         fontWeight: FontWeight.w400,
-    //                         fontSize: 18,
-    //                       ),
-    //                     ),
-    //                     Spacer(),
-    //                      whichIcon(
-    //                        context, _firstoreService.getUser().uid, user.uid,user),
-                       
-    //                   ],
-    //                 ),
-    //                 leading: Container(
-    //                   width: width * 0.15,
-    //                   height: width * 0.15,
-    //                   padding: EdgeInsets.fromLTRB(
-    //                       0.0, height * 0.008, 0.0, height * 0.008),
-    //                   decoration: BoxDecoration(
-    //                     image: DecorationImage(
-    //                       image: NetworkImage(user.picURL),
-    //                       fit: BoxFit.cover,
-    //                     ),
-    //                     borderRadius: BorderRadius.circular(100),
-    //                     boxShadow: [
-    //                       new BoxShadow(
-    //                         color: Colors.black26,
-    //                         offset: new Offset(0.0, -8.0),
-    //                         blurRadius: 40.0,
-    //                         spreadRadius: 1.0,
-    //                       )
-    //                     ],
-    //                   ),
-    //                 ),
-    //                 onTap: () {
-    //                   //Navigator.pushNamed(context, "goalDetails", arguments: goal);
-    //                 },
-    //               ),
-    //             ));
-    //       });
-    // }
-  }}
+       return  Column(
+        children: [
+          Padding(padding: const EdgeInsets.only(top: 150.0)),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text("Lets find some friend \n Enter a name",
+                  style: TextStyle(fontSize: width * 0.07, color: Colors.grey),
+                  textAlign: TextAlign.center),
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Icon(
+                Icons.search_outlined,
+                color: Colors.teal[100],
+                size: 100,
+              ),
+            ),
+          )
+        ],
+      );
+      // return ListView.builder(
+      //     itemCount: filtiredUsers.length,
+      //     itemBuilder: (context, index) {
+      //       var user = filtiredUsers[index];
+      //       // Widget fIcon =whichIcon(context,_firstoreService.getUser().uid, user.uid,user);
+      //       return Card(
+      //           //card Property
+      //           elevation: 20,
+      //           shape: RoundedRectangleBorder(
+      //             borderRadius: BorderRadius.circular(20.0),
+      //           ),
+      //           child: Padding(
+      //             padding: EdgeInsets.all(width * 0.008),
+      //             child: ListTile(
+      //               contentPadding: EdgeInsets.fromLTRB(
+      //                   width * 0.05, height * 0.02, 0.0, height * 0.01),
+      //               title: Row(
+      //                 children: [
+      //                   SizedBox(width: width * 0.03),
+      //                   Text(
+      //                     user.name,
+      //                     style: TextStyle(
+      //                       color: Colors.black87,
+      //                       fontWeight: FontWeight.w400,
+      //                       fontSize: 18,
+      //                     ),
+      //                   ),
+      //                   Spacer(),
+      //                   whichIcon(context, _firebaseAuthService.currentUser.uid,
+      //                       user.uid, user),
+      //                 ],
+      //               ),
+      //               leading: Container(
+      //                 width: width * 0.15,
+      //                 height: width * 0.15,
+      //                 padding: EdgeInsets.fromLTRB(
+      //                     0.0, height * 0.008, 0.0, height * 0.008),
+      //                 decoration: BoxDecoration(
+      //                   image: DecorationImage(
+      //                     image: NetworkImage(user.picURL),
+      //                     fit: BoxFit.cover,
+      //                   ),
+      //                   borderRadius: BorderRadius.circular(100),
+      //                   boxShadow: [
+      //                     new BoxShadow(
+      //                       color: Colors.black26,
+      //                       offset: new Offset(0.0, -8.0),
+      //                       blurRadius: 40.0,
+      //                       spreadRadius: 1.0,
+      //                     )
+      //                   ],
+      //                 ),
+      //               ),
+      //               onTap: () {
+      //                 //Navigator.pushNamed(context, "goalDetails", arguments: goal);
+      //               },
+      //             ),
+      //           ));
+      //     });
+    }
+    return Container();
+  }
 
-  Widget whichIcon(BuildContext context, String uid1, String uid2, PeakUser user) {
-  //  print(user.name);
-  friendsListModel.readfriendslist();
-    List<PeakUser> friend = friendsListModel.friends;
+  Widget whichIcon(
+      BuildContext context, String uid1, String uid2, PeakUser user) {
+    print(user.name);
+    //friendsListModel.readfriendslist();
+  //  List<PeakUser> friend = friendsListModel.friends;
     bool isF = false;
-    for (var item in friend) {
-      if(item.uid== user.uid)
-      isF=true;
+    for (var item in _friends) {
+      if (item.uid == user.uid) 
+      isF = true;
     }
     var screenSize = MediaQuery.of(context).size;
-    var width = screenSize.width;
+   // var width = screenSize.width;
     var height = screenSize.height;
-     print("Before");
-   // searchModel.isFriends(uid1, uid2);
+    print("Before");
+    // searchModel.isFriends(uid1, uid2);
     print(isF);
     print(searchModel.isTheyFriends);
     if (isF)
@@ -363,9 +384,8 @@ class FriendSearch extends SearchDelegate<PeakUser> {
           ),
           color: Colors.indigo[600],
           onPressed: () async {
-           await searchModel.addFriend(uid1, uid2);
-        //  Navigator.pop(context);
-          
+            await searchModel.addFriend(uid1, uid2);
+            //  Navigator.pop(context);
           });
   }
 }

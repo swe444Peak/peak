@@ -15,7 +15,6 @@ enum AuthResultStatus {
 
 class AuthExceptionHandler {
   static handleException(e) {
-    print(e.code);
     var status;
     switch (e.code) {
       case "weak-password":
@@ -45,7 +44,7 @@ class AuthExceptionHandler {
       case "network-request-failed":
         status = AuthResultStatus.networkRequestFailed;
         break;
-      case "permission-denied":
+      case "usernameAlreadyExists":
         status = AuthResultStatus.usernameAlreadyExists;
         break;
 
@@ -85,8 +84,7 @@ class AuthExceptionHandler {
             "Unable to connect please check your internet connection";
         break;
       case AuthResultStatus.usernameAlreadyExists:
-        errorMessage =
-            "Username Already Exists";
+        errorMessage = "Username Already Exists";
         break;
 
       default:

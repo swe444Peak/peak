@@ -1,3 +1,3 @@
-class UsernameExistsException implements Exception{
-   
+class UsernameExistsException implements Exception {
+  final code = "usernameAlreadyExists";
 }

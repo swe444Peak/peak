@@ -9,7 +9,6 @@ import 'package:peak/locator.dart';
 import 'package:peak/enums/InvationStatus.dart';
 import 'package:peak/models/user.dart';
 import 'firebaseAuthService.dart';
-import 'package:peak/models/badges.dart';
 
 class DatabaseServices {
   final String uid;
@@ -39,14 +38,10 @@ class DatabaseServices {
   CollectionReference _friendsCollection =
       FirebaseFirestore.instance.collection("friends");
 
-  Future updateUserData(
-      {String username,
-      String picURL,
-      List<Map<String, dynamic>> badges}) async {
+  Future updateUserData({String username, String picURL}) async {
     return await userCollection.doc(uid).set({
       "username": username,
       "picURL": picURL,
-      "badges": badges,
       // "notificationStatus": true
     });
   } //end updateUserData
@@ -72,46 +67,12 @@ class DatabaseServices {
   }
 
   Future updateGoal(Goal goal) async {
-    if (goal.competitors == null) {
-      await _goalsCollectionReference
-          .doc(goal.docID)
-          .update(goal.updateToMap())
-          .catchError((error) {
-        print(error);
-      });
-    } else {
-      WriteBatch batch = FirebaseFirestore.instance.batch();
-      try {
-        List<String> invIDs = [];
-        await invationsCollection
-            .where("creatorgoalDocId", isEqualTo: goal.docID)
-            .get()
-            .then((value) => value.docs.forEach((element) {
-                  invIDs.add(element.id);
-                }));
-        print(invIDs);
-
-        goal.competitors.forEach((element) {
-          DocumentReference goalDocReference =
-              _goalsCollectionReference.doc(element);
-          batch.update(goalDocReference, goal.updateToMap());
-        });
-
-        invIDs.forEach((element) {
-          DocumentReference invDocReference = invationsCollection.doc(element);
-          print(element);
-          batch.update(invDocReference, {
-            "goalName": goal.goalName,
-            "goalDueDate": goal.deadline,
-            "numOfTasks": goal.numOfTasks,
-          });
-        });
-        batch.commit();
-      } catch (e) {
-        print(e);
-        return e.toString();
-      }
-    }
+    await _goalsCollectionReference
+        .doc(goal.docID)
+        .update(goal.updateToMap())
+        .catchError((error) {
+      print(error);
+    });
   }
 
   Future updateEventId(String result) async {
@@ -131,24 +92,29 @@ class DatabaseServices {
   }
 
   PeakUser _userDataFromSnapshot(DocumentSnapshot snapshot) {
-    return PeakUser.fromJson(snapshot.data(), snapshot.id);
+    return PeakUser(
+      uid: snapshot.id,
+      name: snapshot.data()['username'],
+      picURL: snapshot.data()['picURL'],
+      //  notificationStatus : snapshot.data()['notificationStatus']
+    );
   }
 
-  Future<List<PeakUser>> getUsers(List<String> uids) async {
-    List<PeakUser> users = [];
+  List<PeakUser> getUsers(List<String> uids) {
     try {
-      await userCollection
+      userCollection
           .where(FieldPath.documentId, whereIn: uids)
           .get()
           .then((value) {
         if (value.docs.isNotEmpty) {
-          users = value.docs
+          List<PeakUser> users = value.docs
               .map(
                   (snapshot) => PeakUser.fromJson(snapshot.data(), snapshot.id))
               .toList();
+          return users;
         }
       });
-      return users;
+      return null;
     } catch (e) {
       return null;
     }
@@ -293,52 +259,8 @@ class DatabaseServices {
     });
   }
 
-  Future updateBadge(Badge oldBadge, Badge newBadge) async {
-    String id = _firebaseService.currentUser.uid;
-    await userCollection.doc(id).update({
-      "badges": FieldValue.arrayRemove([oldBadge.toMap()])
-    });
-
-    await userCollection.doc(id).update({
-      "badges": FieldValue.arrayUnion([newBadge.toMap()])
-    });
-  }
-
-  Future deleteGoal(Goal goal) async {
-    if (goal.competitors == null) {
-      await _goalsCollectionReference.doc(goal.docID).delete();
-    } else {
-      List<String> invIDs = [];
-      await invationsCollection
-          .where("creatorgoalDocId", isEqualTo: goal.docID)
-          .get()
-          .then((value) => value.docs.forEach((element) {
-                invIDs.add(element.id);
-              }));
-
-      WriteBatch batch = FirebaseFirestore.instance.batch();
-      try {
-        DocumentReference goalDocRef =
-            _goalsCollectionReference.doc(goal.docID);
-
-        goal.competitors.forEach((element) {
-          DocumentReference goalDocReference =
-              _goalsCollectionReference.doc(element);
-          batch.update(goalDocReference, {
-            "competitors": FieldValue.arrayRemove([goal.docID])
-          });
-        });
-        batch.delete(goalDocRef);
-        invIDs.forEach((element) {
-          DocumentReference invRef = invationsCollection.doc(element);
-          batch.delete(invRef);
-        });
-        batch.commit();
-      } catch (e) {
-        print(e);
-        return e.toString();
-      }
-    }
+  Future deleteGoal(String documentId) async {
+    await _goalsCollectionReference.doc(documentId).delete();
   }
 
   PeakUser getUser() {
@@ -376,10 +298,8 @@ class DatabaseServices {
 
   Future inviteFriends(List<Invitation> invations, Goal goal) async {
     WriteBatch batch = FirebaseFirestore.instance.batch();
-    goal.creatorId = _firebaseService.currentUser.uid;
     try {
       DocumentReference goalDocReference = _goalsCollectionReference.doc();
-      goal.competitors.add(goalDocReference.id);
       invations.forEach((invation) {
         invation.creatorgoalDocId = goalDocReference.id;
       });
@@ -408,8 +328,10 @@ class DatabaseServices {
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         DocumentSnapshot snapshot = await transaction.get(goalDocRef);
         Goal goal = Goal.fromJson(snapshot.data(), snapshot.id);
+
         transaction.update(
             invationDocRef, {"status": invation.status.toShortString()});
+
         Goal newGoal = Goal(
             goalName: goal.goalName,
             uID: invation.receiverId,
@@ -417,24 +339,22 @@ class DatabaseServices {
             tasks: goal.tasks,
             creationDate: goal.creationDate,
             numOfTasks: goal.numOfTasks,
-            competitors: goal.competitors,
-            creatorId: goal.creatorId);
+            competitors: goal.competitors);
 
         DocumentReference newGoalDocRef = _goalsCollectionReference.doc();
+        newGoal.competitors.add(newGoalDocRef.id);
         dynamic id = newGoalDocRef.id;
 
         goal.competitors.forEach((element) {
           DocumentReference goalRef = _goalsCollectionReference.doc(element);
-          transaction.update(goalRef, {
-            "competitors": FieldValue.arrayUnion([id])
-          });
+          transaction
+              .update(goalRef, {"competitors": FieldValue.arrayUnion(id)});
         });
-        newGoal.competitors.add(newGoalDocRef.id);
+
         transaction.set(newGoalDocRef, newGoal.toMap());
       });
       return true;
     } catch (e) {
-      print("the error was in ${e.toString()}");
       return e.toString();
     }
   }
@@ -450,13 +370,12 @@ class DatabaseServices {
     }
   }
 
-  Stream<List<Invitation>> getReceivedInvations() {
+  Stream getReceivedInvations() {
     StreamController<List<Invitation>> invationsController =
         StreamController<List<Invitation>>.broadcast();
     if (_firebaseService.currentUser != null) {
       invationsCollection
           .where("receiverId", isEqualTo: _firebaseService.currentUser.uid)
-          .where("status", isEqualTo: "Pending")
           .snapshots()
           .listen((invationsSnapshots) {
         if (invationsSnapshots.docs.isNotEmpty) {
@@ -507,29 +426,5 @@ class DatabaseServices {
         await _friendsCollection.doc(friendslist[i].docID).delete();
       }
     }
-  }
-
-  Stream getCompetitors() {
-    StreamController<List<Friends>> competitorsController =
-        StreamController<List<Friends>>.broadcast();
-
-    if (_firebaseService.currentUser != null) {
-      _friendsCollection
-          .where("userid2", isEqualTo: _firebaseService.currentUser.uid)
-          .where("userid1", isEqualTo: _firebaseService.currentUser.uid)
-          .snapshots()
-          .listen((competitorsSnapshots) {
-        if (competitorsSnapshots.docs.isNotEmpty) {
-          var competitors = competitorsSnapshots.docs
-              .map((snapshot) => Friends.delGetid(snapshot.data(), snapshot.id))
-              .toList();
-          competitorsController.add(competitors);
-        } else {
-          competitorsController.add(List<Friends>());
-        }
-      });
-    }
-
-    return competitorsController.stream;
   }
 }

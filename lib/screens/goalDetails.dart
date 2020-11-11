@@ -171,48 +171,33 @@ class GoalDetails extends StatelessWidget {
         goal.deadline.year == DateTime.now().year;
 
     if (goal.deadline.isBefore(DateTime.now()) && !today) {
-      return getDelete(model, context);
-    }
-
-    if (goal.competitors != null) {
-      if (goal.creatorId == model.uid())
-        return getEditAndDelete(model, context);
-      return getDelete(model, context);
-    }
-
-    return getEditAndDelete(model, context);
-  }
-
-  List<Widget> getDelete(model, context) {
-    return [
-      IconButton(
-          icon: Icon(
-            Icons.delete,
-            color: Colors.white,
-          ),
-          onPressed: () async {
-            var isDeleted = await model.deleteGoal(goal);
-            if (isDeleted) {
-              Navigator.pop(context);
-              if (goal.eventId != null) {
-                var deleteDialogResponse =
-                    await model.dialogService.showConfirmationDialog(
-                  title: 'your Goal was deleted successfully!',
-                  description:
-                      'Do you want to delete this goal from your Google Calendar?',
-                  confirmationTitle: 'Yes',
-                  cancelTitle: 'No',
-                );
-                if (deleteDialogResponse.confirmed) {
-                  model.deletFromGooleCalendar(goal.eventId);
+      return [
+        IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+            onPressed: () async {
+              var isDeleted = await model.deleteGoal(goal);
+              if (isDeleted) {
+                Navigator.pop(context);
+                if (goal.eventId != null) {
+                  var deleteDialogResponse =
+                      await model.dialogService.showConfirmationDialog(
+                    title: 'your Goal was deleted successfully!',
+                    description:
+                        'Do you want to delete this goal from your Google Calendar?',
+                    confirmationTitle: 'Yes',
+                    cancelTitle: 'No',
+                  );
+                  if (deleteDialogResponse.confirmed) {
+                    model.deletFromGooleCalendar(goal.eventId);
+                  }
                 }
               }
-            }
-          }),
-    ];
-  }
-
-  List<Widget> getEditAndDelete(model, context) {
+            }),
+      ];
+    }
     return [
       IconButton(
         icon: Icon(

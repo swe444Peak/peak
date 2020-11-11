@@ -80,7 +80,6 @@ class CreateGoalModel extends ChangeNotifier {
 
  bool updateBadge(){
    user = _firebaseAuthService.currentUser;
-   print("current user ${user.name}");
    Badge oldBadge ;
    user.badges.forEach((badge) {
      if(badge.name.compareTo("First goal") == 0)

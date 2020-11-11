@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:peak/models/badges.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/enums/viewState.dart';
 import 'package:peak/enums/taskType.dart';
@@ -6,6 +7,7 @@ import 'package:peak/locator.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/services/databaseServices.dart';
+import 'package:peak/services/firebaseAuthService.dart';
 
 class HomeModel extends ChangeNotifier {
   final _firstoreService = locator<DatabaseServices>();
@@ -16,6 +18,8 @@ class HomeModel extends ChangeNotifier {
   bool empty = true;
   List<Goal> get goals => _goals;
   ViewState get state => _state;
+  PeakUser user;
+  final _firebaseAuthService = locator<FirbaseAuthService>();
   List<Map<String, dynamic>> get compTasks => _completedTasks;
   List<Map<String, dynamic>> get incompTasks => _incompletedTasks;
   List<Map<String, dynamic>> get tasks => _tasks;
@@ -251,6 +255,26 @@ class HomeModel extends ChangeNotifier {
     }
   }
 
+
+  bool updateBadge(String name){
+   user = _firebaseAuthService.currentUser;
+   print("current user ${user.name}");
+   Badge oldBadge ;
+   user.badges.forEach((badge) {
+     if(badge.name.compareTo(name) == 0)
+      oldBadge = badge;
+    });
+
+   Badge newBadge = Badge(name: oldBadge.name, description: oldBadge.description, 
+   goal: oldBadge.goal, counter: oldBadge.counter, status: oldBadge.status,);
+   bool update = newBadge.updateStatus();
+   print("the value of update is $update    the old badge status is ${oldBadge.status}");
+   if(update){
+     _firstoreService.updateBadge(oldBadge, newBadge);
+     return newBadge.status;
+   }
+   return false;
+ }
 
 
 }

@@ -33,6 +33,8 @@ class _NewGoalState extends State<NewGoal> {
   TextEditingController _goalnamecontroller = TextEditingController();
   TextEditingController _dueDatecontroller = TextEditingController();
   DateTime _dateTime;
+  String compititors = "Add Competitors";
+  final GlobalKey<AddCompetitorsState> addCompetitorsState = GlobalKey<AddCompetitorsState>();
   List<Task> tasks = [];
   List<PeakUser> addedFriends = [];
   bool isEnabled = true;
@@ -173,10 +175,21 @@ class _NewGoalState extends State<NewGoal> {
                                         width * 0.02),
                                     child: ListTile(
                                       trailing: IconButton(icon: Icon(Icons.keyboard_arrow_right,
-                                          color: Colors.indigo[900]), onPressed: (){
-                                            Navigator.pushNamed(context, 'addCompetitors', arguments: addedFriends);
+                                          color: Colors.indigo[900]), onPressed: ()async{
+                                            var comp;
+                                            try{
+                                            comp = await Navigator.pushNamed(context, 'addCompetitors', arguments: addedFriends);
+                                            }catch(e){
+                                              print("diposed");
+                                            }
+                                            setState(() {
+                                              if(comp != 0)
+                                              compititors = "$comp Competitors Are Added";
+                                              else
+                                              compititors = "Add Competitors";
+                                            });
                                             }),
-                                      title: Text("Add Competitors",
+                                      title: Text(compititors,
                                           style: TextStyle(
                                               fontSize: width * 0.045,
                                               color: Colors.indigo[900])),

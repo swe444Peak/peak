@@ -50,7 +50,7 @@ class BaseWithAppBar extends StatelessWidget {
                   ], begin: Alignment.topLeft, end: Alignment.bottomCenter)),
             ),
             Container(
-              height: height*0.5, ////////edit here if height is so small
+              height: height, ////////edit here if height is so small
               child:
                   SingleChildScrollView(
                                       child: Padding(

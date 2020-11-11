@@ -154,13 +154,13 @@ class HomePageState extends State<HomePage> {
                                       itemBuilder: (context, index) {
                                         var task = model.tasks[index];
                                         print(model.tasks.length);
-                                        if (model.incompTasks.isEmpty) {
-                                          if (model.updateBadge(
-                                              "3 days of 100% productivity")) {
-                                            congrate("threeTasks_colored",
-                                                "You won the 3 days of 100% productivity badge, go check it out in your profile !");
-                                          }
-                                        }
+                                        // if (model.incompTasks.isEmpty) {
+                                        //   if (model.updateBadge(
+                                        //       "3 days of 100% productivity")) {
+                                        //     congrate("threeTasks_colored",
+                                        //         "You won the 3 days of 100% productivity badge, go check it out in your profile !");
+                                        //   }
+                                        // }
                                         return Card(
                                             elevation: 20,
                                             shape: RoundedRectangleBorder(
@@ -195,7 +195,7 @@ class HomePageState extends State<HomePage> {
                                                           ? Colors.green
                                                           : Colors.grey),
                                                     ),
-                                                    onPressed: () {
+                                                    onPressed: () async{
                                                       if (task["status"]) {
                                                         model.updateTask(
                                                             task["task"],
@@ -209,10 +209,25 @@ class HomePageState extends State<HomePage> {
                                                               "firstTask_colored",
                                                               "You won the Achieve first task badge, go check it out in your profile !");
                                                         }
-                                                        model.updateTask(
+                                                        
+                                                        if(model.incompTasks.length == 1){
+                                                          if (model.updateBadge(
+                                                            "3 days of 100% productivity")) {
+                                                          congrate(
+                                                              "threeTasks_colored",
+                                                              "You won the 3 days of 100% productivity badge, go check it out in your profile !");
+                                                        }
+                                                        }
+                                                        await model.updateTask(
                                                             task["task"],
                                                             task["goalId"],
                                                             task["status"]);
+                                                        if (model.updateBadge(
+                                                            "50% Total Progress")) {
+                                                          congrate(
+                                                              "totalProgress_colored",
+                                                              "You won the 50% Total Progress badge, go check it out in your profile !");
+                                                        }
                                                         //initState();
                                                       }
                                                     }),

@@ -20,13 +20,13 @@ class CreateGoalModel extends ChangeNotifier {
   PeakUser user;
   ValidationItem get goalName => _goalName;
   ValidationItem get dueDate => _dueDate;
-    final googleCalendar = locator<GoogleCalendar>();
+  final googleCalendar = locator<GoogleCalendar>();
 
   bool get isValid => goalName.value != null && _dueDate.value != null;
- String result ;
+  String result;
   ViewState get state => _state;
- final _firebaseAuthService = locator<FirbaseAuthService>();
- final _firebaceService = locator<DatabaseServices>();
+  final _firebaseAuthService = locator<FirbaseAuthService>();
+  final _firebaceService = locator<DatabaseServices>();
 
   void setState(ViewState viewState) {
     _state = viewState;
@@ -60,40 +60,44 @@ class CreateGoalModel extends ChangeNotifier {
         tasks: tasks,
         creationDate: DateTime.now());
     setState(ViewState.Busy);
-   
-   result = await DatabaseServices().addGoal(goal: goal);
+
+    result = await DatabaseServices().addGoal(goal: goal);
     setState(ViewState.Idle);
     return result;
   }
 
- Future addGoalToGoogleCalendar(
-           String name, DateTime startDate, DateTime endDate) async {
+  Future addGoalToGoogleCalendar(
+      String name, DateTime startDate, DateTime endDate) async {
     await googleCalendar.setEvent(name, startDate, endDate);
   }
-  
-  uPdateEventId(){
-    print("result before ");
-    print (result);
-   _firebaceService.updateEventId(result);
-  
- }
 
- bool updateBadge(){
-   user = _firebaseAuthService.currentUser;
-   Badge oldBadge ;
-   user.badges.forEach((badge) {
-     if(badge.name.compareTo("First goal") == 0)
-      oldBadge = badge;
+  uPdateEventId() {
+    print("result before ");
+    print(result);
+    _firebaceService.updateEventId(result);
+  }
+
+  bool updateBadge() {
+    user = _firebaseAuthService.currentUser;
+    Badge oldBadge;
+    user.badges.forEach((badge) {
+      if (badge.name.compareTo("First goal") == 0) oldBadge = badge;
     });
 
-   Badge newBadge = Badge(name: oldBadge.name, description: oldBadge.description, 
-   goal: oldBadge.goal, counter: oldBadge.counter, status: oldBadge.status,);
-   bool update = newBadge.updateStatus();
-   if(update){
-     _firebaceService.updateBadge(oldBadge, newBadge);
-     return newBadge.status;
-   }
-   return false;
- }
-  
+    Badge newBadge = Badge(
+      name: oldBadge.name,
+      description: oldBadge.description,
+      goal: oldBadge.goal,
+      counter: oldBadge.counter,
+      status: oldBadge.status,
+    );
+    bool update = newBadge.updateStatus();
+    if (update) {
+      user.badges.remove(oldBadge);
+      user.badges.add(newBadge);
+      _firebaceService.updateBadge(oldBadge, newBadge);
+      return newBadge.status;
+    }
+    return false;
+  }
 }

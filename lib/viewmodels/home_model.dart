@@ -13,8 +13,11 @@ class HomeModel extends ChangeNotifier {
   final _firstoreService = locator<DatabaseServices>();
   ViewState _state = ViewState.Idle;
   List<Goal> _goals;
-  List<Map<String, dynamic>> _completedTasks = [], _incompletedTasks = [] , _tasks = [] ;
-  DateTime today = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  List<Map<String, dynamic>> _completedTasks = [],
+      _incompletedTasks = [],
+      _tasks = [];
+  DateTime today = new DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day);
   bool empty = true;
   List<Goal> get goals => _goals;
   ViewState get state => _state;
@@ -27,9 +30,6 @@ class HomeModel extends ChangeNotifier {
     _state = viewState;
     notifyListeners();
   }
-
-
-  
 
   void readTasks() {
     setState(ViewState.Busy);
@@ -44,190 +44,204 @@ class HomeModel extends ChangeNotifier {
           empty = true;
         }
         //Tasks reading
-        if(!empty){
+        if (!empty) {
           _completedTasks = [];
-          _incompletedTasks =[];
+          _incompletedTasks = [];
           _tasks = [];
-      _goals.forEach((goal) { 
-        goal.tasks.forEach((task) {
-          var type = task.taskType.toShortString().toLowerCase();
-          var currentTask;
-          switch(type){
-            case"once":
-                        currentTask = task as OnceTask;
-                        if(isAtSameDate(currentTask.date, today)){
-                          if(currentTask.done){
-                            _completedTasks.add({
-                              "goal": goal.goalName,
-                              "task": currentTask,
-                              "status": true,
-                              "goalId": goal.docID,
-                              "type": type,
-                            });
-                          }else{
-                            _incompletedTasks.add({
-                              "goal": goal.goalName,
-                              "task": currentTask,
-                              "status": false,
-                              "goalId": goal.docID,
-                              "type": type,
-                            });
-                          }
-                        }
-                        break;
-            case"daily":
-                        currentTask = task as DailyTask;
-                        bool comp = false;
-                        currentTask.doneDates.forEach((date){
-                          if(isAtSameDate(date, today)){
-                            comp = true;
-                            _completedTasks.add({
-                              "goal": goal.goalName,
-                              "task": currentTask,
-                              "status": true,
-                              "goalId": goal.docID,
-                              "type": type,
-                            });//end add
-                          }//end if same
-                        });//end forEach
-                        if(comp)
-                            break;
-                          _incompletedTasks.add({
-                              "goal": goal.goalName,
-                              "task": currentTask,
-                              "status": false,
-                              "goalId": goal.docID,
-                              "type": type,
-                            });
-                        break;
-            case"weekly":
-                        currentTask = task as WeeklyTask;
-                        bool comp = false;
-                        currentTask.doneDates.forEach((date){
-                          if(isAtSameDate(date, today)){
-                            comp = true;
-                            _completedTasks.add({
-                              "goal": goal.goalName,
-                              "task": currentTask,
-                              "status": true,
-                              "goalId": goal.docID,
-                              "type": type,
-                            });//end add
-                          }//end if same
-                        });//end forEach
-                        if(comp)
-                            break;
-                          currentTask.dates.forEach((date){
-                          if(isAtSameDate(date, today)){
-                            _incompletedTasks.add({
-                              "goal": goal.goalName,
-                              "task": currentTask,
-                              "status": false,
-                              "goalId": goal.docID,
-                              "type": type,
-                            });//end add
-                          }//end if same
-                        });//end forEach
-                        break;
-            case"monthly":
-                        currentTask = task as MonthlyTask;
-                        bool comp = false;
-                        currentTask.doneDates.forEach((date){
-                          if(isAtSameDate(date, today)){
-                            comp = true;
-                            _completedTasks.add({
-                              "goal": goal.goalName,
-                              "task": currentTask,
-                              "status": true,
-                              "goalId": goal.docID,
-                              "type": type,
-                            });//end add
-                          }//end if same
-                        });//end forEach
-                        if(comp)
-                            break;
-                          currentTask.dates.forEach((date){
-                          if(isAtSameDate(date, today)){
-                            _incompletedTasks.add({
-                              "goal": goal.goalName,
-                              "task": currentTask,
-                              "status": false,
-                              "goalId": goal.docID,
-                              "type": type,
-                            });//end add
-                          }//end if same
-                        });//end forEach
-                        break;
-          }//end switch
-         });//end forEach task
-      });//end forEach goal
-      compin();
-    }//end if
-    
+          _goals.forEach((goal) {
+            goal.tasks.forEach((task) {
+              var type = task.taskType.toShortString().toLowerCase();
+              var currentTask;
+              switch (type) {
+                case "once":
+                  currentTask = task as OnceTask;
+                  if (isAtSameDate(currentTask.date, today)) {
+                    if (currentTask.done) {
+                      _completedTasks.add({
+                        "goal": goal.goalName,
+                        "task": currentTask,
+                        "status": true,
+                        "goalId": goal.docID,
+                        "type": type,
+                      });
+                    } else {
+                      _incompletedTasks.add({
+                        "goal": goal.goalName,
+                        "task": currentTask,
+                        "status": false,
+                        "goalId": goal.docID,
+                        "type": type,
+                      });
+                    }
+                  }
+                  break;
+                case "daily":
+                  currentTask = task as DailyTask;
+                  bool comp = false;
+                  currentTask.doneDates.forEach((date) {
+                    if (isAtSameDate(date, today)) {
+                      comp = true;
+                      _completedTasks.add({
+                        "goal": goal.goalName,
+                        "task": currentTask,
+                        "status": true,
+                        "goalId": goal.docID,
+                        "type": type,
+                      }); //end add
+                    } //end if same
+                  }); //end forEach
+                  if (comp) break;
+                  _incompletedTasks.add({
+                    "goal": goal.goalName,
+                    "task": currentTask,
+                    "status": false,
+                    "goalId": goal.docID,
+                    "type": type,
+                  });
+                  break;
+                case "weekly":
+                  currentTask = task as WeeklyTask;
+                  bool comp = false;
+                  currentTask.doneDates.forEach((date) {
+                    if (isAtSameDate(date, today)) {
+                      comp = true;
+                      _completedTasks.add({
+                        "goal": goal.goalName,
+                        "task": currentTask,
+                        "status": true,
+                        "goalId": goal.docID,
+                        "type": type,
+                      }); //end add
+                    } //end if same
+                  }); //end forEach
+                  if (comp) break;
+                  currentTask.dates.forEach((date) {
+                    if (isAtSameDate(date, today)) {
+                      _incompletedTasks.add({
+                        "goal": goal.goalName,
+                        "task": currentTask,
+                        "status": false,
+                        "goalId": goal.docID,
+                        "type": type,
+                      }); //end add
+                    } //end if same
+                  }); //end forEach
+                  break;
+                case "monthly":
+                  currentTask = task as MonthlyTask;
+                  bool comp = false;
+                  currentTask.doneDates.forEach((date) {
+                    if (isAtSameDate(date, today)) {
+                      comp = true;
+                      _completedTasks.add({
+                        "goal": goal.goalName,
+                        "task": currentTask,
+                        "status": true,
+                        "goalId": goal.docID,
+                        "type": type,
+                      }); //end add
+                    } //end if same
+                  }); //end forEach
+                  if (comp) break;
+                  currentTask.dates.forEach((date) {
+                    if (isAtSameDate(date, today)) {
+                      _incompletedTasks.add({
+                        "goal": goal.goalName,
+                        "task": currentTask,
+                        "status": false,
+                        "goalId": goal.docID,
+                        "type": type,
+                      }); //end add
+                    } //end if same
+                  }); //end forEach
+                  break;
+              } //end switch
+            }); //end forEach task
+          }); //end forEach goal
+          compin();
+        } //end if
+
         notifyListeners();
       }
       setState(ViewState.Idle);
     }, onError: (error) => print(error));
   }
 
-  void updateTask (Task task, String docId, bool status){
+  Future updateTask(Task task, String docId, bool status) async{
     var type = task.taskType.toShortString().toLowerCase();
-      switch(type){
-            case"once":
-                        OnceTask currentTask = task as OnceTask;
-                        OnceTask newTask = new OnceTask(taskName: currentTask.taskName, date: currentTask.date, 
-                        done: currentTask.done, taskRepetition: currentTask.taskRepetition, achievedTasks: currentTask.achievedTasks, creationDate: currentTask.creationDate);
-                        if(status){     // true => change state from done to not done
-                          newTask.done = false;
-                          newTask.achievedTasks--;
-                        }else{    //false => chane state from not done to done 
-                          newTask.done = true;
-                          newTask.achievedTasks++;
-                        }
-                        _firstoreService.updateTask(docId, currentTask, newTask);
-                        break;
-            case"daily":
-                        DailyTask currentTask = task as DailyTask;
-                        DailyTask newTask = new DailyTask(taskName: currentTask.taskName, doneDates: new List<DateTime>.from(currentTask.doneDates),
-                         taskRepetition: currentTask.taskRepetition, achievedTasks: currentTask.achievedTasks, creationDate: currentTask.creationDate);
-                        if(status){
-                          newTask.doneDates.remove(today);
-                          newTask.achievedTasks--;
-                        }else{
-                          newTask.doneDates.add(today);
-                          newTask.achievedTasks++;
-                        }
-                        _firstoreService.updateTask(docId, currentTask, newTask);
-                        break;
-            case"weekly":
-                        WeeklyTask currentTask = task as WeeklyTask;
-                        WeeklyTask newTask = new WeeklyTask.withDates(taskName: currentTask.taskName, weekdays: new List<int>.from(currentTask.weekdays), 
-                        doneDates: new List<DateTime>.from(currentTask.doneDates), taskRepetition: currentTask.taskRepetition, 
-                        achievedTasks: currentTask.achievedTasks, dates: new List<DateTime>.from(currentTask.dates), creationDate: currentTask.creationDate);
-                        if(status){
-                          newTask.doneDates.remove(today);
-                          newTask.achievedTasks--;
-                        }else{
-                          newTask.doneDates.add(today);
-                          newTask.achievedTasks++;
-                        }
-                        _firstoreService.updateTask(docId, currentTask, newTask);
-                        break;
-            case"monthly":
-                        MonthlyTask currentTask = task as MonthlyTask;
-                        MonthlyTask newTask = new MonthlyTask.withDates(taskName: currentTask.taskName, day: currentTask.day, achievedTasks: currentTask.achievedTasks, 
-                        taskRepetition: currentTask.taskRepetition, dates: new List<DateTime>.from(currentTask.dates), 
-                        doneDates: new List<DateTime>.from(currentTask.doneDates), creationDate: currentTask.creationDate);
-                        if(status){
-                          newTask.doneDates.remove(today);
-                          newTask.achievedTasks--;
-                        }else{
-                          newTask.doneDates.add(today);
-                          newTask.achievedTasks++;
-                        }
-                        _firstoreService.updateTask(docId, currentTask, newTask);
-                        break;
-          }//end switch
+    switch (type) {
+      case "once":
+        OnceTask currentTask = task as OnceTask;
+        OnceTask newTask = new OnceTask(
+            taskName: currentTask.taskName,
+            date: currentTask.date,
+            done: currentTask.done,
+            taskRepetition: currentTask.taskRepetition,
+            achievedTasks: currentTask.achievedTasks,
+            creationDate: currentTask.creationDate);
+        if (status) {
+          // true => change state from done to not done
+          newTask.done = false;
+          newTask.achievedTasks--;
+        } else {
+          //false => chane state from not done to done
+          newTask.done = true;
+          newTask.achievedTasks++;
+        }
+        return await _firstoreService.updateTask(docId, currentTask, newTask);
+      case "daily":
+        DailyTask currentTask = task as DailyTask;
+        DailyTask newTask = new DailyTask(
+            taskName: currentTask.taskName,
+            doneDates: new List<DateTime>.from(currentTask.doneDates),
+            taskRepetition: currentTask.taskRepetition,
+            achievedTasks: currentTask.achievedTasks,
+            creationDate: currentTask.creationDate);
+        if (status) {
+          newTask.doneDates.remove(today);
+          newTask.achievedTasks--;
+        } else {
+          newTask.doneDates.add(today);
+          newTask.achievedTasks++;
+        }
+        return await _firstoreService.updateTask(docId, currentTask, newTask);
+      case "weekly":
+        WeeklyTask currentTask = task as WeeklyTask;
+        WeeklyTask newTask = new WeeklyTask.withDates(
+            taskName: currentTask.taskName,
+            weekdays: new List<int>.from(currentTask.weekdays),
+            doneDates: new List<DateTime>.from(currentTask.doneDates),
+            taskRepetition: currentTask.taskRepetition,
+            achievedTasks: currentTask.achievedTasks,
+            dates: new List<DateTime>.from(currentTask.dates),
+            creationDate: currentTask.creationDate);
+        if (status) {
+          newTask.doneDates.remove(today);
+          newTask.achievedTasks--;
+        } else {
+          newTask.doneDates.add(today);
+          newTask.achievedTasks++;
+        }
+        return await _firstoreService.updateTask(docId, currentTask, newTask);
+      case "monthly":
+        MonthlyTask currentTask = task as MonthlyTask;
+        MonthlyTask newTask = new MonthlyTask.withDates(
+            taskName: currentTask.taskName,
+            day: currentTask.day,
+            achievedTasks: currentTask.achievedTasks,
+            taskRepetition: currentTask.taskRepetition,
+            dates: new List<DateTime>.from(currentTask.dates),
+            doneDates: new List<DateTime>.from(currentTask.doneDates),
+            creationDate: currentTask.creationDate);
+        if (status) {
+          newTask.doneDates.remove(today);
+          newTask.achievedTasks--;
+        } else {
+          newTask.doneDates.add(today);
+          newTask.achievedTasks++;
+        }
+        return await _firstoreService.updateTask(docId, currentTask, newTask);
+    } //end switch
   }
 
   void sortGoals() {
@@ -242,39 +256,57 @@ class HomeModel extends ChangeNotifier {
     return false;
   }
 
-  void compin(){
-    if(_incompletedTasks.isNotEmpty){
+  void compin() {
+    if (_incompletedTasks.isNotEmpty) {
       _incompletedTasks.forEach((element) {
         _tasks.add(element);
-       });
-    }//end if incom
-    if(_completedTasks.isNotEmpty){
+      });
+    } //end if incom
+    if (_completedTasks.isNotEmpty) {
       _completedTasks.forEach((element) {
         _tasks.add(element);
       });
     }
   }
 
+  double clacToatlProgress() {
+    double progress = 0.0;
+    if (_goals != null && goals.length > 0) {
+      _goals.forEach((element) {
+        progress += element.calcProgress();
+      });
+      progress = (progress / goals.length) * 100;
+    }
 
-  bool updateBadge(String name){
-   user = _firebaseAuthService.currentUser;
-   print("current user ${user.name}");
-   Badge oldBadge ;
-   user.badges.forEach((badge) {
-     if(badge.name.compareTo(name) == 0)
-      oldBadge = badge;
+    return progress;
+  }
+
+  bool updateBadge(String name) {
+    if(name.compareTo("50% Total Progress")==0 && clacToatlProgress() < 50){
+      return false;
+    }
+    user = _firebaseAuthService.currentUser;
+    Badge oldBadge;
+    user.badges.forEach((badge) {
+      if (badge.name.compareTo(name) == 0) oldBadge = badge;
     });
 
-   Badge newBadge = Badge(name: oldBadge.name, description: oldBadge.description, 
-   goal: oldBadge.goal, counter: oldBadge.counter, status: oldBadge.status,);
-   bool update = newBadge.updateStatus();
-   print("the value of update is $update    the old badge status is ${oldBadge.status}");
-   if(update){
-     _firstoreService.updateBadge(oldBadge, newBadge);
-     return newBadge.status;
-   }
-   return false;
- }
-
-
+    Badge newBadge = Badge(
+      name: oldBadge.name,
+      description: oldBadge.description,
+      goal: oldBadge.goal,
+      counter: oldBadge.counter,
+      status: oldBadge.status,
+    );
+    bool update = newBadge.updateStatus();
+    print(
+        "the value of update is $update    the old badge status is ${oldBadge.status}");
+    if (update) {
+      user.badges.remove(oldBadge);
+      user.badges.add(newBadge);
+      _firstoreService.updateBadge(oldBadge, newBadge);
+      return newBadge.status;
+    }
+    return false;
+  }
 }

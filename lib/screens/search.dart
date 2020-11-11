@@ -385,7 +385,8 @@ _friends = friends;
           color: Colors.indigo[600],
           onPressed: () async {
             await searchModel.addFriend(uid1, uid2);
-            //  Navigator.pop(context);
+              Navigator.pop(context);
+               //Navigator.pushNamed(context, 'friendsList');
           });
   }
 }

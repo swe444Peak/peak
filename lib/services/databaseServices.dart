@@ -157,8 +157,10 @@ class DatabaseServices {
   }
 
   List<String> friendsids;
+  List<Friends> friendslist;
   Stream getFriendsids() {
     friendsids = [];
+    friendslist = [];
     if (_firebaseService.currentUser != null) {
       _friendsCollection
           .where("userid1", isEqualTo: _firebaseService.currentUser.uid)
@@ -167,10 +169,13 @@ class DatabaseServices {
         if (friendsSnapshots.docs.isNotEmpty) {
           print('in not empty 1');
           var friends1 = friendsSnapshots.docs
-              .map((snapshot) => Friends.getid2(snapshot.data()))
+              .map((snapshot) => Friends.fromJson(snapshot.data(), snapshot.id))
               .toList();
           if (friends1 != null) {
-            friendsids.addAll(friends1);
+            for (int i = 0; i < friends1.length; i++) {
+              friendsids.add(friends1[i].userid2);
+            }
+            friendslist.addAll(friends1);
             print('in 1');
             print(friends1.length);
           }
@@ -194,10 +199,13 @@ class DatabaseServices {
       if (friendsSnapshots.docs.isNotEmpty) {
         print('in not empty 2');
         var friends2 = friendsSnapshots.docs
-            .map((snapshot) => Friends.getid1(snapshot.data()))
+            .map((snapshot) => Friends.fromJson(snapshot.data(), snapshot.id))
             .toList();
         if (friends2 != null) {
-          friendsids.addAll(friends2);
+          for (int i = 0; i < friends2.length; i++) {
+            friendsids.add(friends2[i].userid1);
+          }
+          friendslist.addAll(friends2);
           print('in 2');
           print(friends2.length);
         }
@@ -412,66 +420,11 @@ class DatabaseServices {
     var doc = await _friendsCollection.add(friends.toMap());
   }
 
-  Future deleteFriend(String uid1, String uid2) async {
-    String docID = '';
-    bool found = false;
-    if (_firebaseService.currentUser != null) {
-      _friendsCollection
-          .where("userid1", isEqualTo: uid1)
-          .snapshots()
-          .listen((friendsSnapshots) async {
-        if (friendsSnapshots.docs.isNotEmpty) {
-          print('in not empty 1');
-          var friends1 = friendsSnapshots.docs
-              .map((snapshot) => Friends.delGetid(snapshot.data(), snapshot.id))
-              .toList();
-          if (friends1 != null) {
-            for (int i = 0; i < friends1.length; i++) {
-              if (friends1[i].userid2 == uid2) {
-                found = true;
-                docID = friends1[i].docID;
-                break;
-              }
-            } // loop
-          }
-        }
-        if (!found) {
-          deleteFriend2(uid1, uid2);
-        } else {
-          await _friendsCollection.doc(docID).delete();
-        }
-      } // listen
-              );
-    }
-  }
-
-  Future deleteFriend2(String uid1, String uid2) async {
-    ///// baaaaack
-
-    String docID = '';
-    if (_firebaseService.currentUser != null) {
-      _friendsCollection
-          .where("userid1", isEqualTo: uid2)
-          .snapshots()
-          .listen((friendsSnapshots) async {
-        if (friendsSnapshots.docs.isNotEmpty) {
-          print('in not empty 2');
-          var friends = friendsSnapshots.docs
-              .map((snapshot) => Friends.delGetid(snapshot.data(), snapshot.id))
-              .toList();
-          if (friends != null) {
-            for (int i = 0; i < friends.length; i++) {
-              if (friends[i].userid2 == uid1) {
-                docID = friends[i].docID;
-                break;
-              }
-            } // loop
-          }
-        }
-
-        await _friendsCollection.doc(docID).delete();
-      } // listen
-              );
+  Future deleteFriend(String fid) async {
+    for (int i = 0; i < friendslist.length; i++) {
+      if (friendslist[i].userid1 == fid || friendslist[i].userid2 == fid) {
+        await _friendsCollection.doc(friendslist[i].docID).delete();
+      }
     }
   }
 }

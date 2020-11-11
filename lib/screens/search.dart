@@ -3,16 +3,19 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peak/locator.dart';
 import 'package:peak/models/friends.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/services/databaseServices.dart';
+import 'package:peak/services/dialogService.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 import 'package:peak/viewmodels/SearchForFriendModel.dart';
 import 'package:peak/viewmodels/friendsList_model.dart';
 
 class FriendSearch extends SearchDelegate<PeakUser> {
+   DialogService _dialogService = locator<DialogService>();
    final _firebaseAuthService = locator<FirbaseAuthService>();
   FriendsListModel friendsListModel = locator<FriendsListModel>();
   SearchForFriendModel searchModel = locator<SearchForFriendModel>();
@@ -385,8 +388,48 @@ _friends = friends;
           color: Colors.indigo[600],
           onPressed: () async {
             await searchModel.addFriend(uid1, uid2);
-              Navigator.pop(context);
-               //Navigator.pushNamed(context, 'friendsList');
+            // .then(() { 
+            //  // (context as Element).markNeedsBuild();
+            //   Navigator.pop(context);
+            //                      });
+            (context as Element).markNeedsBuild();
+            goalConfirmDailog(context,user.name);
+      
+             // Navigator.pop(context);
+             // Navigator.pushNamed(context, 'friendsList');
+             
           });
   }
+ goalConfirmDailog(BuildContext context, String name) {
+    // set up the button
+    Widget continueButton = FlatButton(
+      child: Text("Ok"),
+      onPressed: () {
+        Navigator.pushNamed(context, 'friendsList');
+      },
+    );
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          contentPadding: EdgeInsets.all(5),
+          title: Text("Added Successfully !"),
+          content: Column(
+            children: [
+              Lottie.asset('assets/goalConfirm.json', width: 200, height: 200),
+              Text(
+                  "you and "+name +" are friends now !!"),
+            ],
+          ),
+          actions: [
+           
+            continueButton,
+          ],
+        );
+      },
+    );
+  }
+
 }

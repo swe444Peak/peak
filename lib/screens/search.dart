@@ -148,7 +148,7 @@ _friends = friends;
           Center(
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: Text("Lets find some friend \n Enter a name",
+              child: Text("Lets find some friends \n Enter a name",
                   style: TextStyle(fontSize: width * 0.07, color: Colors.grey),
                   textAlign: TextAlign.center),
             ),
@@ -221,7 +221,7 @@ _friends = friends;
           Center(
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: Text("Lets find some friend \n Enter a name",
+              child: Text("Lets find some friends \n Enter a name",
                   style: TextStyle(fontSize: width * 0.07, color: Colors.grey),
                   textAlign: TextAlign.center),
             ),

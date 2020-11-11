@@ -65,9 +65,11 @@ class GoalsListPage extends StatelessWidget {
                           ),
                         ),
                         IconButton(
-                            icon: Icon(
-                              Icons.view_list,
-                              color: Colors.white,
+                            iconSize: width * 0.188,
+                            icon: Text(
+                              "Invitations",
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: width * 0.04),
                             ),
                             onPressed: () {
                               Navigator.pushNamed(context, "goalInvitations");

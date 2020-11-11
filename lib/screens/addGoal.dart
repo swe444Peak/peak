@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/enums/taskType.dart';
+import 'package:peak/screens/addCompetitors.dart';
 
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/googleCalendar.dart';
@@ -14,7 +15,6 @@ import 'package:random_string/random_string.dart';
 import '../locator.dart';
 import '../services/notification.dart';
 import 'addTask.dart';
-//import 'package:lottie/lottie.dart';
 
 class NewGoal extends StatefulWidget {
   @override
@@ -25,7 +25,7 @@ class _NewGoalState extends State<NewGoal> {
   var docId;
   String eventId;
   final googleCalendar = locator<GoogleCalendar>();
-  final _firebaseService = locator<DatabaseServices>();
+
   var goalsCounter = 0;
   NotificationManager notifyManeger = NotificationManager();
   DateTime now = DateTime.now();
@@ -33,7 +33,11 @@ class _NewGoalState extends State<NewGoal> {
   TextEditingController _goalnamecontroller = TextEditingController();
   TextEditingController _dueDatecontroller = TextEditingController();
   DateTime _dateTime;
+  String compititors = "Add Competitors";
+  final GlobalKey<AddCompetitorsState> addCompetitorsState =
+      GlobalKey<AddCompetitorsState>();
   List<Task> tasks = [];
+  List<PeakUser> addedFriends = [];
   bool isEnabled = true;
   setError(value) => setState(() => _error = value);
   setEnabled(value) => setState(() => isEnabled = value);
@@ -159,6 +163,47 @@ class _NewGoalState extends State<NewGoal> {
                                     ),
                                   ),
                                 ),
+                                Card(
+                                  elevation: 20,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                        width * 0.04,
+                                        width * 0.02,
+                                        width * 0.02,
+                                        width * 0.02),
+                                    child: ListTile(
+                                      trailing: IconButton(
+                                          icon: Icon(Icons.keyboard_arrow_right,
+                                              color: Colors.indigo[900]),
+                                          onPressed: () async {
+                                            var comp;
+                                            try {
+                                              comp = await Navigator.pushNamed(
+                                                  context, 'addCompetitors',
+                                                  arguments: addedFriends);
+                                            } catch (e) {
+                                              print("diposed");
+                                            }
+                                            setState(() {
+                                              if (comp != 0)
+                                                compititors =
+                                                    "$comp Competitors Are Added";
+                                              else {
+                                                compititors = "Add Competitors";
+                                                addedFriends = [];
+                                              }
+                                            });
+                                          }),
+                                      title: Text(compititors,
+                                          style: TextStyle(
+                                              fontSize: width * 0.045,
+                                              color: Colors.indigo[900])),
+                                    ),
+                                  ),
+                                ),
                                 AddTask(addTaskState, tasks, width, height,
                                     setError, _dateTime),
                                 RaisedButton(
@@ -175,7 +220,8 @@ class _NewGoalState extends State<NewGoal> {
                                             _goalnamecontroller.text,
                                             user?.uid,
                                             _dateTime,
-                                            tasks);
+                                            tasks,
+                                            addedFriends);
 
                                         for (var item in tasks) {
                                           switch (
@@ -227,6 +273,40 @@ class _NewGoalState extends State<NewGoal> {
                                             context, 'goalsList');
                                         //confirm message here
                                         goalConfirmDailog(model);
+                                        bool badge = model.updateBadge();
+                                        if (badge) {
+                                          showDialog(
+                                            context: context,
+                                            useRootNavigator: false,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                scrollable: true,
+                                                contentPadding:
+                                                    EdgeInsets.all(50),
+                                                title: Text(
+                                                    "Wow you won new badge !"),
+                                                content: Column(
+                                                  children: [
+                                                    Image.asset(
+                                                      "assets/badges/first_goal_colored.png",
+                                                      width: width * 0.5,
+                                                    ),
+                                                    Text(
+                                                        "You won the First goal badge, go check it out in your profile !"),
+                                                  ],
+                                                ),
+                                                actions: [
+                                                  FlatButton(
+                                                    child: Text("Ok"),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  )
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        } //end if
                                         notifyManeger.showDeadlineNotification(
                                             'Deadline Reminder',
                                             'The deadline for ' +

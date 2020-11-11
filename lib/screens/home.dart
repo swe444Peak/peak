@@ -94,7 +94,12 @@ class HomePageState extends State<HomePage> {
                               padding: EdgeInsets.fromLTRB(
                                   0.0, 0.0, 0.0, (width * 0.03)),
                               child: Text(
-                                ((puser != null) ? ("Hi, "+puser.name[0].toUpperCase() + puser.name.substring(1)+"!") : "Today's Tasks List"),
+                                ((puser != null)
+                                    ? ("Hi, " +
+                                        puser.name[0].toUpperCase() +
+                                        puser.name.substring(1) +
+                                        "!")
+                                    : "Today's Tasks List"),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30.0,
@@ -106,8 +111,11 @@ class HomePageState extends State<HomePage> {
                               padding: EdgeInsets.fromLTRB(
                                   0.0, 0.0, 0.0, (width * 0.1)),
                               child: Text(
-                                ((model.empty || model.tasks.length == 0)?"Oops you have no tasks for today!": (model.incompTasks.length == 0)? 
-                                "Wow you finished all your tasks for today!":"Here is your tasks for today, go clear them!"),
+                                ((model.empty || model.tasks.length == 0)
+                                    ? "Oops you have no tasks for today!"
+                                    : (model.incompTasks.length == 0)
+                                        ? "Wow you finished all your tasks for today!"
+                                        : "Here is your tasks for today, go clear them!"),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 17.0,
@@ -129,7 +137,9 @@ class HomePageState extends State<HomePage> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8),
                                     child: Text(
-                                      ((!model.empty)? "Well it looks like you have a break for today, have fun!": "Get started by adding some goals so you can have tasks to acheive!"),
+                                      ((!model.empty)
+                                          ? "Well it looks like you have a break for today, have fun!"
+                                          : "Get started by adding some goals so you can have tasks to acheive!"),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontSize: width * 0.06,
@@ -144,6 +154,13 @@ class HomePageState extends State<HomePage> {
                                       itemBuilder: (context, index) {
                                         var task = model.tasks[index];
                                         print(model.tasks.length);
+                                        // if (model.incompTasks.isEmpty) {
+                                        //   if (model.updateBadge(
+                                        //       "3 days of 100% productivity")) {
+                                        //     congrate("threeTasks_colored",
+                                        //         "You won the 3 days of 100% productivity badge, go check it out in your profile !");
+                                        //   }
+                                        // }
                                         return Card(
                                             elevation: 20,
                                             shape: RoundedRectangleBorder(
@@ -178,7 +195,7 @@ class HomePageState extends State<HomePage> {
                                                           ? Colors.green
                                                           : Colors.grey),
                                                     ),
-                                                    onPressed: () {
+                                                    onPressed: () async{
                                                       if (task["status"]) {
                                                         model.updateTask(
                                                             task["task"],
@@ -186,10 +203,31 @@ class HomePageState extends State<HomePage> {
                                                             task["status"]);
                                                         //initState();
                                                       } else {
-                                                        model.updateTask(
+                                                        if (model.updateBadge(
+                                                            "Achieve first task")) {
+                                                          congrate(
+                                                              "firstTask_colored",
+                                                              "You won the Achieve first task badge, go check it out in your profile !");
+                                                        }
+                                                        
+                                                        if(model.incompTasks.length == 1){
+                                                          if (model.updateBadge(
+                                                            "3 days of 100% productivity")) {
+                                                          congrate(
+                                                              "threeTasks_colored",
+                                                              "You won the 3 days of 100% productivity badge, go check it out in your profile !");
+                                                        }
+                                                        }
+                                                        await model.updateTask(
                                                             task["task"],
                                                             task["goalId"],
                                                             task["status"]);
+                                                        if (model.updateBadge(
+                                                            "50% Total Progress")) {
+                                                          congrate(
+                                                              "totalProgress_colored",
+                                                              "You won the 50% Total Progress badge, go check it out in your profile !");
+                                                        }
                                                         //initState();
                                                       }
                                                     }),
@@ -269,5 +307,36 @@ class HomePageState extends State<HomePage> {
       case 1:
       case 2:
     }
+  }
+
+  void congrate(String name, String message) {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          contentPadding: EdgeInsets.all(50),
+          title: Text("Wow you won new badge !"),
+          content: Column(
+            children: [
+              Image.asset(
+                "assets/badges/$name.png",
+                width: width * 0.5,
+              ),
+              Text(message),
+            ],
+          ),
+          actions: [
+            FlatButton(
+              child: Text("Ok"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
   }
 }

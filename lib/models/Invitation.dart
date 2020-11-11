@@ -46,12 +46,18 @@ class Invitation {
     return Invitation(
       creatorId: map["creatorId"],
       receiverId: map["receiverId"],
-      status: map["status"].formString(),
-      creatorgoalDocId: map["creatorgoa)lDocId"],
-      invationDocId: map["invationDocId"],
+      status: formString(map["status"]),
+      creatorgoalDocId: map["creatorgoalDocId"],
+      invationDocId: invationDocId,
       goalName: map["goalName"],
-      goalDueDate: map["goalDueDate"],
+      goalDueDate: map["goalDueDate"].toDate(),
       numOfTasks: map["numOfTasks"],
     );
+  }
+
+  static InvationStatus formString(String str) {
+    if (str.toLowerCase() == "pending") return InvationStatus.Pending;
+    if (str.toLowerCase() == "accepted") return InvationStatus.Accepted;
+    if (str.toLowerCase() == "declined") return InvationStatus.Declined;
   }
 }

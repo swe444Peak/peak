@@ -4,6 +4,7 @@ import 'package:peak/services/dialogService.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/SearchForFriendModel.dart';
+import 'package:peak/viewmodels/addCompetitors_model.dart';
 import 'package:peak/viewmodels/createGoal_model.dart';
 import 'package:peak/viewmodels/editGoal_model.dart';
 import 'package:peak/viewmodels/editProfile_model.dart';
@@ -12,8 +13,10 @@ import 'package:peak/viewmodels/goalDetails_model.dart';
 import 'package:peak/viewmodels/goalsList_model.dart';
 import 'package:peak/viewmodels/home_model.dart';
 import 'package:peak/viewmodels/login_model.dart';
+import 'package:peak/viewmodels/receivedInvitations_model.dart';
 import 'package:peak/viewmodels/sentInvitations_model.dart';
 import 'package:peak/viewmodels/signup_model.dart';
+import 'package:peak/viewmodels/viewBadges_model.dart';
 import 'package:peak/viewmodels/viewProgress_model.dart';
 
 GetIt locator = GetIt.instance;
@@ -32,7 +35,10 @@ void setupLocator() {
   locator.registerFactory(() => EditGoalModel());
   locator.registerFactory(() => EditProfileModel());
   locator.registerFactory(() => ViewProgressModel());
+  locator.registerFactory(() => ViewBadgesModel());
   locator.registerFactory(() => FriendsListModel());
   locator.registerFactory(() => SearchForFriendModel());
   locator.registerFactory(() => SentInvitationsModel());
+  locator.registerFactory(() => ReceivedInvitationsModel());
+  locator.registerFactory(() => AddCompetitorsModel());
 }

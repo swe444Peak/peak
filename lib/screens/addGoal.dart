@@ -191,8 +191,10 @@ class _NewGoalState extends State<NewGoal> {
                                               if (comp != 0)
                                                 compititors =
                                                     "$comp Competitors Are Added";
-                                              else
+                                              else {
                                                 compititors = "Add Competitors";
+                                                addedFriends = [];
+                                              }
                                             });
                                           }),
                                       title: Text(compititors,

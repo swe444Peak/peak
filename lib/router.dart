@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peak/screens/addCompetitors.dart';
 import 'package:peak/screens/addGoal.dart';
 import 'package:peak/screens/editGoal.dart';
 import 'package:peak/screens/editProfile.dart';
@@ -38,6 +39,12 @@ class Routerr {
         return MaterialPageRoute(
             builder: (_) => GoalDetails(
                   goal: goal,
+                ));
+      case 'addCompetitors':
+        var friendsList = settings.arguments;
+        return MaterialPageRoute(
+            builder: (_) => AddCompetitors(
+                  addedFriends: friendsList,
                 ));
       case 'addNewGoal':
         return MaterialPageRoute(builder: (_) => NewGoal());

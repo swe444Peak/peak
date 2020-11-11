@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:peak/services/authExceptionHandler.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/models/user.dart';
+import 'package:peak/models/badges.dart';
 
 import 'UsernameExistsException.dart';
 
@@ -13,8 +14,8 @@ class FirbaseAuthService {
       "https://firebasestorage.googleapis.com/v0/b/peak-275b5.appspot.com/o/profile_default.png?alt=media&token=95761f67-00ef-41b8-a111-09dfdc6fe8c1";
 
   Future signUp(String username, String email, String password) async {
+    
     try {
-
       await FirebaseFirestore.instance.collection("users").where('username',isEqualTo:username).get()
     .then((value) { if(value.docs.isNotEmpty)
          throw new UsernameExistsException();
@@ -26,10 +27,19 @@ class FirbaseAuthService {
       if (result.user != null) {
         //creating an instance of database services to create new doc for the user with the uid
         //final DatabaseServices database = DatabaseServices(result.user);
+        List<Badge> badges = new List<Badge>();
+        List<Map<String,dynamic>> mapedBadges = new List<Map<String,dynamic>>();
+        badges.add(Badge(name: "First goal", description: "Go ahead and add your first goal to win this badge!", goal: 1, counter: 0, status: false));
+        badges.add(Badge(name: "Achieve first task", description: "well, lets get on and achieve your first task to win this badge!", goal: 1, counter: 0, status: false));
+        badges.add(Badge(name: "50% Total Progress", description: "Raise your progress to 50% to get this badge!", goal: 1, counter: 0, status: false));
+        badges.add(Badge(name: "3 days of 100% productivity", description: "Ahieve all your daily tasks for 3 days to win this badge!", goal: 3, counter: 0, status: false));
         currentUser =
-            PeakUser(uid: result.user.uid, name: username, picURL: defUserPic);
+            PeakUser(uid: result.user.uid, name: username, picURL: defUserPic, badges: badges);
+        badges.forEach((b) {
+          mapedBadges.add(b.toMap());
+         });
         await DatabaseServices(uid: result.user.uid)
-            .updateUserData(username: username, picURL: defUserPic);
+            .updateUserData(username: username, picURL: defUserPic, badges: mapedBadges);
 
         return true;
       }
@@ -47,7 +57,12 @@ class FirbaseAuthService {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       currentUser = PeakUser(uid: result.user.uid);
+      
       if (result.user != null) {
+        DatabaseServices().userData().listen((user) { 
+        if(user != null)
+        currentUser = user;
+        });
         return true;
       }
 

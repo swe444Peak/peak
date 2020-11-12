@@ -17,7 +17,7 @@ class ViewBadges extends StatelessWidget {
       onModelReady: (model) => model.readBadges(),
       builder: (context, model, child) => Container(
         width: width * 0.8,
-        height: height * 0.5,
+        height: height * 0.55,
         child: model.state == ViewState.Busy
             ? Center(child: CircularProgressIndicator())
             : GridView.count(
@@ -59,7 +59,7 @@ class ViewBadges extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.black54,
-                              fontSize: width * 0.033,
+                              fontSize: width * 0.025,
                             ),
                           ),
                         ],

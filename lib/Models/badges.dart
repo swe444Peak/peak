@@ -5,9 +5,9 @@ class Badge {
   int goal;
   int counter;
   bool status;
-  bool congrate;
+  List<DateTime> dates;
 
-  Badge({this.name, this.description, this.goal, this.counter, this.status, this.congrate});
+  Badge({this.name, this.description, this.goal, this.counter, this.status, this.dates});
 
   static Badge fromJson(Map<String, dynamic> map){
     return Badge(
@@ -16,7 +16,7 @@ class Badge {
       goal: map["goal"],
       counter: map["counter"],
       status: map["status"],
-      //congrate: map["congrate"]
+      dates: (map["dates"] != null)? fromTimeStamp(map["dates"]) : [],
       );
   }
 
@@ -27,25 +27,48 @@ class Badge {
       "goal": this.goal,
       "counter": this.counter,
       "status": this.status,
-      //"congrate": this.congrate,
+      "dates": this.dates,
     };
   }
 
   bool updateStatus({bool increment=true, int amount=1}){ //updates the status and return if bool needs update
-    if(!increment){
+    if(!increment && isDate(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)) && !status){
       counter -= amount;
-      if(status)
-        status = false;
+      dates.remove(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
       return true;
     }
     if(!status){
       counter += amount;
+      dates.add(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day));
       if(goal == counter)
         status = true;
       return true;
     }
 
     return false;
+  }
+
+  bool isDate(DateTime date){
+    bool isDate = false;
+    if(dates.isNotEmpty){
+      dates.forEach((listDate) {
+        if((date.year==listDate.year) && (date.month==listDate.month) && (date.day==listDate.day)){
+          isDate = true;
+          return;
+          }
+       });
+    }
+    return isDate;
+  }
+
+  static List<DateTime> fromTimeStamp(List stampDates){
+    List<DateTime> dates = [];
+    if(stampDates.isNotEmpty){
+      stampDates.forEach((date) {
+        dates.add(date.toDate());
+       });
+    }
+    return dates;
   }
 
 }

@@ -280,8 +280,9 @@ class HomeModel extends ChangeNotifier {
 
     return progress;
   }
+  
 
-  bool updateBadge(String name) {
+  bool updateBadge(String name, {bool decrement = false,}) {
     if(name.compareTo("50% Total Progress")==0 && clacToatlProgress() < 50){
       return false;
     }
@@ -297,10 +298,14 @@ class HomeModel extends ChangeNotifier {
       goal: oldBadge.goal,
       counter: oldBadge.counter,
       status: oldBadge.status,
+      dates: List.from(oldBadge.dates),
     );
-    bool update = newBadge.updateStatus();
-    print(
-        "the value of update is $update    the old badge status is ${oldBadge.status}");
+    bool update;
+    if(decrement){
+      update = newBadge.updateStatus(increment:false);
+    }else{
+      update = newBadge.updateStatus();
+    }
     if (update) {
       user.badges.remove(oldBadge);
       user.badges.add(newBadge);

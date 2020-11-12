@@ -195,8 +195,14 @@ class HomePageState extends State<HomePage> {
                                                           ? Colors.green
                                                           : Colors.grey),
                                                     ),
-                                                    onPressed: () async{
+                                                    onPressed: () async {
                                                       if (task["status"]) {
+                                                        if (model.incompTasks
+                                                            .isEmpty) {
+                                                          model.updateBadge(
+                                                              "3 days of 100% productivity",
+                                                              decrement: true);
+                                                        }
                                                         model.updateTask(
                                                             task["task"],
                                                             task["goalId"],
@@ -209,14 +215,16 @@ class HomePageState extends State<HomePage> {
                                                               "firstTask_colored",
                                                               "You won the Achieve first task badge, go check it out in your profile !");
                                                         }
-                                                        
-                                                        if(model.incompTasks.length == 1){
+
+                                                        if (model.incompTasks
+                                                                .length ==
+                                                            1) {
                                                           if (model.updateBadge(
-                                                            "3 days of 100% productivity")) {
-                                                          congrate(
-                                                              "threeTasks_colored",
-                                                              "You won the 3 days of 100% productivity badge, go check it out in your profile !");
-                                                        }
+                                                              "3 days of 100% productivity")) {
+                                                            congrate(
+                                                                "threeTasks_colored",
+                                                                "You won the 3 days of 100% productivity badge, go check it out in your profile !");
+                                                          }
                                                         }
                                                         await model.updateTask(
                                                             task["task"],

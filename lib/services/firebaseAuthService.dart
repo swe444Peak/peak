@@ -29,10 +29,10 @@ class FirbaseAuthService {
         //final DatabaseServices database = DatabaseServices(result.user);
         List<Badge> badges = new List<Badge>();
         List<Map<String,dynamic>> mapedBadges = new List<Map<String,dynamic>>();
-        badges.add(Badge(name: "First goal", description: "Go ahead and add your first goal to win this badge!", goal: 1, counter: 0, status: false));
-        badges.add(Badge(name: "Achieve first task", description: "well, lets get on and achieve your first task to win this badge!", goal: 1, counter: 0, status: false));
-        badges.add(Badge(name: "50% Total Progress", description: "Raise your progress to 50% to get this badge!", goal: 1, counter: 0, status: false));
-        badges.add(Badge(name: "3 days of 100% productivity", description: "Ahieve all your daily tasks for 3 days to win this badge!", goal: 3, counter: 0, status: false));
+        badges.add(Badge(name: "First goal", description: "Go ahead and add your first goal to win this badge!", goal: 1, counter: 0, status: false, dates: []));
+        badges.add(Badge(name: "Achieve first task", description: "well, lets get on and achieve your first task to win this badge!", goal: 1, counter: 0, status: false, dates: []));
+        badges.add(Badge(name: "50% Total Progress", description: "Raise your progress to 50% to get this badge!", goal: 1, counter: 0, status: false, dates: []));
+        badges.add(Badge(name: "3 days of 100% productivity", description: "Ahieve all your daily tasks for 3 days to win this badge!", goal: 3, counter: 0, status: false, dates: []));
         currentUser =
             PeakUser(uid: result.user.uid, name: username, picURL: defUserPic, badges: badges);
         badges.forEach((b) {

@@ -80,7 +80,7 @@ class CreateGoalModel extends ChangeNotifier {
           numOfTasks: goal.numOfTasks,
         ));
       });
-      result = await _firstoreService.inviteFriends(invitations, goal);
+      await _firstoreService.inviteFriends(invitations, goal);
     } else {
       Goal goal = Goal(
           goalName: goalName,
@@ -117,6 +117,7 @@ class CreateGoalModel extends ChangeNotifier {
       goal: oldBadge.goal,
       counter: oldBadge.counter,
       status: oldBadge.status,
+      dates: List.from(oldBadge.dates),
     );
     bool update = newBadge.updateStatus();
     if (update) {

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:peak/enums/viewState.dart';
-import 'package:peak/models/friends.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/dialogService.dart';

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:peak/enums/InvationStatus.dart';
+
 import 'package:peak/enums/viewState.dart';
 import 'package:peak/models/Invitation.dart';
-import 'package:peak/models/goal.dart';
-import 'package:peak/models/task.dart';
+
 import 'package:peak/services/databaseServices.dart';
 
 import '../locator.dart';
@@ -74,5 +73,6 @@ class ReceivedInvitationsModel extends ChangeNotifier {
     if (result == true) {
       notifyListeners();
     }
+    setState(ViewState.Idle);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:peak/models/badges.dart';
+import 'package:peak/enums/viewState.dart';
+
 import 'package:peak/models/user.dart';
 import 'package:peak/screens/shared/baseWithAppBar.dart';
 import 'package:peak/viewmodels/addCompetitors_model.dart';
@@ -8,7 +9,7 @@ import '../locator.dart';
 
 class AddCompetitors extends StatefulWidget {
   List<PeakUser> addedFriends;
-  AddCompetitors({this.addedFriends ,Key key}): super(key: key);
+  AddCompetitors({this.addedFriends, Key key}) : super(key: key);
   @override
   AddCompetitorsState createState() => AddCompetitorsState();
 }
@@ -29,7 +30,7 @@ class AddCompetitorsState extends State<AddCompetitors> {
                     setState(() {
                       widget.addedFriends = [];
                     });
-                    Navigator.pop(context,0);
+                    Navigator.pop(context, 0);
                   }),
               childPadding: EdgeInsets.all(0),
               child: Column(
@@ -38,66 +39,99 @@ class AddCompetitorsState extends State<AddCompetitors> {
                     height: height * 0.83,
                     margin: EdgeInsetsDirectional.only(top: height * 0.04),
                     padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: model.users.length,
-                        itemBuilder: (context, index) {
-                          PeakUser currentUser = model.users[index];
-                          return Card(
-                            elevation: 20,
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: ListTile(
-                              tileColor: Colors.white,
-                              leading: Container(
-                                padding: EdgeInsets.fromLTRB(
-                                    0.0, height * 0.008, 0.0, height * 0.008),
-                                width: width * 0.15,
-                                height: width * 0.15,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(currentUser.picURL),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  borderRadius: BorderRadius.circular(100),
-                                  boxShadow: [
-                                    new BoxShadow(
-                                      color: Colors.black26,
-                                      offset: new Offset(0.0, -0.0001),
-                                      blurRadius: 10.0,
-                                      spreadRadius: 0.0002,
-                                    )
-                                  ],
-                                ),
-                              ), //end leading
-                              title: Text(currentUser.name),
-                              trailing: IconButton(
-                                icon: checkAdded(currentUser.name)
-                                    ? Icon(
-                                        Icons.cancel,
-                                        color: Colors.red,
-                                      )
-                                    : Icon(
-                                        Icons.add_circle_outline,
-                                        color: Colors.grey,
+                    child: model.state == ViewState.Busy
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : model.empty
+                            ? Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "You don't have any friends!",
+                                        style: TextStyle(
+                                            fontSize: width * 0.06,
+                                            color: Colors.white),
                                       ),
-                                onPressed: () {
-                                  PeakUser user = PeakUser(
-                                      uid: currentUser.uid,
-                                      name: currentUser.name,
-                                      picURL: currentUser.picURL,
-                                      badges: currentUser.badges);
-                                  if (checkAdded(currentUser.name))
-                                    _removeFromFriends(user);
-                                  else
-                                    _addToFriends(user);
-                                },
-                              ),
-                            ),
-                                                      ),
-                          );
-                        } //itemBuilder
-                        ),
+                                      Text(
+                                        "Go to the friends list and add some friends.",
+                                        style: TextStyle(
+                                            fontSize: width * 0.04,
+                                            color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: model.users.length,
+                                itemBuilder: (context, index) {
+                                  PeakUser currentUser = model.users[index];
+                                  return Card(
+                                    elevation: 20,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ListTile(
+                                        tileColor: Colors.white,
+                                        leading: Container(
+                                          padding: EdgeInsets.fromLTRB(
+                                              0.0,
+                                              height * 0.008,
+                                              0.0,
+                                              height * 0.008),
+                                          width: width * 0.15,
+                                          height: width * 0.15,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                  currentUser.picURL),
+                                              fit: BoxFit.cover,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            boxShadow: [
+                                              new BoxShadow(
+                                                color: Colors.black26,
+                                                offset:
+                                                    new Offset(0.0, -0.0001),
+                                                blurRadius: 10.0,
+                                                spreadRadius: 0.0002,
+                                              )
+                                            ],
+                                          ),
+                                        ), //end leading
+                                        title: Text(currentUser.name),
+                                        trailing: IconButton(
+                                          icon: checkAdded(currentUser.name)
+                                              ? Icon(
+                                                  Icons.cancel,
+                                                  color: Colors.red,
+                                                )
+                                              : Icon(
+                                                  Icons.add_circle_outline,
+                                                  color: Colors.grey,
+                                                ),
+                                          onPressed: () {
+                                            PeakUser user = PeakUser(
+                                                uid: currentUser.uid,
+                                                name: currentUser.name,
+                                                picURL: currentUser.picURL,
+                                                badges: currentUser.badges);
+                                            if (checkAdded(currentUser.name))
+                                              _removeFromFriends(user);
+                                            else
+                                              _addToFriends(user);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                } //itemBuilder
+                                ),
                   ),
                   (widget.addedFriends.isNotEmpty)
                       ? Container(
@@ -110,41 +144,43 @@ class AddCompetitorsState extends State<AddCompetitors> {
                                 Column(
                                   children: [
                                     Container(
-                                      padding: EdgeInsetsDirectional.only(start:width * 0.008),
-                                      width: width*0.7,
-                                      height: height*0.1,
+                                      padding: EdgeInsetsDirectional.only(
+                                          start: width * 0.008),
+                                      width: width * 0.7,
+                                      height: height * 0.1,
                                       child: ListView.builder(
                                         shrinkWrap: true,
                                         scrollDirection: Axis.horizontal,
                                         itemCount: widget.addedFriends.length,
-                                        itemBuilder: (context,index){
+                                        itemBuilder: (context, index) {
                                           return Container(
-                                          padding: EdgeInsets.fromLTRB(
-                                              0.0,
-                                              height * 0.008,
-                                              0.0,
-                                              height * 0.008),
-                                          width: width * 0.15,
-                                          height: width * 0.15,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage(widget
-                                                  .addedFriends[index].picURL),
-                                              fit: BoxFit.contain,
+                                            padding: EdgeInsets.fromLTRB(
+                                                0.0,
+                                                height * 0.008,
+                                                0.0,
+                                                height * 0.008),
+                                            width: width * 0.15,
+                                            height: width * 0.15,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(widget
+                                                    .addedFriends[index]
+                                                    .picURL),
+                                                fit: BoxFit.contain,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(100),
+                                              // boxShadow: [
+                                              //   new BoxShadow(
+                                              //     color: Colors.black26,
+                                              //     offset:
+                                              //         new Offset(0.0, -0.1),
+                                              //     blurRadius: 8.0,
+                                              //     spreadRadius: 0.1,
+                                              //   )
+                                              // ],
                                             ),
-                                            borderRadius:
-                                                BorderRadius.circular(100),
-                                            // boxShadow: [
-                                            //   new BoxShadow(
-                                            //     color: Colors.black26,
-                                            //     offset:
-                                            //         new Offset(0.0, -0.1),
-                                            //     blurRadius: 8.0,
-                                            //     spreadRadius: 0.1,
-                                            //   )
-                                            // ],
-                                          ),
-                                        );
+                                          );
                                         },
                                       ),
                                     ),
@@ -194,7 +230,8 @@ class AddCompetitorsState extends State<AddCompetitors> {
                                         //side: BorderSide(color: Colors.red)
                                       ),
                                       onPressed: () {
-                                        Navigator.pop(context,widget.addedFriends.length);
+                                        Navigator.pop(context,
+                                            widget.addedFriends.length);
                                       },
                                       child: Text("Done!"),
                                     ),

@@ -509,27 +509,51 @@ class DatabaseServices {
     }
   }
 
-  Stream getCompetitors() {
-    StreamController<List<Friends>> competitorsController =
-        StreamController<List<Friends>>.broadcast();
-
+  Future<List<PeakUser>> getCompetitors() async {
+    List<String> competitorsuids = [];
+    List<PeakUser> peakUsers = [];
     if (_firebaseService.currentUser != null) {
-      _friendsCollection
-          .where("userid2", isEqualTo: _firebaseService.currentUser.uid)
+      await _friendsCollection
           .where("userid1", isEqualTo: _firebaseService.currentUser.uid)
-          .snapshots()
-          .listen((competitorsSnapshots) {
-        if (competitorsSnapshots.docs.isNotEmpty) {
-          var competitors = competitorsSnapshots.docs
-              .map((snapshot) => Friends.delGetid(snapshot.data(), snapshot.id))
-              .toList();
-          competitorsController.add(competitors);
-        } else {
-          competitorsController.add(List<Friends>());
-        }
+          .get()
+          .then((value) async {
+        value.docs.forEach((element) {
+          var map = element.data();
+          competitorsuids.add(map['userid2']);
+        });
+        await _friendsCollection
+            .where("userid2", isEqualTo: _firebaseService.currentUser.uid)
+            .get()
+            .then((value) async {
+          value.docs.forEach((element) {
+            var map = element.data();
+            competitorsuids.add(map['userid1']);
+          });
+
+          peakUsers = await getUsers(competitorsuids);
+        });
       });
     }
 
-    return competitorsController.stream;
+    return peakUsers;
+  }
+
+  Future<List<Goal>> getCertainGoals(List<String> ids) async {
+    List<Goal> users = [];
+    try {
+      await _goalsCollectionReference
+          .where(FieldPath.documentId, whereIn: ids)
+          .get()
+          .then((value) {
+        if (value.docs.isNotEmpty) {
+          users = value.docs
+              .map((snapshot) => Goal.fromJson(snapshot.data(), snapshot.id))
+              .toList();
+        }
+      });
+      return users;
+    } catch (e) {
+      return null;
+    }
   }
 }

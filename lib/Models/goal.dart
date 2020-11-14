@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:peak/models/task.dart';
-import 'package:random_string/random_string.dart';
 
 class Goal {
   String goalName;
@@ -126,7 +125,7 @@ class Goal {
       var task = getTask(element);
       newList.add(task);
     });
-    
+
     return Goal(
         goalName: map['goalName'],
         uID: map['uID'],

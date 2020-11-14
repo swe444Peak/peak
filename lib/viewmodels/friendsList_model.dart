@@ -11,7 +11,7 @@ class FriendsListModel extends ChangeNotifier {
   DialogService dialogService = locator<DialogService>();
   ViewState _state = ViewState.Idle;
   bool empty = false;
-
+  bool disposed = false;
   List<PeakUser> _friends = [];
 
   ViewState get state => _state;
@@ -19,7 +19,7 @@ class FriendsListModel extends ChangeNotifier {
 
   void setState(ViewState viewState) {
     _state = viewState;
-    notifyListeners();
+    if (!disposed) notifyListeners();
   }
 
   readfriendslist() {
@@ -36,7 +36,7 @@ class FriendsListModel extends ChangeNotifier {
         } else {
           empty = true;
         }
-        notifyListeners();
+        if (!disposed) notifyListeners();
       }
       setState(ViewState.Idle);
     }, onError: (error) => print(error));
@@ -58,5 +58,11 @@ class FriendsListModel extends ChangeNotifier {
       return true;
     }
     return false;
+  }
+
+  @override
+  void dispose() {
+    disposed = true;
+    super.dispose();
   }
 }

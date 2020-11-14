@@ -34,14 +34,14 @@ class _NewGoalState extends State<NewGoal> {
   TextEditingController _dueDatecontroller = TextEditingController();
   DateTime _dateTime;
   String compititors = "Add Competitors";
-  final GlobalKey<AddCompetitorsState> addCompetitorsState =
+  GlobalKey<AddCompetitorsState> addCompetitorsState =
       GlobalKey<AddCompetitorsState>();
   List<Task> tasks = [];
   List<PeakUser> addedFriends = [];
   bool isEnabled = true;
   setError(value) => setState(() => _error = value);
   setEnabled(value) => setState(() => isEnabled = value);
-  final GlobalKey<AddTaskState> addTaskState = GlobalKey<AddTaskState>();
+  GlobalKey<AddTaskState> addTaskState = GlobalKey<AddTaskState>();
 
   @override
   void dispose() {

@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "peak-275b5"
+    "default": "peak-275b5",
+    "firebase init functions": "peak-275b5"
   }
 }

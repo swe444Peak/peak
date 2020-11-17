@@ -202,14 +202,6 @@ class ReceiverStatus extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(100),
-              boxShadow: [
-                new BoxShadow(
-                  color: Colors.black26,
-                  offset: new Offset(0.0, -0.0001),
-                  blurRadius: 10.0,
-                  spreadRadius: 0.0002,
-                )
-              ],
             ),
           ),
         ),
@@ -313,83 +305,95 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                           ),
                                         ],
                                       ),
-                                ),
-                              ],
-                            ), //end of subtitle
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                    padding: EdgeInsets.all(0),
-                                    iconSize: 20,
-                                    icon: Icon(Icons.check_circle),
-                                    color: Colors.green,
-                                    onPressed: () async{
-                                      bool result = await model.acceptGoalInvite(
-                                          new Invitation(
-                                              creatorId: invitation.creatorId,
-                                              receiverId: invitation.receiverId,
-                                              status: InvationStatus.Accepted,
-                                              creatorgoalDocId:
-                                                  invitation.creatorgoalDocId,
-                                              invationDocId:
-                                                  invitation.invationDocId,
-                                              goalName: invitation.goalName,
-                                              goalDueDate: new DateTime(
-                                                  invitation.goalDueDate.year,
-                                                  invitation.goalDueDate.month,
-                                                  invitation.goalDueDate.day),
-                                              numOfTasks:
-                                                  invitation.numOfTasks));
-                                      if (result) {
-                                        setState(() {
-                                          model.readInvitations();
-                                        });
-                                        dialogService.showDialog(
-                                            title: "Hooray!!",
+                                    ),
+                                  ],
+                                ), //end of subtitle
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                        padding: EdgeInsets.all(0),
+                                        iconSize: 20,
+                                        icon: Icon(Icons.check_circle),
+                                        color: Colors.green,
+                                        onPressed: () async {
+                                          bool result = await model
+                                              .acceptGoalInvite(new Invitation(
+                                                  creatorId:
+                                                      invitation.creatorId,
+                                                  receiverId:
+                                                      invitation.receiverId,
+                                                  status:
+                                                      InvationStatus.Accepted,
+                                                  creatorgoalDocId: invitation
+                                                      .creatorgoalDocId,
+                                                  invationDocId:
+                                                      invitation.invationDocId,
+                                                  goalName: invitation.goalName,
+                                                  goalDueDate: new DateTime(
+                                                      invitation
+                                                          .goalDueDate.year,
+                                                      invitation
+                                                          .goalDueDate.month,
+                                                      invitation
+                                                          .goalDueDate.day),
+                                                  numOfTasks:
+                                                      invitation.numOfTasks));
+                                          if (result) {
+                                            setState(() {
+                                              model.readInvitations();
+                                            });
+                                            dialogService.showDialog(
+                                                title: "Hooray!!",
+                                                description:
+                                                    "You have a new shared goal waitting for you in your goals list, go ahead and achieve it");
+                                          }
+                                        }),
+                                    IconButton(
+                                        padding: EdgeInsets.all(0),
+                                        iconSize: 20,
+                                        icon: Icon(Icons.cancel),
+                                        color: Colors.red,
+                                        onPressed: () async {
+                                          var declineDialogResponse =
+                                              await dialogService
+                                                  .showConfirmationDialog(
+                                            title: 'Decline Invitation',
                                             description:
-                                                "You have a new shared goal waitting for you in your goals list, go ahead and achieve it");
-                                      }
-                                    }),
-                                IconButton(
-                                    padding: EdgeInsets.all(0),
-                                    iconSize: 20,
-                                    icon: Icon(Icons.cancel),
-                                    color: Colors.red,
-                                    onPressed: () async{
-                                      var declineDialogResponse =
-                                          await dialogService.showConfirmationDialog(
-                                        title: 'Decline Invitation',
-                                        description:
-                                            'Are you sure you want to decline ${invitation.goalName} invitation?',
-                                        confirmationTitle: 'Yes',
-                                        cancelTitle: 'No',
-                                      );
-                                      if (declineDialogResponse.confirmed){
-                                        bool result = await model.declinedGoalInvite(
-                                            new Invitation(
-                                                creatorId: invitation.creatorId,
-                                                receiverId:
-                                                    invitation.receiverId,
-                                                status: InvationStatus.Declined,
-                                                creatorgoalDocId:
-                                                    invitation.creatorgoalDocId,
-                                                invationDocId:
-                                                    invitation.invationDocId,
-                                                goalName: invitation.goalName,
-                                                goalDueDate: new DateTime(
-                                                    invitation.goalDueDate.year,
-                                                    invitation
-                                                        .goalDueDate.month,
-                                                    invitation.goalDueDate.day),
-                                                numOfTasks:
-                                                    invitation.numOfTasks));
-                                      if (result) {
-                                        setState(() {
-                                          model.readInvitations();
-                                        });
-                                        dialogService.showDialog(
-                                            title: "Maybe next time",
+                                                'Are you sure you want to decline ${invitation.goalName} invitation?',
+                                            confirmationTitle: 'Yes',
+                                            cancelTitle: 'No',
+                                          );
+                                          if (declineDialogResponse.confirmed) {
+                                            bool result = await model
+                                                .declinedGoalInvite(new Invitation(
+                                                    creatorId:
+                                                        invitation.creatorId,
+                                                    receiverId:
+                                                        invitation.receiverId,
+                                                    status:
+                                                        InvationStatus.Declined,
+                                                    creatorgoalDocId: invitation
+                                                        .creatorgoalDocId,
+                                                    invationDocId: invitation
+                                                        .invationDocId,
+                                                    goalName:
+                                                        invitation.goalName,
+                                                    goalDueDate: new DateTime(
+                                                        invitation
+                                                            .goalDueDate.year,
+                                                        invitation
+                                                            .goalDueDate.month,
+                                                        invitation
+                                                            .goalDueDate.day),
+                                                    numOfTasks:
+                                                        invitation.numOfTasks));
+                                            if (result) {
+                                              setState(() {
+                                                model.readInvitations();
+                                              });
+                                              dialogService.showDialog(
+                                                  title: "Maybe next time",
                                                   description:
                                                       "It's Wise to choose your fights carefully");
                                             }

@@ -54,6 +54,7 @@ dependencies:
   stacked_services: ^0.5.4+4
   stacked: ^1.7.6
   sleek_circular_slider: ^1.2.0+web
+  cached_network_image: ^2.3.3
 
 
 dev_dependencies:

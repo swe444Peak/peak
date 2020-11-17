@@ -16,6 +16,7 @@ class Goal {
   String eventId;
   List<String> competitors;
   String creatorId;
+  String creatorGoalDocId;
   Goal(
       {@required String goalName,
       String uID,
@@ -27,7 +28,8 @@ class Goal {
       int numOfTasks = 0,
       String eventId,
       List<String> competitors,
-      String creatorId}) {
+      String creatorId,
+      String creatorGoalDocId}) {
     this.goalName = goalName;
     this.uID = uID;
     this.deadline = DateTime(deadline.year, deadline.month, deadline.day);
@@ -40,6 +42,7 @@ class Goal {
     this.eventId = eventId;
     this.competitors = competitors;
     this.creatorId = creatorId;
+    this.creatorGoalDocId = creatorGoalDocId;
   }
 
   Map<String, dynamic> toMap() {
@@ -55,6 +58,7 @@ class Goal {
       "eventId": this.eventId,
       "competitors": this.competitors,
       "creatorId": this.creatorId,
+      "creatorGoalDocId": this.creatorGoalDocId,
     };
   }
 
@@ -139,7 +143,8 @@ class Goal {
         competitors: map['competitors'] != null
             ? map['competitors'].cast<String>()
             : null,
-        creatorId: map['creatorId']);
+        creatorId: map['creatorId'],
+        creatorGoalDocId: map['creatorGoalDocId']);
   }
 
   int clacTasks() {

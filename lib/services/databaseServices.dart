@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peak/models/Invitation.dart';
+import 'package:peak/models/comment.dart';
 import 'package:peak/models/friends.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
@@ -380,6 +381,7 @@ class DatabaseServices {
     try {
       DocumentReference goalDocReference = _goalsCollectionReference.doc();
       goal.competitors.add(goalDocReference.id);
+      goal.creatorGoalDocId = goalDocReference.id;
       invations.forEach((invation) {
         invation.creatorgoalDocId = goalDocReference.id;
       });
@@ -418,7 +420,8 @@ class DatabaseServices {
             creationDate: goal.creationDate,
             numOfTasks: goal.numOfTasks,
             competitors: goal.competitors,
-            creatorId: goal.creatorId);
+            creatorId: goal.creatorId,
+            creatorGoalDocId: goal.creatorGoalDocId);
 
         DocumentReference newGoalDocRef = _goalsCollectionReference.doc();
         dynamic id = newGoalDocRef.id;
@@ -429,6 +432,7 @@ class DatabaseServices {
             "competitors": FieldValue.arrayUnion([id])
           });
         });
+
         newGoal.competitors.add(newGoalDocRef.id);
         transaction.set(newGoalDocRef, newGoal.toMap());
       });
@@ -554,6 +558,44 @@ class DatabaseServices {
       return users;
     } catch (e) {
       return null;
+    }
+  }
+
+  Stream getComments(String creatorGoalDocId) {
+    StreamController<List<Comment>> _commentController =
+        StreamController<List<Comment>>.broadcast();
+
+    CollectionReference _commentsCollectionReference =
+        FirebaseFirestore.instance.collection("comments");
+
+    _commentsCollectionReference
+        .where("creatorGoalDocId", isEqualTo: creatorGoalDocId)
+        .snapshots()
+        .listen((commentsSnapshots) {
+      if (commentsSnapshots.docs.isNotEmpty) {
+        var comments = commentsSnapshots.docs
+            .map((snapshot) => Comment.fromJson(snapshot.data()))
+            .toList();
+        _commentController.add(comments);
+      } else {
+        _commentController.add(List<Comment>());
+      }
+    });
+
+    return _commentController.stream;
+  }
+
+  Future writeComment(Comment comment) async {
+    CollectionReference _commentsCollectionReference =
+        FirebaseFirestore.instance.collection("comments");
+    try {
+      print("xxxx");
+      await _commentsCollectionReference.add(comment.toMap());
+      print("aaa");
+      return true;
+    } catch (e) {
+      print("$e sssss");
+      return false;
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:peak/enums/taskType.dart';
 import 'package:peak/models/goal.dart';
+import 'package:peak/screens/commentsList.dart';
 import 'package:peak/screens/shared/base.dart';
 import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/goalDetails_model.dart';
@@ -113,6 +114,7 @@ class GoalDetails extends StatelessWidget {
                     },
                   ),
                 ),
+                if (goal.competitors != null) CommentsList(goal),
                 _buildGestureDetector(model, width),
               ],
             ),

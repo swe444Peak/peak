@@ -27,21 +27,22 @@ class CommentsListModel extends ChangeNotifier {
       List<Comment> updatedComments = commentsData;
       if (updatedComments != null) {
         if (updatedComments.length > 0) {
+          print("xxxx ${comments.length}");
           empty = false;
           comments = updatedComments;
 
-          comments.forEach((comment) {
-            ids.add(comment.writerId);
-          });
-          List<PeakUser> users = await _firstoreService.getUsers(ids);
-          comments.forEach((comment) {
-            users.forEach((user) {
-              if (comment.writerId == user.uid) {
-                comment.user = user;
-                return;
-              }
-            });
-          });
+          // comments.forEach((comment) {
+          //   ids.add(comment.writerId);
+          // });
+          // List<PeakUser> users = await _firstoreService.getUsers(ids);
+          // comments.forEach((comment) {
+          //   users.forEach((user) {
+          //     if (comment.writerId == user.uid) {
+          //       comment.user = user;
+          //       return;
+          //     }
+          //   });
+          // });
         } else {
           empty = true;
         }
@@ -53,11 +54,16 @@ class CommentsListModel extends ChangeNotifier {
 
   Future addComment(String text, String goalDocId) async {
     setState(ViewState.Busy);
+    PeakUser user = PeakUser(
+        uid: _firebaseService.currentUser.uid,
+        name: _firebaseService.currentUser.name,
+        picURL: _firebaseService.currentUser.picURL);
     Comment comment = Comment(
         text: text,
         creatorGoalDocId: goalDocId,
         time: DateTime.now(),
-        writerId: _firebaseService.currentUser.uid);
+        writerId: _firebaseService.currentUser.uid,
+        user: user);
     await _firstoreService.writeComment(comment);
     setState(ViewState.Idle);
   }

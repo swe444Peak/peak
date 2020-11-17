@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peak/enums/viewState.dart';
+import 'package:peak/models/user.dart';
 
 import 'package:peak/viewmodels/viewProgress_model.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
@@ -8,6 +9,11 @@ import 'package:stacked/stacked.dart';
 import '../locator.dart';
 
 class ViewProgress extends StatelessWidget {
+  PeakUser friend;
+
+  ViewProgress(
+    {this.friend});
+  
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -16,7 +22,7 @@ class ViewProgress extends StatelessWidget {
 
     return ViewModelBuilder<ViewProgressModel>.reactive(
       viewModelBuilder: () => locator<ViewProgressModel>(),
-      onModelReady: (model) => model.readGoals(),
+      onModelReady: (model) => model.readGoals(friend),
       builder: (context, model, child) => Container(
         width: width * 0.8,
         height: width * 0.9,

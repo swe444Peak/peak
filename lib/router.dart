@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peak/screens/FriendProfile.dart';
 import 'package:peak/screens/addCompetitors.dart';
 import 'package:peak/screens/addGoal.dart';
 import 'package:peak/screens/editGoal.dart';
@@ -64,6 +65,12 @@ class Routerr {
       //   return MaterialPageRoute(builder: (_) => Search());
       case 'goalInvitations':
         return MaterialPageRoute(builder: (_) => GoalInvitations());
+         case 'FriendProfile':
+        var friend = settings.arguments;
+        return MaterialPageRoute(
+            builder: (_) => FriendProfile(
+                  friend: friend,
+                ));
     }
   }
 }

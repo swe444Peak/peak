@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:peak/screens/viewBadges.dart';
 import 'package:peak/screens/viewProgress.dart';
 
 import 'package:provider/provider.dart';
@@ -8,14 +7,16 @@ import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/models/user.dart';
 
-class ProfilePage extends StatelessWidget {
+class FriendProfile extends StatelessWidget {
+      PeakUser friend;
+    FriendProfile({this.friend});
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<User>(context);
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
-    PeakUser puser;
+  
     //User user;
 
     return StreamProvider<PeakUser>.value(
@@ -88,7 +89,7 @@ class ProfilePage extends StatelessWidget {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: NetworkImage(
-                                    "${Provider.of<PeakUser>(context).picURL}"),
+                                   friend.picURL),
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.circular(100),
@@ -106,7 +107,7 @@ class ProfilePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "${Provider.of<PeakUser>(context).name}",
+                                friend.name,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -124,13 +125,12 @@ class ProfilePage extends StatelessWidget {
                               children: [
                                 Padding(
                                   padding: EdgeInsets.only(top: width * 0.05),
-                                  // new PeakUser("${Provider.of<PeakUser>(context).uid}","${Provider.of<PeakUser>(context).name}","${Provider.of<PeakUser>(context).picURL}")
-                                  child: ViewProgress(friend : null),
+                                  child: ViewProgress(friend: friend),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: width * 0.05),
-                                  child: ViewBadges(),
-                                ),
+                                // Padding(
+                                //   padding: EdgeInsets.only(top: width * 0.05),
+                                //   child: ViewBadges(),
+                                // ),
                               ],
                             ),
                           ),

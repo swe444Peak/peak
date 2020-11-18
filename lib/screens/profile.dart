@@ -1,12 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/screens/viewBadges.dart';
 import 'package:peak/screens/viewProgress.dart';
+import 'package:peak/services/firebaseAuthService.dart';
 
 import 'package:provider/provider.dart';
 import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/models/user.dart';
+
+import '../locator.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -15,6 +20,8 @@ class ProfilePage extends StatelessWidget {
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
+      _saveDeviceToken();
+
     //User user;
 
     return StreamProvider<PeakUser>.value(
@@ -141,5 +148,30 @@ class ProfilePage extends StatelessWidget {
             ),
           );
         });
+  }
+
+  _saveDeviceToken() async {
+    final FirebaseFirestore _db = FirebaseFirestore.instance;
+      final FirebaseMessaging _fcm = FirebaseMessaging();
+      final _firebaseAuthService = locator<FirbaseAuthService>();
+    // Get the current user
+   
+     String uid = await _firebaseAuthService.currentUser.uid;
+
+    // Get the token for this device
+    String fcmToken = await _fcm.getToken();
+
+    // Save it to Firestore
+    if (fcmToken != null) {
+      var tokens = _db
+          .collection('users')
+          .doc(uid)
+          .collection('tokens')
+          .doc(fcmToken);
+
+      await tokens.set({
+        'token': fcmToken,
+      });
+    }
   }
 }

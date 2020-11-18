@@ -570,6 +570,7 @@ class DatabaseServices {
 
     _commentsCollectionReference
         .where("creatorGoalDocId", isEqualTo: creatorGoalDocId)
+        // .orderBy('time')
         .snapshots()
         .listen((commentsSnapshots) {
       if (commentsSnapshots.docs.isNotEmpty) {
@@ -589,12 +590,9 @@ class DatabaseServices {
     CollectionReference _commentsCollectionReference =
         FirebaseFirestore.instance.collection("comments");
     try {
-      print("xxxx");
       await _commentsCollectionReference.add(comment.toMap());
-      print("aaa");
       return true;
     } catch (e) {
-      print("$e sssss");
       return false;
     }
   }

@@ -18,6 +18,7 @@ class CommentsList extends StatefulWidget {
 class _CommentsListState extends State<CommentsList> {
   List<Widget> widgets = [];
   TextEditingController commentController = TextEditingController();
+  ScrollController scrollController = ScrollController();
 
   @override
   void dispose() {
@@ -58,15 +59,20 @@ class _CommentsListState extends State<CommentsList> {
         controller: commentController,
         // keyboardType: TextInputType.multiline,
         maxLines: null,
-        decoration: InputDecoration(
-            labelText: 'Write a comment'), //join the discussion?
+        decoration:
+            InputDecoration(hintText: 'Write a comment'), //join the discussion?
       ),
       trailing: IconButton(
         icon: Icon(Icons.send),
         onPressed: () async {
-          commentController.clear();
           await model.addComment(
               commentController.text, widget.goal.creatorGoalDocId);
+          commentController.clear();
+          //   scrollController.animateTo(
+          //   scrollController.position.maxScrollExtent,
+          //   curve: Curves.easeOut,
+          //   duration: const Duration(milliseconds: 300),
+          // );
         },
       ),
     );
@@ -92,8 +98,8 @@ class SingleComment extends StatelessWidget {
         height: width * 0.15,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: CachedNetworkImage(
-              imageUrl: comment.user.picURL,
+            image: CachedNetworkImageProvider(
+              comment.user.picURL,
             ),
             fit: BoxFit.cover,
           ),

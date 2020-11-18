@@ -44,7 +44,7 @@ class FriendProfile extends StatelessWidget {
             ),
 
             //common
-            bottomNavigationBar: CustomNavigationBar(2),
+            bottomNavigationBar: CustomNavigationBar(3),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 Navigator.pushNamed(context, 'addNewGoal');

@@ -26,22 +26,32 @@ class FriendProfile extends StatelessWidget {
           return Scaffold(
             extendBodyBehindAppBar: true,
             backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
-
             appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              leading: Padding(padding: EdgeInsets.only(top: 0.0)),
-              actions: [
-                IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, 'settings');
-                    })
-              ],
-            ),
+                /*title: Text("Settings",
+        style: TextStyle(
+          fontSize: 28.0,
+          fontWeight: FontWeight.w400,
+        ),),*/
+                //centerTitle: true,
+                backgroundColor: Colors.transparent,
+                elevation: 0.0,
+              ),
+
+            // appBar: AppBar(
+            //   backgroundColor: Colors.transparent,
+            //   elevation: 0.0,
+            //   leading: Padding(padding: EdgeInsets.only(top: 0.0)),
+            //   actions: [
+            //     IconButton(
+            //         icon: Icon(
+            //           Icons.settings,
+            //           color: Colors.white,
+            //         ),
+            //         onPressed: () {
+            //           Navigator.pushNamed(context, 'settings');
+            //         })
+            //   ],
+            // ),
 
             //common
             bottomNavigationBar: CustomNavigationBar(3),

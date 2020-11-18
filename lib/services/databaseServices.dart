@@ -259,7 +259,7 @@ class DatabaseServices {
   }
 
   getUserProfile(String id) async {
-    var user;
+    PeakUser user;
     await userCollection.doc(id).get().then((docRef) {
       var userdata = docRef.data();
       user = new PeakUser(
@@ -595,5 +595,24 @@ class DatabaseServices {
     } catch (e) {
       return false;
     }
+  }
+
+  Future<List<Goal>> getCompetitorsGoals(creatorId) async {
+    var docs = await _goalsCollectionReference.get();
+
+    var goals = docs.docs
+        .map((snapshot) => Goal.fromJson(snapshot.data(), snapshot.id))
+        .toList();
+
+    List<Goal> cGoals = [];
+
+    goals.forEach((goal) {
+      if (goal.creatorGoalDocId == creatorId) {
+        cGoals.add(goal);
+      }
+    });
+    print(cGoals.length);
+
+    return cGoals;
   }
 }

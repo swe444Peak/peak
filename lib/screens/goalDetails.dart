@@ -7,6 +7,7 @@ import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/goalDetails_model.dart';
 import 'package:provider/provider.dart';
 import '../locator.dart';
+import 'competitorsProgess.dart';
 
 class GoalDetails extends StatelessWidget {
   Goal goal;
@@ -16,7 +17,7 @@ class GoalDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-
+    var height = MediaQuery.of(context).size.height;
     return ChangeNotifierProvider<GoalDetailsModel>(
       create: (context) => locator<GoalDetailsModel>(),
       child: Consumer<GoalDetailsModel>(
@@ -114,6 +115,19 @@ class GoalDetails extends StatelessWidget {
                     },
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.all(width * 0.02),
+                  child: Text(
+                    "Competitors progress",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: width * 0.06,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                if (goal.competitors != null)
+                  CompetitorsProgress(goal, goal.uID),
                 if (goal.competitors != null) CommentsList(goal),
                 _buildGestureDetector(model, width),
               ],

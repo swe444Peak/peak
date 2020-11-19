@@ -1,26 +1,22 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:peak/screens/viewBadges.dart';
 import 'package:peak/screens/viewProgress.dart';
-import 'package:peak/services/firebaseAuthService.dart';
 
 import 'package:provider/provider.dart';
 import 'package:peak/screens/shared/custom_bottomNavigationBar.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/models/user.dart';
 
-import '../locator.dart';
-
-class ProfilePage extends StatelessWidget {
+class FriendProfile extends StatelessWidget {
+      PeakUser friend;
+    FriendProfile({this.friend});
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<User>(context);
     var screenSize = MediaQuery.of(context).size;
     var width = screenSize.width;
     var height = screenSize.height;
-    _saveDeviceToken();
+  
     //User user;
 
     return StreamProvider<PeakUser>.value(
@@ -30,25 +26,35 @@ class ProfilePage extends StatelessWidget {
           return Scaffold(
             extendBodyBehindAppBar: true,
             backgroundColor: Color.fromRGBO(23, 23, 85, 1.0),
-
             appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0.0,
-              leading: Padding(padding: EdgeInsets.only(top: 0.0)),
-              actions: [
-                IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, 'settings');
-                    })
-              ],
-            ),
+                /*title: Text("Settings",
+        style: TextStyle(
+          fontSize: 28.0,
+          fontWeight: FontWeight.w400,
+        ),),*/
+                //centerTitle: true,
+                backgroundColor: Colors.transparent,
+                elevation: 0.0,
+              ),
+
+            // appBar: AppBar(
+            //   backgroundColor: Colors.transparent,
+            //   elevation: 0.0,
+            //   leading: Padding(padding: EdgeInsets.only(top: 0.0)),
+            //   actions: [
+            //     IconButton(
+            //         icon: Icon(
+            //           Icons.settings,
+            //           color: Colors.white,
+            //         ),
+            //         onPressed: () {
+            //           Navigator.pushNamed(context, 'settings');
+            //         })
+            //   ],
+            // ),
 
             //common
-            bottomNavigationBar: CustomNavigationBar(2),
+            bottomNavigationBar: CustomNavigationBar(3),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 Navigator.pushNamed(context, 'addNewGoal');
@@ -93,7 +99,7 @@ class ProfilePage extends StatelessWidget {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: NetworkImage(
-                                    "${Provider.of<PeakUser>(context).picURL}"),
+                                   friend.picURL),
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.circular(100),
@@ -111,7 +117,7 @@ class ProfilePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "${Provider.of<PeakUser>(context).name}",
+                                friend.name,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -121,23 +127,20 @@ class ProfilePage extends StatelessWidget {
                             ],
                           ),
                           Container(
-                            margin:
-                                EdgeInsetsDirectional.only(top: height * 0.05),
-                            height: height * 0.55,
-                            padding:
-                                EdgeInsets.symmetric(horizontal: width * 0.1),
+                            margin: EdgeInsetsDirectional.only(top:height*0.05),
+                            height: height*0.55,
+                            padding: EdgeInsets.symmetric(horizontal: width *0.1),
                             child: ListView(
                               padding: EdgeInsets.all(0.0),
                               children: [
                                 Padding(
                                   padding: EdgeInsets.only(top: width * 0.05),
-                                  // new PeakUser("${Provider.of<PeakUser>(context).uid}","${Provider.of<PeakUser>(context).name}","${Provider.of<PeakUser>(context).picURL}")
-                                  child: ViewProgress(friend: null),
+                                  child: ViewProgress(friend: friend),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: width * 0.05),
-                                  child: ViewBadges(),
-                                ),
+                                // Padding(
+                                //   padding: EdgeInsets.only(top: width * 0.05),
+                                //   child: ViewBadges(),
+                                // ),
                               ],
                             ),
                           ),
@@ -150,27 +153,5 @@ class ProfilePage extends StatelessWidget {
             ),
           );
         });
-  }
-
-  _saveDeviceToken() async {
-    final FirebaseFirestore _db = FirebaseFirestore.instance;
-    final FirebaseMessaging _fcm = FirebaseMessaging();
-    final _firebaseAuthService = locator<FirbaseAuthService>();
-    // Get the current user
-
-    String uid = await _firebaseAuthService.currentUser.uid;
-
-    // Get the token for this device
-    String fcmToken = await _fcm.getToken();
-
-    // Save it to Firestore
-    if (fcmToken != null) {
-      var tokens =
-          _db.collection('users').doc(uid).collection('tokens').doc(fcmToken);
-
-      await tokens.set({
-        'token': fcmToken,
-      });
-    }
   }
 }

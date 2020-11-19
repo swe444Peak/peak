@@ -155,10 +155,26 @@ class DatabaseServices {
     }
   }
 
-  Stream getGoals() {
+  Stream getGoals(PeakUser friend) {
     StreamController<List<Goal>> _goalController =
         StreamController<List<Goal>>.broadcast();
-    if (_firebaseService.currentUser != null) {
+        if(friend != null){
+           _goalsCollectionReference
+          .where("uID", isEqualTo: friend.uid)
+          .snapshots()
+          .listen((goalsSnapshots) {
+        if (goalsSnapshots.docs.isNotEmpty) {
+          var goals = goalsSnapshots.docs
+              .map((snapshot) => Goal.fromJson(snapshot.data(), snapshot.id))
+              .toList();
+          _goalController.add(goals);
+        } else {
+          _goalController.add(List<Goal>());
+        }
+      });
+
+        }
+    else if (_firebaseService.currentUser != null) {
       _goalsCollectionReference
           .where("uID", isEqualTo: _firebaseService.currentUser.uid)
           .snapshots()

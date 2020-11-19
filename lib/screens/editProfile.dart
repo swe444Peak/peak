@@ -124,8 +124,14 @@ class _EditProfileState extends State<EditProfile> {
                                                     shape: CircleBorder(),
                                                     image: DecorationImage(
                                                         fit: BoxFit.cover,
+                                                        colorFilter: ColorFilter.mode(Colors.white.withOpacity(0.2), BlendMode.dstATop),
                                                         image: NetworkImage(
                                                             "${Provider.of<PeakUser>(context).picURL}"))),
+                                                            child :  Icon(
+                                    Icons.add_photo_alternate,
+                                    color: Colors.white,
+                                    size: 32,
+                                  ),
                                               ),
                                             ),
                                           ),

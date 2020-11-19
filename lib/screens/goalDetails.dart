@@ -130,6 +130,7 @@ class GoalDetails extends StatelessWidget {
                   CompetitorsProgress(goal, goal.uID),
                 if (goal.competitors != null) CommentsList(goal),
                 _buildGestureDetector(model, width),
+                SizedBox(height: height * 0.02),
               ],
             ),
           ),
@@ -143,7 +144,7 @@ class GoalDetails extends StatelessWidget {
       return GestureDetector(
         child: Padding(
           padding: EdgeInsets.fromLTRB(
-              width * 0.009, width * 0.02, width * 0.009, width * 0.01),
+              width * 0.009, width * 0.02, width * 0.009, width * 0.02),
           child: Center(
             child: Text(
               "Add this goal to my Google Calendar",

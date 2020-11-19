@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:googleapis/people/v1.dart';
 import 'package:peak/models/user.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/firebaseAuthService.dart';
@@ -20,6 +21,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     EditProfileModel().setName("");
+
     super.initState();
   }
 
@@ -116,29 +118,46 @@ class _EditProfileState extends State<EditProfile> {
                                           child: Padding(
                                             padding: EdgeInsets.all(
                                                 circleBorderWidth),
-                                            child: Container(
-                                              //height: 200,
-                                              //width: 200,
-                                              child: DecoratedBox(
-                                                decoration: ShapeDecoration(
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                await EditProfileModel()
+                                                    .uploadPic();
+
+                                                updateConfirmDailog(
+                                                    context, "picture");
+                                              },
+                                              child: Container(
+                                                //height: 200,
+                                                //width: 200,
+                                                child: DecoratedBox(
+                                                  decoration: ShapeDecoration(
                                                     shape: CircleBorder(),
                                                     image: DecorationImage(
-                                                        fit: BoxFit.cover,
-                                                        colorFilter: ColorFilter.mode(Colors.white.withOpacity(0.2), BlendMode.dstATop),
-                                                        image: NetworkImage(
-                                                            "${Provider.of<PeakUser>(context).picURL}"))),
-                                                            child :  Icon(
-                                    Icons.add_photo_alternate,
-                                    color: Colors.white,
-                                    size: 32,
-                                  ),
+                                                      fit: BoxFit.cover,
+                                                      colorFilter:
+                                                          ColorFilter.mode(
+                                                              Colors.white
+                                                                  .withOpacity(
+                                                                      0.25),
+                                                              BlendMode
+                                                                  .dstATop),
+                                                      image: NetworkImage(
+                                                          "${Provider.of<PeakUser>(context).picURL}"),
+                                                    ),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.add_photo_alternate,
+                                                    color: Colors.white,
+                                                    size: 32,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                         SizedBox(height: 30),
                                         Container(
-                                          width: 355,
+                                          width: width * 0.9,
                                           child: Padding(
                                             padding: EdgeInsets.all(5),
                                             child: Card(
@@ -175,46 +194,7 @@ class _EditProfileState extends State<EditProfile> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Container(
-                                              width: 175,
-                                              child: Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0.0, 0.0, 0.0, 8.0),
-                                                child: Card(
-                                                  elevation: 20,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                  ),
-                                                  child: ListTile(
-                                                      leading: Icon(
-                                                        Icons
-                                                            .add_photo_alternate,
-                                                        color: Color.fromRGBO(
-                                                            23, 23, 85, 1.0),
-                                                        size: 32,
-                                                      ),
-                                                      title: Text(
-                                                        "Change Picture",
-                                                        style: TextStyle(
-                                                          color: Color.fromRGBO(
-                                                              23, 23, 85, 1.0),
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                      onTap: () async {
-                                                        await EditProfileModel()
-                                                            .uploadPic();
-                                                        updateConfirmDailog(
-                                                            context, "picture");
-                                                      }),
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: 175,
+                                              width: width * 0.5,
                                               child: Padding(
                                                 padding: EdgeInsets.fromLTRB(
                                                     0.0, 0.0, 0.0, 8.0),
@@ -233,7 +213,7 @@ class _EditProfileState extends State<EditProfile> {
                                                         size: 32,
                                                       ),
                                                       title: Text(
-                                                        "Update Name",
+                                                        "Save name",
                                                         style: TextStyle(
                                                           color: Color.fromRGBO(
                                                               23, 23, 85, 1.0),
@@ -251,12 +231,13 @@ class _EditProfileState extends State<EditProfile> {
                                                                   _editnamecontroller
                                                                       .text
                                                                       .trim());
-                                                          updateConfirmDailog(
-                                                              context, "name");
                                                           setState(() {
                                                             EditProfileModel()
                                                                 .setName("");
                                                           });
+
+                                                          updateConfirmDailog(
+                                                              context, "name");
                                                         }
                                                       }),
                                                 ),

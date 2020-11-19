@@ -43,7 +43,12 @@ class AddCompetitorsModel extends ChangeNotifier {
     //   setState(ViewState.Idle);
     // }, onError: (error) => print(error));
     setState(ViewState.Busy);
-    users = await _firstoreService.getCompetitors();
+    List<PeakUser> updatedUsers = await _firstoreService.getCompetitors();
+    if (updatedUsers.length > 0) {
+      empty = false;
+      users = updatedUsers;
+    } else
+      empty = true;
     setState(ViewState.Idle);
   }
 

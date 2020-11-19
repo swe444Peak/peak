@@ -533,7 +533,7 @@ class DatabaseServices {
             var map = element.data();
             competitorsuids.add(map['userid1']);
           });
-
+          if (competitorsuids.length == 0) return peakUsers;
           peakUsers = await getUsers(competitorsuids);
         });
       });

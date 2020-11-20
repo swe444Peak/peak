@@ -24,9 +24,9 @@ class CompetitorsProgressModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  getCompetitorsGoals(goalCreatorId) async {
+  getCompetitorsGoals(competitors) async {
     setState(ViewState.Busy);
-    List<Goal> cGoals = await _database.getCompetitorsGoals(goalCreatorId);
+    List<Goal> cGoals = await _database.getCertainGoals(competitors);
     _compitetorsGoals = cGoals;
     print("model");
     print(_compitetorsGoals.length);

@@ -16,6 +16,7 @@ class GoalDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var clength = goal.competitors.length;
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return ChangeNotifierProvider<GoalDetailsModel>(
@@ -55,6 +56,7 @@ class GoalDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                _buildGestureDetector(model, width),
                 Padding(
                   padding: EdgeInsets.all(width * 0.02),
                   child: Text(
@@ -115,21 +117,23 @@ class GoalDetails extends StatelessWidget {
                     },
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(width * 0.02),
-                  child: Text(
-                    "Competitors progress",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: width * 0.06,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                if (goal.competitors != null)
-                  CompetitorsProgress(goal, goal.uID),
-                if (goal.competitors != null) CommentsList(goal),
-                _buildGestureDetector(model, width),
+                clength > 1
+                    ? Padding(
+                        padding: EdgeInsets.all(width * 0.02),
+                        child: Text(
+                          "Competitors progress",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: width * 0.06,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      )
+                    : SizedBox(height: 0),
+                clength > 1
+                    ? CompetitorsProgress(goal, goal.uID)
+                    : SizedBox(height: 0),
+                clength > 1 ? CommentsList(goal) : SizedBox(height: 0),
                 SizedBox(height: height * 0.02),
               ],
             ),

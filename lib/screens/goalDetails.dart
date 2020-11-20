@@ -7,6 +7,7 @@ import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/goalDetails_model.dart';
 import 'package:provider/provider.dart';
 import '../locator.dart';
+import 'competitorsProgess.dart';
 
 class GoalDetails extends StatelessWidget {
   Goal goal;
@@ -15,8 +16,9 @@ class GoalDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var clength = goal.competitors.length;
     var width = MediaQuery.of(context).size.width;
-
+    var height = MediaQuery.of(context).size.height;
     return ChangeNotifierProvider<GoalDetailsModel>(
       create: (context) => locator<GoalDetailsModel>(),
       child: Consumer<GoalDetailsModel>(
@@ -54,6 +56,7 @@ class GoalDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                _buildGestureDetector(model, width),
                 Padding(
                   padding: EdgeInsets.all(width * 0.02),
                   child: Text(
@@ -114,8 +117,24 @@ class GoalDetails extends StatelessWidget {
                     },
                   ),
                 ),
-                if (goal.competitors != null) CommentsList(goal),
-                _buildGestureDetector(model, width),
+                clength > 1
+                    ? Padding(
+                        padding: EdgeInsets.all(width * 0.02),
+                        child: Text(
+                          "Competitors progress",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: width * 0.06,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      )
+                    : SizedBox(height: 0),
+                clength > 1
+                    ? CompetitorsProgress(goal, goal.uID)
+                    : SizedBox(height: 0),
+                clength > 1 ? CommentsList(goal) : SizedBox(height: 0),
+                SizedBox(height: height * 0.02),
               ],
             ),
           ),
@@ -129,7 +148,7 @@ class GoalDetails extends StatelessWidget {
       return GestureDetector(
         child: Padding(
           padding: EdgeInsets.fromLTRB(
-              width * 0.009, width * 0.02, width * 0.009, width * 0.01),
+              width * 0.009, width * 0.02, width * 0.009, width * 0.02),
           child: Center(
             child: Text(
               "Add this goal to my Google Calendar",

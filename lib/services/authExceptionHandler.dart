@@ -11,6 +11,7 @@ enum AuthResultStatus {
   tooManyRequests,
   networkRequestFailed,
   usernameAlreadyExists,
+  emailNotFoundForgetPassword
 }
 
 class AuthExceptionHandler {
@@ -53,6 +54,23 @@ class AuthExceptionHandler {
     return generateExceptionMessage(status);
   }
 
+
+
+
+  static handleExceptionForgetPassword(e) {
+    var status;
+    switch (e.code) {
+      case "user-not-found":
+        status = AuthResultStatus.emailNotFoundForgetPassword;
+        break;
+      default:
+        status = AuthResultStatus.undefined;
+    }
+    return generateExceptionMessage(status);
+  }
+
+
+
   static generateExceptionMessage(exceptionCode) {
     String errorMessage;
     switch (exceptionCode) {
@@ -63,8 +81,6 @@ class AuthExceptionHandler {
         errorMessage = "Invalid email address";
         break;
       case AuthResultStatus.userNotFound:
-        errorMessage = "Email not found";
-        break;
       case AuthResultStatus.wrongPassword:
         errorMessage = "Wrong email or password";
         break;
@@ -86,6 +102,9 @@ class AuthExceptionHandler {
         break;
       case AuthResultStatus.usernameAlreadyExists:
         errorMessage = "Username Already Exists";
+        break;
+      case AuthResultStatus.emailNotFoundForgetPassword:
+        errorMessage = "Email Not found, Enter a registered Email";
         break;
 
       default:

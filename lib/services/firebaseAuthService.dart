@@ -80,7 +80,7 @@ class FirbaseAuthService {
     }
     catch(e){
        print('Exception: $e');
-      return AuthExceptionHandler.handleException(e);
+      return AuthExceptionHandler.handleExceptionForgetPassword(e);
     }
 
   }

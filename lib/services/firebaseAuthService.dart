@@ -74,6 +74,17 @@ class FirbaseAuthService {
     }
   }
 
+  Future forgetPassword(String email) async {
+    try{
+    await  _auth.sendPasswordResetEmail(email: email);
+    }
+    catch(e){
+       print('Exception: $e');
+      return AuthExceptionHandler.handleException(e);
+    }
+
+  }
+
   PeakUser getCurrentUser() {
     return currentUser;
   }

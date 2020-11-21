@@ -47,7 +47,6 @@ class AuthExceptionHandler {
       case "usernameAlreadyExists":
         status = AuthResultStatus.usernameAlreadyExists;
         break;
-
       default:
         status = AuthResultStatus.undefined;
     }
@@ -64,6 +63,8 @@ class AuthExceptionHandler {
         errorMessage = "Invalid email address";
         break;
       case AuthResultStatus.userNotFound:
+        errorMessage = "Email not found";
+        break;
       case AuthResultStatus.wrongPassword:
         errorMessage = "Wrong email or password";
         break;

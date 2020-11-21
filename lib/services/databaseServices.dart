@@ -158,8 +158,8 @@ class DatabaseServices {
   Stream getGoals(PeakUser friend) {
     StreamController<List<Goal>> _goalController =
         StreamController<List<Goal>>.broadcast();
-        if(friend != null){
-           _goalsCollectionReference
+    if (friend != null) {
+      _goalsCollectionReference
           .where("uID", isEqualTo: friend.uid)
           .snapshots()
           .listen((goalsSnapshots) {
@@ -172,9 +172,7 @@ class DatabaseServices {
           _goalController.add(List<Goal>());
         }
       });
-
-        }
-    else if (_firebaseService.currentUser != null) {
+    } else if (_firebaseService.currentUser != null) {
       _goalsCollectionReference
           .where("uID", isEqualTo: _firebaseService.currentUser.uid)
           .snapshots()
@@ -288,15 +286,71 @@ class DatabaseServices {
   }
 
   Future updateAccountData(name) async {
-    return await userCollection.doc(_firebaseService.currentUser.uid).update({
-      "username": name,
-    });
+    CollectionReference _commentsCollectionRef =
+        FirebaseFirestore.instance.collection("comments");
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    try {
+      List<QueryDocumentSnapshot> snapshots = [];
+      await _commentsCollectionRef
+          .where('writerId', isEqualTo: _firebaseService.currentUser.uid)
+          .get()
+          .then((value) async {
+        if (value.docs.isNotEmpty) {
+          snapshots = value.docs;
+          snapshots.forEach((element) {
+            batch.update(_commentsCollectionRef.doc(element.id.toString()), {
+              "username": name,
+            });
+          });
+
+          batch.update(userCollection.doc(_firebaseService.currentUser.uid), {
+            "username": name,
+          });
+
+          batch.commit();
+        } else {
+          await userCollection.doc(_firebaseService.currentUser.uid).update({
+            "username": name,
+          });
+        }
+      });
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future updateProfilePic(picURL) async {
-    return await userCollection.doc(_firebaseService.currentUser.uid).update({
-      "picURL": picURL,
-    });
+    CollectionReference _commentsCollectionRef =
+        FirebaseFirestore.instance.collection("comments");
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    try {
+      List<QueryDocumentSnapshot> snapshots = [];
+      await _commentsCollectionRef
+          .where('writerId', isEqualTo: _firebaseService.currentUser.uid)
+          .get()
+          .then((value) async {
+        if (value.docs.isNotEmpty) {
+          snapshots = value.docs;
+          snapshots.forEach((element) {
+            batch.update(_commentsCollectionRef.doc(element.id.toString()), {
+              "picURL": picURL,
+            });
+          });
+
+          batch.update(userCollection.doc(_firebaseService.currentUser.uid), {
+            "picURL": picURL,
+          });
+
+          batch.commit();
+        } else {
+          await userCollection.doc(_firebaseService.currentUser.uid).update({
+            "picURL": picURL,
+          });
+        }
+      });
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future updateTask(
@@ -586,7 +640,6 @@ class DatabaseServices {
 
     _commentsCollectionReference
         .where("creatorGoalDocId", isEqualTo: creatorGoalDocId)
-        // .orderBy('time')
         .snapshots()
         .listen((commentsSnapshots) {
       if (commentsSnapshots.docs.isNotEmpty) {

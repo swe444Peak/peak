@@ -22,24 +22,23 @@ class FriendsListModel extends ChangeNotifier {
     if (!disposed) notifyListeners();
   }
 
-  readfriendslist() {
+  readfriendslist() async {
     setState(ViewState.Busy);
-    _firstoreService.getFriendsids().listen((friendsData) {
-      List<PeakUser> friends = friendsData;
-      if (friends != null) {
-        if (friends.length > 0) {
-          print('larger than 0');
-          empty = false;
-          _friends = friends;
-          print(_friends[0].name);
-          print(_friends.length);
-        } else {
-          empty = true;
-        }
-        if (!disposed) notifyListeners();
+    var friendsData = await _firstoreService.getFriends();
+    List<PeakUser> friends = friendsData;
+    if (friends != null) {
+      if (friends.length > 0) {
+        print('larger than 0');
+        empty = false;
+        _friends = friends;
+        print(_friends[0].name);
+        print(_friends.length);
+      } else {
+        empty = true;
       }
-      setState(ViewState.Idle);
-    }, onError: (error) => print(error));
+      if (!disposed) notifyListeners();
+    }
+    setState(ViewState.Idle);
   }
 
   ///// I wrote here

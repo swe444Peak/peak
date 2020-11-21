@@ -207,17 +207,18 @@ class DatabaseServices {
 
   List<String> friendsids;
   List<Friends> friendslist;
-  Stream getFriendsids() {
+  List<PeakUser> users = [];
+
+  Future<List<PeakUser>> getFriends() async {
     friendsids = [];
     friendslist = [];
     if (_firebaseService.currentUser != null) {
-      _friendsCollection
+      await _friendsCollection
           .where("userid1", isEqualTo: _firebaseService.currentUser.uid)
-          .snapshots()
-          .listen((friendsSnapshots) {
-        if (friendsSnapshots.docs.isNotEmpty) {
-          print('in not empty 1');
-          var friends1 = friendsSnapshots.docs
+          .get()
+          .then((value) {
+        if (value.docs.isNotEmpty) {
+          var friends1 = value.docs
               .map((snapshot) => Friends.fromJson(snapshot.data(), snapshot.id))
               .toList();
           if (friends1 != null) {
@@ -225,51 +226,45 @@ class DatabaseServices {
               friendsids.add(friends1[i].userid2);
             }
             friendslist.addAll(friends1);
-            print('in 1');
-            print(friends1.length);
           }
         }
-
-        futurething2();
-        Timer(Duration(seconds: 1), () {
-          print("add to controller");
-          futurething(friendsids);
-        });
+      });
+      getfriendsids2();
+      Timer(Duration(seconds: 1), () async {
+        print("add to controller");
+        users = await getFriendsProfiles(friendsids);
       });
     }
-    return _friendsController.stream;
+    return users;
   }
 
-  futurething2() {
-    _friendsCollection
+  getfriendsids2() async {
+    await _friendsCollection
         .where("userid2", isEqualTo: _firebaseService.currentUser.uid)
-        .snapshots()
-        .listen((friendsSnapshots) {
-      if (friendsSnapshots.docs.isNotEmpty) {
-        print('in not empty 2');
-        var friends2 = friendsSnapshots.docs
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        var friends1 = value.docs
             .map((snapshot) => Friends.fromJson(snapshot.data(), snapshot.id))
             .toList();
-        if (friends2 != null) {
-          for (int i = 0; i < friends2.length; i++) {
-            friendsids.add(friends2[i].userid1);
+        if (friends1 != null) {
+          for (int i = 0; i < friends1.length; i++) {
+            friendsids.add(friends1[i].userid1);
           }
-          friendslist.addAll(friends2);
-          print('in 2');
-          print(friends2.length);
+          friendslist.addAll(friends1);
         }
       }
     });
   }
 
-  futurething(friendsids) async {
+  Future<List<PeakUser>> getFriendsProfiles(friendsids) async {
     List<PeakUser> users = [];
     for (int i = 0; i < friendsids.length; i++) {
       print(friendsids[i]);
       PeakUser user = await getUserProfile(friendsids[i]);
       users.add(user);
     }
-    _friendsController.add(users);
+    return users;
   }
 
   getUserProfile(String id) async {

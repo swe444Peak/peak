@@ -448,8 +448,9 @@ class DatabaseServices {
   Future inviteFriends(List<Invitation> invations, Goal goal) async {
     WriteBatch batch = FirebaseFirestore.instance.batch();
     goal.creatorId = _firebaseService.currentUser.uid;
+    DocumentReference goalDocReference;
     try {
-      DocumentReference goalDocReference = _goalsCollectionReference.doc();
+      goalDocReference = _goalsCollectionReference.doc();
       goal.competitors.add(goalDocReference.id);
       goal.creatorGoalDocId = goalDocReference.id;
       invations.forEach((invation) {
@@ -464,7 +465,7 @@ class DatabaseServices {
       });
 
       batch.commit();
-      return true;
+      return goalDocReference.id;
     } catch (e) {
       print(e.toString());
       return e.toString();

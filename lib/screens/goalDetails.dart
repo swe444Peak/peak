@@ -16,7 +16,7 @@ class GoalDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var clength = goal.competitors.length;
+    //var clength = goal.competitors.length;
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return ChangeNotifierProvider<GoalDetailsModel>(
@@ -117,7 +117,7 @@ class GoalDetails extends StatelessWidget {
                     },
                   ),
                 ),
-                clength > 1
+                goal.competitors != null
                     ? Padding(
                         padding: EdgeInsets.all(width * 0.02),
                         child: Text(
@@ -130,7 +130,7 @@ class GoalDetails extends StatelessWidget {
                         ),
                       )
                     : SizedBox(height: 0),
-                clength > 1
+                goal.competitors != null
                     ? CompetitorsProgress(goal, goal.uID)
                     : SizedBox(height: 0),
                 if (goal.competitors != null) CommentsList(goal),

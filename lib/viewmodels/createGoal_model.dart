@@ -58,7 +58,7 @@ class CreateGoalModel extends ChangeNotifier {
   Future createGoal(String goalName, String uID, DateTime deadLine,
       List<Task> tasks, List<PeakUser> addedFriends) async {
     setState(ViewState.Busy);
-    if (addedFriends != null) {
+    if (addedFriends != null && addedFriends.length > 0) {
       List<Invitation> invitations = [];
 
       Goal goal = Goal(
@@ -80,7 +80,7 @@ class CreateGoalModel extends ChangeNotifier {
           numOfTasks: goal.numOfTasks,
         ));
       });
-      await _firstoreService.inviteFriends(invitations, goal);
+      result = await _firstoreService.inviteFriends(invitations, goal);
     } else {
       Goal goal = Goal(
           goalName: goalName,
@@ -92,6 +92,7 @@ class CreateGoalModel extends ChangeNotifier {
       result = await _firstoreService.addGoal(goal: goal);
     }
     setState(ViewState.Idle);
+    print("---------------------------------------$result");
     return result;
   }
 

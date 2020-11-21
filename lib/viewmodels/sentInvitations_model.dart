@@ -11,12 +11,20 @@ class SentInvitationsModel extends ChangeNotifier {
   ViewState _state = ViewState.Idle;
   List<Invitation> invitations;
   bool empty = false;
+  bool disposed = false;
   List<PeakUser> users;
   List<String> goalDoc;
   ViewState get state => _state;
   void setState(ViewState viewState) {
     _state = viewState;
+    if (!disposed) notifyListeners();
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    disposed = true;
+    super.dispose();
   }
 
   void readSentInvitations() {

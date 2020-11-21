@@ -190,7 +190,7 @@ class _FriendsListState extends State<FriendsList> {
                       ),
                     ),
                     onTap: () {
-                      //Navigator.pushNamed(context, "goalDetails", arguments: goal);
+                      Navigator.pushNamed(context, "FriendProfile", arguments: friend );
                     },
                   ),
                 ));

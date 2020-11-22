@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string translatable="false" name="app_name">name of app</string>
+    <string translatable="false" name="title_activity_kimera">name of app</string>
+    <string name="default_notification_channel_id" translatable="false">default</string>
+</resources>

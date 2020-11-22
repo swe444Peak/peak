@@ -1,37 +1,34 @@
 import * as functions from 'firebase-functions';
- import * as admin from 'firebase-admin';
+import * as admin from 'firebase-admin';
+admin.initializeApp();
+    const db = admin.firestore();
+    const fcm = admin.messaging();
 
 
-//  const db = admin.firestore();
-//  const fcm = admin.messaging();
 
 
-export const helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase!");
-});
 
-export const sendToDevice = functions.firestore.document('Invitation/{InvitationId}').onCreate(async snapshot => {
-  admin.initializeApp();
-  const db = admin.firestore();
-  const fcm = admin.messaging();
-  const invit = snapshot.data();
-  const querySnapshot = await db
+
+export const sendToDevice = functions.firestore.document('invations/{invationsId}')
+.onCreate(async snapshot => {
+    const invit = snapshot.data();
+    const querySnapshot = await db
     .collection('users')
     .doc(invit.receiverId)
     .collection('tokens')
     .get();
     
-  const tokens = querySnapshot.docs.map(snap => snap.id);
+   const tokens = querySnapshot.docs.map(snap => snap.id);
 
   const payload: admin.messaging.MessagingPayload = {
     notification: {
       title: 'Goal invitation !!',
-      body: 'you are invited to  ${invit.goalName} goal GO chick it UP!!',
+      body: `Wooah someone invited you to ${invit.goalName} goal GO CHECK IT OUT`,
       icon: 'mipmap/ic_launcher',
       click_action: 'FLUTTER_NOTIFICATION_CLICK',
     },
   };
-
+  console.log('im before sending notification');
+  console.log(invit.receiverId);
   return fcm.sendToDevice(tokens, payload);
 });

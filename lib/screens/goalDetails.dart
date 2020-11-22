@@ -11,7 +11,8 @@ import 'competitorsProgess.dart';
 
 class GoalDetails extends StatelessWidget {
   Goal goal;
-  GoalDetails({this.goal});
+  bool receive = false;
+  GoalDetails({this.goal, this.receive});
   final googleCalendar = locator<GoogleCalendar>();
 
   @override
@@ -190,16 +191,19 @@ class GoalDetails extends StatelessWidget {
         goal.deadline.month == DateTime.now().month &&
         goal.deadline.year == DateTime.now().year;
 
-    if (goal.deadline.isBefore(DateTime.now()) && !today) {
-      return getDelete(model, context);
-    }
-
+    if (receive) return [];
     if (goal.competitors != null) {
-      if (goal.creatorId == model.uid())
-        return getEditAndDelete(model, context);
+      if (goal.creatorId == model.uid()) {
+        if (goal.deadline.isBefore(DateTime.now()) && !today)
+          return getDelete(model, context);
+        else
+          return getEditAndDelete(model, context);
+      }
       return getDelete(model, context);
     }
 
+    if (goal.deadline.isBefore(DateTime.now()) && !today)
+      return getDelete(model, context);
     return getEditAndDelete(model, context);
   }
 

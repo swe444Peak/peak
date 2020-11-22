@@ -92,7 +92,6 @@ class CreateGoalModel extends ChangeNotifier {
       result = await _firstoreService.addGoal(goal: goal);
     }
     setState(ViewState.Idle);
-    print("---------------------------------------$result");
     return result;
   }
 

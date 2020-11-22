@@ -36,11 +36,11 @@ class Routerr {
                   goal: goal,
                 ));
       case 'goalDetails':
-        var goal = settings.arguments;
+        Map arguments = settings.arguments;
+        var goal = arguments['goal'];
+        var receive = arguments['receive'];
         return MaterialPageRoute(
-            builder: (_) => GoalDetails(
-                  goal: goal,
-                ));
+            builder: (_) => GoalDetails(goal: goal, receive: receive));
       case 'addCompetitors':
         var friendsList = settings.arguments;
         return MaterialPageRoute(
@@ -61,11 +61,9 @@ class Routerr {
         return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
       case 'friendsList':
         return MaterialPageRoute(builder: (_) => FriendsList());
-      // case 'search':
-      //   return MaterialPageRoute(builder: (_) => Search());
       case 'goalInvitations':
         return MaterialPageRoute(builder: (_) => GoalInvitations());
-         case 'FriendProfile':
+      case 'FriendProfile':
         var friend = settings.arguments;
         return MaterialPageRoute(
             builder: (_) => FriendProfile(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:peak/enums/viewState.dart';
 import 'package:peak/models/Invitation.dart';
+import 'package:peak/models/goal.dart';
 
 import 'package:peak/services/databaseServices.dart';
 
@@ -11,6 +12,7 @@ class ReceivedInvitationsModel extends ChangeNotifier {
   final _firstoreService = locator<DatabaseServices>();
   ViewState _state = ViewState.Idle;
   List<Invitation> _invitations;
+  List<Goal> goals;
 
   ViewState get state => _state;
   List<Invitation> get invitations => _invitations;
@@ -21,7 +23,7 @@ class ReceivedInvitationsModel extends ChangeNotifier {
 
   void readInvitations() {
     setState(ViewState.Busy);
-
+    List<String> goalIds = [];
     // Goal goal = Goal(
     //   goalName: "EDIT GOAL",
     //   uID: "W8RKLSV8Gya8NN5Qx9FbovYBlxV2",
@@ -40,10 +42,13 @@ class ReceivedInvitationsModel extends ChangeNotifier {
 
     // _firstoreService.inviteFriends([inv], goal);
 
-    _firstoreService.getReceivedInvations().listen((invitationData) {
+    _firstoreService.getReceivedInvations().listen((invitationData) async {
       if (invitationData.isNotEmpty) {
-        print("inv: $_invitations     dat: $invitationData");
         _invitations = invitationData;
+        _invitations.forEach((element) {
+          goalIds.add(element.creatorgoalDocId);
+        });
+        goals = await _firstoreService.getCertainGoals(goalIds);
       }
       notifyListeners();
       setState(ViewState.Idle);

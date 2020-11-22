@@ -401,6 +401,16 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                         }),
                                   ],
                                 ),
+                                onTap: () {
+                                  Navigator.pushNamed(context, "goalDetails",
+                                      arguments: {
+                                        "goal": model.goals.singleWhere(
+                                            (element) =>
+                                                element.creatorGoalDocId ==
+                                                invitation.creatorgoalDocId),
+                                        "receive": true
+                                      });
+                                },
                               ),
                             );
                           }),

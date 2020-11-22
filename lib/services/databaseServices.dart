@@ -614,19 +614,19 @@ class DatabaseServices {
   }
 
   Future<List<Goal>> getCertainGoals(List<String> ids) async {
-    List<Goal> users = [];
+    List<Goal> goals = [];
     try {
       await _goalsCollectionReference
           .where(FieldPath.documentId, whereIn: ids)
           .get()
           .then((value) {
         if (value.docs.isNotEmpty) {
-          users = value.docs
+          goals = value.docs
               .map((snapshot) => Goal.fromJson(snapshot.data(), snapshot.id))
               .toList();
         }
       });
-      return users;
+      return goals;
     } catch (e) {
       return null;
     }

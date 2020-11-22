@@ -28,19 +28,18 @@ class CompetitorsProgressModel extends ChangeNotifier {
     setState(ViewState.Busy);
     List<Goal> cGoals = await _database.getCertainGoals(competitors);
     _compitetorsGoals = cGoals;
-    print("model");
+
     print(_compitetorsGoals.length);
     List<Compitetor> comss = [];
     for (int i = 0; i < _compitetorsGoals.length; i++) {
       Goal cgoal = _compitetorsGoals[i];
       PeakUser cuser = await getUser(cgoal.uID);
-      print("in model");
-      print(cuser.name);
+
       Compitetor c = Compitetor(cgoal, cuser);
       print(c.user.name);
       comps.add(c);
     }
-    print("done");
+
     setState(ViewState.Idle);
   }
 

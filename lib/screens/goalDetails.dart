@@ -106,8 +106,10 @@ class GoalDetails extends StatelessWidget {
                                       Icons.assignment_turned_in,
                                       color: Colors.teal,
                                     ),
-                                    Text(
-                                        "${currentTask.achievedTasks}/${currentTask.taskRepetition}"),
+                                    receive
+                                        ? Text("${currentTask.taskRepetition}")
+                                        : Text(
+                                            "${currentTask.achievedTasks}/${currentTask.taskRepetition}"),
                                   ],
                                 ),
                               ],
@@ -274,6 +276,7 @@ class GoalDetails extends StatelessWidget {
   }
 
   Widget goalStatus() {
+    if (receive) return Text("");
     if (goal.isAchieved) {
       return Row(children: [
         Icon(

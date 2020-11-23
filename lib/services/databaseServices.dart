@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:peak/enums/taskType.dart';
 import 'package:peak/models/Invitation.dart';
 import 'package:peak/models/comment.dart';
 import 'package:peak/models/friends.dart';
@@ -8,6 +9,7 @@ import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
 
 import 'package:peak/enums/InvationStatus.dart';
+import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
 import 'firebaseAuthService.dart';
 import 'package:peak/models/badges.dart';
@@ -486,11 +488,29 @@ class DatabaseServices {
         Goal goal = Goal.fromJson(snapshot.data(), snapshot.id);
         transaction.update(
             invationDocRef, {"status": invation.status.toShortString()});
+
+        List<Task> tasks = List<Task>();
+        goal.tasks.forEach((task) {
+          switch (task.taskType) {
+            case TaskType.once:
+              tasks.add(OnceTask.copy(task));
+              break;
+            case TaskType.daily:
+              tasks.add(DailyTask.copy(task));
+              break;
+            case TaskType.weekly:
+              tasks.add(WeeklyTask.copy(task));
+              break;
+            case TaskType.monthly:
+              tasks.add(MonthlyTask.copy(task));
+              break;
+          }
+        });
         Goal newGoal = Goal(
             goalName: goal.goalName,
             uID: invation.receiverId,
             deadline: goal.deadline,
-            tasks: goal.tasks,
+            tasks: tasks,
             creationDate: goal.creationDate,
             numOfTasks: goal.numOfTasks,
             competitors: goal.competitors,

@@ -319,7 +319,7 @@ class DatabaseServices {
     }
   }
 
-  Future updateProfilePic(picURL) async {
+  Future updateProfilePic(picURL, username) async {
     CollectionReference _commentsCollectionRef =
         FirebaseFirestore.instance.collection("comments");
     WriteBatch batch = FirebaseFirestore.instance.batch();
@@ -333,17 +333,20 @@ class DatabaseServices {
           snapshots = value.docs;
           snapshots.forEach((element) {
             batch.update(_commentsCollectionRef.doc(element.id.toString()), {
+              "username": username,
               "picURL": picURL,
             });
           });
 
           batch.update(userCollection.doc(_firebaseService.currentUser.uid), {
+            "username": username,
             "picURL": picURL,
           });
 
           batch.commit();
         } else {
           await userCollection.doc(_firebaseService.currentUser.uid).update({
+            "username": username,
             "picURL": picURL,
           });
         }

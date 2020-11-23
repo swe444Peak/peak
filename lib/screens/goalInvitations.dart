@@ -346,7 +346,7 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                             dialogService.showDialog(
                                                 title: "Hooray!!",
                                                 description:
-                                                    "You have a new shared goal waitting for you in your goals list, go ahead and achieve it");
+                                                    "You have a new shared goal, go ahead and achieve it");
                                           }
                                         }),
                                     IconButton(

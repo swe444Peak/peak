@@ -59,7 +59,6 @@ dependencies:
   cached_network_image: ^2.3.3
   timeago: ^2.0.28
   timeago_flutter: ^0.3.0
-  fluttertoast: ^7.1.1
  
 
 

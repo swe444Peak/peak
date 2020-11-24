@@ -13,7 +13,7 @@ class ReceivedInvitationsModel extends ChangeNotifier {
   ViewState _state = ViewState.Idle;
   List<Invitation> _invitations;
   List<Goal> goals;
-
+  bool empty = false;
   ViewState get state => _state;
   List<Invitation> get invitations => _invitations;
   void setState(ViewState viewState) {
@@ -24,31 +24,18 @@ class ReceivedInvitationsModel extends ChangeNotifier {
   void readInvitations() {
     setState(ViewState.Busy);
     List<String> goalIds = [];
-    // Goal goal = Goal(
-    //   goalName: "EDIT GOAL",
-    //   uID: "W8RKLSV8Gya8NN5Qx9FbovYBlxV2",
-    //   deadline: DateTime(2020, 11, 15),
-    //   creationDate: DateTime.now(),
-    //   tasks: [DailyTask(taskName: "t1", creationDate: DateTime.now())],
-    //   competitors: [],
-    // );
-    // Invitation inv = Invitation(
-    //     creatorId: "W8RKLSV8Gya8NN5Qx9FbovYBlxV2",
-    //     receiverId: "DZr1HX3nOEZlvLSjaEMCZ9Uvag43",
-    //     status: InvationStatus.Pending,
-    //     goalName: goal.goalName,
-    //     goalDueDate: goal.deadline,
-    //     numOfTasks: goal.numOfTasks);
-
-    // _firstoreService.inviteFriends([inv], goal);
 
     _firstoreService.getReceivedInvations().listen((invitationData) async {
-      if (invitationData.isNotEmpty) {
-        _invitations = invitationData;
+      List<Invitation> updatedInvitations = invitationData;
+      if (updatedInvitations != null && updatedInvitations.length > 0) {
+        _invitations = updatedInvitations;
         _invitations.forEach((element) {
           goalIds.add(element.creatorgoalDocId);
         });
         goals = await _firstoreService.getCertainGoals(goalIds);
+        empty = false;
+      }else{
+        empty = true;
       }
       notifyListeners();
       setState(ViewState.Idle);

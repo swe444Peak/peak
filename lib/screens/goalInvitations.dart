@@ -232,7 +232,7 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                   ? Center(
                       child: CircularProgressIndicator(),
                     )
-                  : (model.invitations == null)
+                  : (model.empty)
                       ? Center(
                           child: Padding(
                             padding: const EdgeInsets.all(8),
@@ -340,9 +340,6 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                                   numOfTasks:
                                                       invitation.numOfTasks));
                                           if (result) {
-                                            setState(() {
-                                              model.readInvitations();
-                                            });
                                             dialogService.showDialog(
                                                 title: "Hooray!!",
                                                 description:
@@ -389,9 +386,6 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                                     numOfTasks:
                                                         invitation.numOfTasks));
                                             if (result) {
-                                              setState(() {
-                                                model.readInvitations();
-                                              });
                                               dialogService.showDialog(
                                                   title: "Maybe next time",
                                                   description:

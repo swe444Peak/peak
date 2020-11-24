@@ -136,7 +136,7 @@ class GoalDetails extends StatelessWidget {
                 goal.competitors != null
                     ? CompetitorsProgress(goal, goal.uID)
                     : SizedBox(height: 0),
-                if (goal.competitors != null) CommentsList(goal),
+                if (goal.competitors != null && !receive) CommentsList(goal),
               ],
             ),
           ),

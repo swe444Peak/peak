@@ -11,6 +11,8 @@ import 'package:peak/locator.dart';
 import 'package:peak/enums/InvationStatus.dart';
 import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
+import 'UsernameExistsException.dart';
+import 'authExceptionHandler.dart';
 import 'firebaseAuthService.dart';
 import 'package:peak/models/badges.dart';
 
@@ -707,5 +709,20 @@ class DatabaseServices {
     print(cGoals.length);
 
     return cGoals;
+  }
+
+  Future<bool> usernameExist(username) async {
+    bool b;
+    await userCollection
+        .where('username', isEqualTo: username)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        b = true;
+      } else {
+        b = false;
+      }
+    });
+    return b;
   }
 }

@@ -7,6 +7,8 @@ import 'package:peak/enums/viewState.dart';
 
 import 'package:peak/models/user.dart';
 import 'package:peak/screens/shared/customButton.dart';
+import 'package:peak/services/UsernameExistsException.dart';
+import 'package:peak/services/authExceptionHandler.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 import 'package:peak/viewmodels/editProfile_model.dart';
@@ -24,6 +26,7 @@ class _EditProfileState extends State<EditProfile> {
   final _database = locator<DatabaseServices>();
   final _fireService = locator<FirbaseAuthService>();
   File pickedImage;
+  String _error;
 
   EditProfileModel model = locator<EditProfileModel>();
   @override
@@ -63,6 +66,11 @@ class _EditProfileState extends State<EditProfile> {
                         appBar: AppBar(
                           backgroundColor: Colors.transparent,
                           elevation: 0.0,
+                          bottom: PreferredSize(
+                            preferredSize:
+                                Size(MediaQuery.of(context).size.width, 50),
+                            child: showAlert(),
+                          ),
                         ),
                         body: ModalProgressHUD(
                           inAsyncCall: model.state == ViewState.Busy,
@@ -223,23 +231,46 @@ class _EditProfileState extends State<EditProfile> {
                                                     0.0,
                                                     0.0),
                                                 child: CustomButton(() async {
-                                                  if (model.isValid) {
-                                                    if (pickedImage == null) {
-                                                      await model.updateName(
-                                                          model.name.value);
-                                                    } else {
-                                                      await model.update(
-                                                          pickedImage,
-                                                          model.name.value);
+                                                  try {
+                                                    var exist =
+                                                        await model.isexist(
+                                                            model.name.value);
+
+                                                    if (exist) {
+                                                      print("in exception");
+
+                                                      setState(() {
+                                                        _error =
+                                                            "username already exists";
+                                                      });
+                                                      throw new UsernameExistsException();
                                                     }
-                                                    // setState(() {
-                                                    //   EditProfileModel()
-                                                    //       .setName("");
-                                                    // });
-                                                    //   updateConfirmDailog(
-                                                    //       context, "name");
-                                                    Navigator.pushNamed(
-                                                        context, 'profile');
+
+                                                    if (model.isValid) {
+                                                      if (pickedImage == null) {
+                                                        await model.updateName(
+                                                            model.name.value);
+                                                      } else {
+                                                        await model.update(
+                                                            pickedImage,
+                                                            model.name.value);
+                                                      }
+                                                      // setState(() {
+                                                      //   EditProfileModel()
+                                                      //       .setName("");
+                                                      // });
+                                                      //   updateConfirmDailog(
+                                                      //       context, "name");
+                                                      Navigator.pushNamed(
+                                                          context, 'profile');
+                                                    }
+                                                    return AuthExceptionHandler
+                                                        .generateExceptionMessage(
+                                                            AuthResultStatus
+                                                                .undefined);
+                                                  } catch (e) {
+                                                    return AuthExceptionHandler
+                                                        .handleException(e);
                                                   }
                                                 }, "Save"),
                                               ),
@@ -283,6 +314,41 @@ class _EditProfileState extends State<EditProfile> {
           ],
         );
       },
+    );
+  }
+
+  Widget showAlert() {
+    if (_error != null) {
+      return Container(
+        color: Colors.amberAccent,
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(Icons.error_outline),
+            ),
+            Expanded(
+              child: Text(_error),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  setState(() {
+                    _error = null;
+                  });
+                },
+              ),
+            )
+          ],
+        ),
+      );
+    }
+    return SizedBox(
+      height: 0,
     );
   }
 }

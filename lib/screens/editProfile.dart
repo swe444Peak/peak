@@ -1,6 +1,14 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:peak/enums/viewState.dart';
+
 import 'package:peak/models/user.dart';
+import 'package:peak/screens/shared/customButton.dart';
+import 'package:peak/services/UsernameExistsException.dart';
+import 'package:peak/services/authExceptionHandler.dart';
 import 'package:peak/services/databaseServices.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 import 'package:peak/viewmodels/editProfile_model.dart';
@@ -17,9 +25,14 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController _editnamecontroller = new TextEditingController();
   final _database = locator<DatabaseServices>();
   final _fireService = locator<FirbaseAuthService>();
+  File pickedImage;
+  String _error;
+
+  EditProfileModel model = locator<EditProfileModel>();
   @override
   void initState() {
-    EditProfileModel().setName("");
+    // EditProfileModel().setName("");
+    model.setName(_fireService.currentUser.name);
     super.initState();
   }
 
@@ -37,12 +50,14 @@ class _EditProfileState extends State<EditProfile> {
     var height = screenSize.height;
     final double circleRadius = 250.0;
     final double circleBorderWidth = 10;
+    var pic = _fireService.currentUser.picURL;
+
     return StreamProvider<PeakUser>.value(
         initialData: PeakUser(uid: "", name: ""),
         value: DatabaseServices().userData(user.uid),
         builder: (context, snapshot) {
           return ChangeNotifierProvider<EditProfileModel>(
-              create: (context) => locator<EditProfileModel>(),
+              create: (context) => model,
               child: Consumer<EditProfileModel>(
                   builder: (context, model, child) => SafeArea(
                           child: Scaffold(
@@ -51,49 +66,56 @@ class _EditProfileState extends State<EditProfile> {
                         appBar: AppBar(
                           backgroundColor: Colors.transparent,
                           elevation: 0.0,
+                          bottom: PreferredSize(
+                            preferredSize:
+                                Size(MediaQuery.of(context).size.width, 50),
+                            child: showAlert(),
+                          ),
                         ),
-                        body: SingleChildScrollView(
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: width * 0.8,
-                                height: width * 0.6,
-                                margin: EdgeInsets.fromLTRB(
-                                    0, 0.0, width * 0.2, 0.0),
-                                decoration: BoxDecoration(
-                                    color: Colors.indigo[500],
-                                    borderRadius: BorderRadius.only(
-                                        bottomRight: Radius.circular(400)),
-                                    gradient: LinearGradient(
-                                        colors: [
-                                          Colors.teal[400],
-                                          Colors.indigo[600],
-                                          Colors.deepPurple[900]
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomCenter)),
-                              ),
-                              Container(
-                                padding: EdgeInsets.fromLTRB(width * 0.06,
-                                    height * 0.12, width * 0.06, 0.0),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.fromLTRB(
-                                          0.0, 0.0, 0.0, (width * 0.06)),
-                                      child: Text(
-                                        "Edit Profile",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 34.0,
-                                          fontWeight: FontWeight.w400,
+                        body: ModalProgressHUD(
+                          inAsyncCall: model.state == ViewState.Busy,
+                          child: SingleChildScrollView(
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: width * 0.8,
+                                  height: width * 0.6,
+                                  margin: EdgeInsets.fromLTRB(
+                                      0, 0.0, width * 0.2, 0.0),
+                                  decoration: BoxDecoration(
+                                      color: Colors.indigo[500],
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(400)),
+                                      gradient: LinearGradient(
+                                          colors: [
+                                            Colors.teal[400],
+                                            Colors.indigo[600],
+                                            Colors.deepPurple[900]
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomCenter)),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(width * 0.06,
+                                      height * 0.12, width * 0.06, 0.0),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.fromLTRB(
+                                            0.0, 0.0, 0.0, (width * 0.06)),
+                                        child: Text(
+                                          "Edit Profile",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 34.0,
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Padding(
+                                Padding(
                                   padding:
                                       EdgeInsets.only(top: (height * 0.20)),
                                   child: Center(
@@ -116,23 +138,55 @@ class _EditProfileState extends State<EditProfile> {
                                           child: Padding(
                                             padding: EdgeInsets.all(
                                                 circleBorderWidth),
-                                            child: Container(
-                                              //height: 200,
-                                              //width: 200,
-                                              child: DecoratedBox(
-                                                decoration: ShapeDecoration(
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                // await EditProfileModel()
+                                                //     .uploadPic();
+                                                File picked =
+                                                    await EditProfileModel()
+                                                        .pickImage();
+                                                if (picked != null) {
+                                                  setState(() {
+                                                    pickedImage = picked;
+                                                  });
+                                                  // updateConfirmDailog(
+                                                  //     context, "picture");
+                                                }
+                                              },
+                                              child: Container(
+                                                //height: 200,
+                                                //width: 200,
+                                                child: DecoratedBox(
+                                                  decoration: ShapeDecoration(
                                                     shape: CircleBorder(),
                                                     image: DecorationImage(
-                                                        fit: BoxFit.cover,
-                                                        image: NetworkImage(
-                                                            "${Provider.of<PeakUser>(context).picURL}"))),
+                                                      fit: BoxFit.cover,
+                                                      colorFilter:
+                                                          ColorFilter.mode(
+                                                              Colors.white
+                                                                  .withOpacity(
+                                                                      0.25),
+                                                              BlendMode
+                                                                  .dstATop),
+                                                      image: pickedImage == null
+                                                          ? NetworkImage(pic)
+                                                          : FileImage(
+                                                              pickedImage),
+                                                    ),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.add_photo_alternate,
+                                                    color: Colors.white,
+                                                    size: 32,
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                         SizedBox(height: 30),
                                         Container(
-                                          width: 355,
+                                          width: width * 0.9,
                                           child: Padding(
                                             padding: EdgeInsets.all(5),
                                             child: Card(
@@ -169,99 +223,69 @@ class _EditProfileState extends State<EditProfile> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Container(
-                                              width: 175,
+                                              width: width * 0.5,
                                               child: Padding(
                                                 padding: EdgeInsets.fromLTRB(
-                                                    0.0, 0.0, 0.0, 8.0),
-                                                child: Card(
-                                                  elevation: 20,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                  ),
-                                                  child: ListTile(
-                                                      leading: Icon(
-                                                        Icons
-                                                            .add_photo_alternate,
-                                                        color: Color.fromRGBO(
-                                                            23, 23, 85, 1.0),
-                                                        size: 32,
-                                                      ),
-                                                      title: Text(
-                                                        "Change Picture",
-                                                        style: TextStyle(
-                                                          color: Color.fromRGBO(
-                                                              23, 23, 85, 1.0),
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                      onTap: () async {
-                                                        await EditProfileModel()
-                                                            .uploadPic();
-                                                        updateConfirmDailog(
-                                                            context, "picture");
-                                                      }),
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: 175,
-                                              child: Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0.0, 0.0, 0.0, 8.0),
-                                                child: Card(
-                                                  elevation: 20,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                  ),
-                                                  child: ListTile(
-                                                      leading: Icon(
-                                                        Icons.assignment_ind,
-                                                        color: Color.fromRGBO(
-                                                            23, 23, 85, 1.0),
-                                                        size: 32,
-                                                      ),
-                                                      title: Text(
-                                                        "Update Name",
-                                                        style: TextStyle(
-                                                          color: Color.fromRGBO(
-                                                              23, 23, 85, 1.0),
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                      onTap: () async {
-                                                        if (model.isValid) {
-                                                          print(model.isValid);
-                                                          print(model.name);
-                                                          var upload = await model
-                                                              .updateName(
-                                                                  _editnamecontroller
-                                                                      .text
-                                                                      .trim());
-                                                          updateConfirmDailog(
-                                                              context, "name");
-                                                          setState(() {
-                                                            EditProfileModel()
-                                                                .setName("");
-                                                          });
-                                                        }
-                                                      }),
-                                                ),
+                                                    0.0,
+                                                    width * 0.03,
+                                                    0.0,
+                                                    0.0),
+                                                child: CustomButton(() async {
+                                                  try {
+                                                    var exist =
+                                                        await model.isexist(
+                                                            model.name.value);
+
+                                                    if (exist) {
+                                                      print("in exception");
+
+                                                      setState(() {
+                                                        _error =
+                                                            "username already exists";
+                                                      });
+                                                      throw new UsernameExistsException();
+                                                    }
+
+                                                    if (model.isValid) {
+                                                      if (pickedImage == null) {
+                                                        await model.updateName(
+                                                            model.name.value);
+                                                      } else {
+                                                        await model.update(
+                                                            pickedImage,
+                                                            model.name.value);
+                                                      }
+                                                      // setState(() {
+                                                      //   EditProfileModel()
+                                                      //       .setName("");
+                                                      // });
+                                                      //   updateConfirmDailog(
+                                                      //       context, "name");
+                                                      Navigator.pushNamed(
+                                                          context, 'profile');
+                                                      updateConfirmDailog(
+                                                          context,
+                                                          "your profile was Updated successfully");
+                                                    }
+                                                    return AuthExceptionHandler
+                                                        .generateExceptionMessage(
+                                                            AuthResultStatus
+                                                                .undefined);
+                                                  } catch (e) {
+                                                    return AuthExceptionHandler
+                                                        .handleException(e);
+                                                  }
+                                                }, "Save"),
                                               ),
                                             ),
                                           ],
                                         ),
                                       ],
                                     ),
-                                  ))
-                            ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ))));
@@ -280,7 +304,7 @@ class _EditProfileState extends State<EditProfile> {
           content: Column(
             children: [
               SizedBox(height: 10),
-              Text("your $content was Updated successfully"),
+              Text(content),
             ],
           ),
           actions: [
@@ -293,6 +317,41 @@ class _EditProfileState extends State<EditProfile> {
           ],
         );
       },
+    );
+  }
+
+  Widget showAlert() {
+    if (_error != null) {
+      return Container(
+        color: Colors.amberAccent,
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(Icons.error_outline),
+            ),
+            Expanded(
+              child: Text(_error),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  setState(() {
+                    _error = null;
+                  });
+                },
+              ),
+            )
+          ],
+        ),
+      );
+    }
+    return SizedBox(
+      height: 0,
     );
   }
 }

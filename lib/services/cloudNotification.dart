@@ -33,13 +33,12 @@ class _MessageHandlerState extends State<MessageHandler> {
                 ),
             );
          },
-        onLaunch: (Map<String, dynamic> message) async {
-            print("onLaunch: $message");
-            // TODO optional
+        onLaunch: (message) async {
+            Navigator.pushNamed(context, "goalInvitations");
         },
-        onResume: (Map<String, dynamic> message) async {
-            print("onResume: $message");
-            // TODO optional
+        onResume: (message) async {
+            Navigator.pushNamed(context, "goalInvitations");
+         
         },
       );
         
@@ -47,8 +46,7 @@ class _MessageHandlerState extends State<MessageHandler> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Container();
   }
 
   

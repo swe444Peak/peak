@@ -65,14 +65,26 @@ class DailyTask extends Task {
       taskRepetition,
       achievedTasks = 0,
       doneDates,
-      creationDate}):super(
+      creationDate})
+      : super(
             taskName: taskName,
             taskType: TaskType.daily,
             taskRepetition: taskRepetition,
             achievedTasks: achievedTasks,
-            creationDate: creationDate){
-        this.doneDates = doneDates ?? [] ;
-      }
+            creationDate: creationDate) {
+    this.doneDates = doneDates ?? [];
+  }
+
+  DailyTask.copy(DailyTask task)
+      : super(
+          taskName: task.taskName,
+          taskType: task.taskType,
+          taskRepetition: task.taskRepetition,
+          achievedTasks: 0,
+          creationDate: task.creationDate,
+        ) {
+    this.doneDates = [];
+  }
   @override
   Map<String, dynamic> toMap() {
     return {
@@ -107,7 +119,7 @@ class DailyTask extends Task {
 }
 
 class OnceTask extends Task {
-  final DateTime date;
+  DateTime date;
   bool done;
   OnceTask(
       {@required taskName,
@@ -123,6 +135,16 @@ class OnceTask extends Task {
           achievedTasks: achievedTasks,
           creationDate: creationDate,
         );
+  OnceTask.copy(OnceTask task)
+      : super(
+            taskName: task.taskName,
+            taskType: task.taskType,
+            taskRepetition: task.taskRepetition,
+            achievedTasks: 0,
+            creationDate: task.creationDate) {
+    this.date = task.date;
+    this.done = false;
+  }
   @override
   Map<String, dynamic> toMap() {
     return {
@@ -189,6 +211,18 @@ class WeeklyTask extends Task {
             achievedTasks: achievedTasks,
             creationDate: creationDate);
 
+  WeeklyTask.copy(WeeklyTask task)
+      : super(
+            taskName: task.taskName,
+            taskType: task.taskType,
+            taskRepetition: task.taskRepetition,
+            achievedTasks: 0,
+            creationDate: task.creationDate) {
+    this.weekdays = task.weekdays;
+    this.dates = task.dates;
+    this.doneDates = [];
+  }
+
   WeeklyTask.withDates(
       {@required taskName,
       @required weekdays,
@@ -202,11 +236,11 @@ class WeeklyTask extends Task {
             taskType: TaskType.weekly,
             taskRepetition: taskRepetition,
             achievedTasks: achievedTasks,
-            creationDate: creationDate){
-              this.weekdays = weekdays;
-              this.doneDates = doneDates ?? [] ;
-              this.dates = dates ;
-            }
+            creationDate: creationDate) {
+    this.weekdays = weekdays;
+    this.doneDates = doneDates ?? [];
+    this.dates = dates;
+  }
 
   @override
   Map<String, dynamic> toMap() {
@@ -324,6 +358,18 @@ class MonthlyTask extends Task {
           creationDate: creationDate,
         );
 
+  MonthlyTask.copy(MonthlyTask task)
+      : super(
+            taskName: task.taskName,
+            taskType: task.taskType,
+            taskRepetition: task.taskRepetition,
+            achievedTasks: 0,
+            creationDate: task.creationDate) {
+    this.day = task.day;
+    this.dates = task.dates;
+    this.doneDates = [];
+  }
+
   MonthlyTask.withDates({
     @required taskName,
     @required day,
@@ -337,11 +383,11 @@ class MonthlyTask extends Task {
             taskType: TaskType.monthly,
             taskRepetition: taskRepetition,
             achievedTasks: achievedTasks,
-            creationDate: creationDate){
-              this.day = day;
-              this.doneDates = doneDates ?? [] ;
-              this.dates = dates;
-            }
+            creationDate: creationDate) {
+    this.day = day;
+    this.doneDates = doneDates ?? [];
+    this.dates = dates;
+  }
 
   Map<String, dynamic> toMap() {
     return {

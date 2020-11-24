@@ -176,7 +176,7 @@ class SettingsPage extends StatelessWidget {
 
                               child: ListTile(
                                 leading: Icon(
-                                  Icons.power_settings_new,
+                                  Icons.logout,
                                   color: Color.fromRGBO(23, 23, 85, 1.0),
                                   size: 32,
                                 ),

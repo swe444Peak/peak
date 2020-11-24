@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:peak/enums/taskType.dart';
 import 'package:peak/models/Invitation.dart';
 import 'package:peak/models/comment.dart';
 import 'package:peak/models/friends.dart';
@@ -8,7 +9,10 @@ import 'package:peak/models/goal.dart';
 import 'package:peak/locator.dart';
 
 import 'package:peak/enums/InvationStatus.dart';
+import 'package:peak/models/task.dart';
 import 'package:peak/models/user.dart';
+import 'UsernameExistsException.dart';
+import 'authExceptionHandler.dart';
 import 'firebaseAuthService.dart';
 import 'package:peak/models/badges.dart';
 
@@ -155,10 +159,24 @@ class DatabaseServices {
     }
   }
 
-  Stream getGoals() {
+  Stream getGoals(PeakUser friend) {
     StreamController<List<Goal>> _goalController =
         StreamController<List<Goal>>.broadcast();
-    if (_firebaseService.currentUser != null) {
+    if (friend != null) {
+      _goalsCollectionReference
+          .where("uID", isEqualTo: friend.uid)
+          .snapshots()
+          .listen((goalsSnapshots) {
+        if (goalsSnapshots.docs.isNotEmpty) {
+          var goals = goalsSnapshots.docs
+              .map((snapshot) => Goal.fromJson(snapshot.data(), snapshot.id))
+              .toList();
+          _goalController.add(goals);
+        } else {
+          _goalController.add(List<Goal>());
+        }
+      });
+    } else if (_firebaseService.currentUser != null) {
       _goalsCollectionReference
           .where("uID", isEqualTo: _firebaseService.currentUser.uid)
           .snapshots()
@@ -259,7 +277,7 @@ class DatabaseServices {
   }
 
   getUserProfile(String id) async {
-    var user;
+    PeakUser user;
     await userCollection.doc(id).get().then((docRef) {
       var userdata = docRef.data();
       user = new PeakUser(
@@ -272,15 +290,74 @@ class DatabaseServices {
   }
 
   Future updateAccountData(name) async {
-    return await userCollection.doc(_firebaseService.currentUser.uid).update({
-      "username": name,
-    });
+    CollectionReference _commentsCollectionRef =
+        FirebaseFirestore.instance.collection("comments");
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    try {
+      List<QueryDocumentSnapshot> snapshots = [];
+      await _commentsCollectionRef
+          .where('writerId', isEqualTo: _firebaseService.currentUser.uid)
+          .get()
+          .then((value) async {
+        if (value.docs.isNotEmpty) {
+          snapshots = value.docs;
+          snapshots.forEach((element) {
+            batch.update(_commentsCollectionRef.doc(element.id.toString()), {
+              "username": name,
+            });
+          });
+
+          batch.update(userCollection.doc(_firebaseService.currentUser.uid), {
+            "username": name,
+          });
+
+          batch.commit();
+        } else {
+          await userCollection.doc(_firebaseService.currentUser.uid).update({
+            "username": name,
+          });
+        }
+      });
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
-  Future updateProfilePic(picURL) async {
-    return await userCollection.doc(_firebaseService.currentUser.uid).update({
-      "picURL": picURL,
-    });
+  Future updateProfilePic(picURL, username) async {
+    CollectionReference _commentsCollectionRef =
+        FirebaseFirestore.instance.collection("comments");
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    try {
+      List<QueryDocumentSnapshot> snapshots = [];
+      await _commentsCollectionRef
+          .where('writerId', isEqualTo: _firebaseService.currentUser.uid)
+          .get()
+          .then((value) async {
+        if (value.docs.isNotEmpty) {
+          snapshots = value.docs;
+          snapshots.forEach((element) {
+            batch.update(_commentsCollectionRef.doc(element.id.toString()), {
+              "username": username,
+              "picURL": picURL,
+            });
+          });
+
+          batch.update(userCollection.doc(_firebaseService.currentUser.uid), {
+            "username": username,
+            "picURL": picURL,
+          });
+
+          batch.commit();
+        } else {
+          await userCollection.doc(_firebaseService.currentUser.uid).update({
+            "username": username,
+            "picURL": picURL,
+          });
+        }
+      });
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future updateTask(
@@ -378,8 +455,9 @@ class DatabaseServices {
   Future inviteFriends(List<Invitation> invations, Goal goal) async {
     WriteBatch batch = FirebaseFirestore.instance.batch();
     goal.creatorId = _firebaseService.currentUser.uid;
+    DocumentReference goalDocReference;
     try {
-      DocumentReference goalDocReference = _goalsCollectionReference.doc();
+      goalDocReference = _goalsCollectionReference.doc();
       goal.competitors.add(goalDocReference.id);
       goal.creatorGoalDocId = goalDocReference.id;
       invations.forEach((invation) {
@@ -394,7 +472,7 @@ class DatabaseServices {
       });
 
       batch.commit();
-      return true;
+      return goalDocReference.id;
     } catch (e) {
       print(e.toString());
       return e.toString();
@@ -412,11 +490,29 @@ class DatabaseServices {
         Goal goal = Goal.fromJson(snapshot.data(), snapshot.id);
         transaction.update(
             invationDocRef, {"status": invation.status.toShortString()});
+
+        List<Task> tasks = List<Task>();
+        goal.tasks.forEach((task) {
+          switch (task.taskType) {
+            case TaskType.once:
+              tasks.add(OnceTask.copy(task));
+              break;
+            case TaskType.daily:
+              tasks.add(DailyTask.copy(task));
+              break;
+            case TaskType.weekly:
+              tasks.add(WeeklyTask.copy(task));
+              break;
+            case TaskType.monthly:
+              tasks.add(MonthlyTask.copy(task));
+              break;
+          }
+        });
         Goal newGoal = Goal(
             goalName: goal.goalName,
             uID: invation.receiverId,
             deadline: goal.deadline,
-            tasks: goal.tasks,
+            tasks: tasks,
             creationDate: goal.creationDate,
             numOfTasks: goal.numOfTasks,
             competitors: goal.competitors,
@@ -543,19 +639,19 @@ class DatabaseServices {
   }
 
   Future<List<Goal>> getCertainGoals(List<String> ids) async {
-    List<Goal> users = [];
+    List<Goal> goals = [];
     try {
       await _goalsCollectionReference
           .where(FieldPath.documentId, whereIn: ids)
           .get()
           .then((value) {
         if (value.docs.isNotEmpty) {
-          users = value.docs
+          goals = value.docs
               .map((snapshot) => Goal.fromJson(snapshot.data(), snapshot.id))
               .toList();
         }
       });
-      return users;
+      return goals;
     } catch (e) {
       return null;
     }
@@ -570,7 +666,6 @@ class DatabaseServices {
 
     _commentsCollectionReference
         .where("creatorGoalDocId", isEqualTo: creatorGoalDocId)
-        // .orderBy('time')
         .snapshots()
         .listen((commentsSnapshots) {
       if (commentsSnapshots.docs.isNotEmpty) {
@@ -595,5 +690,39 @@ class DatabaseServices {
     } catch (e) {
       return false;
     }
+  }
+
+  Future<List<Goal>> getCompetitorsGoals(creatorId) async {
+    var docs = await _goalsCollectionReference.get();
+
+    var goals = docs.docs
+        .map((snapshot) => Goal.fromJson(snapshot.data(), snapshot.id))
+        .toList();
+
+    List<Goal> cGoals = [];
+
+    goals.forEach((goal) {
+      if (goal.creatorGoalDocId == creatorId) {
+        cGoals.add(goal);
+      }
+    });
+    print(cGoals.length);
+
+    return cGoals;
+  }
+
+  Future<bool> usernameExist(username) async {
+    bool b;
+    await userCollection
+        .where('username', isEqualTo: username)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        b = true;
+      } else {
+        b = false;
+      }
+    });
+    return b;
   }
 }

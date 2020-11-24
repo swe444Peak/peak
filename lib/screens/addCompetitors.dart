@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/enums/viewState.dart';
 
@@ -87,7 +88,7 @@ class AddCompetitorsState extends State<AddCompetitors> {
                                           height: width * 0.15,
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
-                                              image: NetworkImage(
+                                              image: CachedNetworkImageProvider(
                                                   currentUser.picURL),
                                               fit: BoxFit.cover,
                                             ),

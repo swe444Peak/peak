@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:peak/models/goal.dart';
 import 'package:peak/enums/viewState.dart';
 import 'package:peak/locator.dart';
+import 'package:peak/models/user.dart';
 import 'package:peak/services/databaseServices.dart';
 
 class ViewProgressModel extends ChangeNotifier {
@@ -18,9 +19,9 @@ class ViewProgressModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void readGoals() {
+  void readGoals(PeakUser friend) {
     setState(ViewState.Busy);
-    _firstoreService.getGoals().listen((goalData) {
+    _firstoreService.getGoals(friend).listen((goalData) {
       List<Goal> updatedGoals = goalData;
       if (updatedGoals != null) {
         if (updatedGoals.length > 0) {

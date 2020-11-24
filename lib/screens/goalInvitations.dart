@@ -240,7 +240,7 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                   ? Center(
                       child: CircularProgressIndicator(),
                     )
-                  : (model.invitations == null)
+                  : (model.empty)
                       ? Center(
                           child: Padding(
                             padding: const EdgeInsets.all(8),
@@ -348,13 +348,10 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                                   numOfTasks:
                                                       invitation.numOfTasks));
                                           if (result) {
-                                            setState(() {
-                                              model.readInvitations();
-                                            });
                                             dialogService.showDialog(
                                                 title: "Hooray!!",
                                                 description:
-                                                    "You have a new shared goal waitting for you in your goals list, go ahead and achieve it");
+                                                    "You have a new shared goal, go ahead and achieve it");
                                           }
                                         }),
                                     IconButton(
@@ -397,9 +394,6 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                                     numOfTasks:
                                                         invitation.numOfTasks));
                                             if (result) {
-                                              setState(() {
-                                                model.readInvitations();
-                                              });
                                               dialogService.showDialog(
                                                   title: "Maybe next time",
                                                   description:
@@ -409,6 +403,16 @@ class _ReceivedInvitationsState extends State<ReceivedInvitations> {
                                         }),
                                   ],
                                 ),
+                                onTap: () {
+                                  Navigator.pushNamed(context, "goalDetails",
+                                      arguments: {
+                                        "goal": model.goals.singleWhere(
+                                            (element) =>
+                                                element.creatorGoalDocId ==
+                                                invitation.creatorgoalDocId),
+                                        "receive": true
+                                      });
+                                },
                               ),
                             );
                           }),

@@ -49,4 +49,12 @@ class LoginModel extends ChangeNotifier {
     setState(ViewState.Idle);
     return result;
   }
+
+   Future forgetPassword(String email) async {
+    setState(ViewState.Busy);
+    var result = await _firbaseAuthService.forgetPassword(email);
+    setState(ViewState.Idle);
+    return result;
+  }
+
 }

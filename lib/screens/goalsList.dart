@@ -195,7 +195,8 @@ class GoalsListPage extends StatelessWidget {
                 ],
               ),
               onTap: () {
-                Navigator.pushNamed(context, "goalDetails", arguments: goal);
+                Navigator.pushNamed(context, "goalDetails",
+                    arguments: {"goal": goal, "receive": false});
               },
             ),
           );

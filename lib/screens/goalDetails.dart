@@ -7,16 +7,19 @@ import 'package:peak/services/googleCalendar.dart';
 import 'package:peak/viewmodels/goalDetails_model.dart';
 import 'package:provider/provider.dart';
 import '../locator.dart';
+import 'competitorsProgess.dart';
 
 class GoalDetails extends StatelessWidget {
   Goal goal;
-  GoalDetails({this.goal});
+  bool receive = false;
+  GoalDetails({this.goal, this.receive});
   final googleCalendar = locator<GoogleCalendar>();
 
   @override
   Widget build(BuildContext context) {
+    //var clength = goal.competitors.length;
     var width = MediaQuery.of(context).size.width;
-
+    var height = MediaQuery.of(context).size.height;
     return ChangeNotifierProvider<GoalDetailsModel>(
       create: (context) => locator<GoalDetailsModel>(),
       child: Consumer<GoalDetailsModel>(
@@ -54,6 +57,7 @@ class GoalDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                _buildGestureDetector(model, width),
                 Padding(
                   padding: EdgeInsets.all(width * 0.02),
                   child: Text(
@@ -102,8 +106,10 @@ class GoalDetails extends StatelessWidget {
                                       Icons.assignment_turned_in,
                                       color: Colors.teal,
                                     ),
-                                    Text(
-                                        "${currentTask.achievedTasks}/${currentTask.taskRepetition}"),
+                                    receive
+                                        ? Text("${currentTask.taskRepetition}")
+                                        : Text(
+                                            "${currentTask.achievedTasks}/${currentTask.taskRepetition}"),
                                   ],
                                 ),
                               ],
@@ -114,8 +120,23 @@ class GoalDetails extends StatelessWidget {
                     },
                   ),
                 ),
-                if (goal.competitors != null) CommentsList(goal),
-                _buildGestureDetector(model, width),
+                goal.competitors != null
+                    ? Padding(
+                        padding: EdgeInsets.all(width * 0.02),
+                        child: Text(
+                          "Competitors progress",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: width * 0.06,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      )
+                    : SizedBox(height: 0),
+                goal.competitors != null
+                    ? CompetitorsProgress(goal, goal.uID)
+                    : SizedBox(height: 0),
+                if (goal.competitors != null && !receive) CommentsList(goal),
               ],
             ),
           ),
@@ -129,7 +150,7 @@ class GoalDetails extends StatelessWidget {
       return GestureDetector(
         child: Padding(
           padding: EdgeInsets.fromLTRB(
-              width * 0.009, width * 0.02, width * 0.009, width * 0.01),
+              width * 0.009, width * 0.02, width * 0.009, width * 0.02),
           child: Center(
             child: Text(
               "Add this goal to my Google Calendar",
@@ -172,16 +193,19 @@ class GoalDetails extends StatelessWidget {
         goal.deadline.month == DateTime.now().month &&
         goal.deadline.year == DateTime.now().year;
 
-    if (goal.deadline.isBefore(DateTime.now()) && !today) {
-      return getDelete(model, context);
-    }
-
+    if (receive) return [];
     if (goal.competitors != null) {
-      if (goal.creatorId == model.uid())
-        return getEditAndDelete(model, context);
+      if (goal.creatorId == model.uid()) {
+        if (goal.deadline.isBefore(DateTime.now()) && !today)
+          return getDelete(model, context);
+        else
+          return getEditAndDelete(model, context);
+      }
       return getDelete(model, context);
     }
 
+    if (goal.deadline.isBefore(DateTime.now()) && !today)
+      return getDelete(model, context);
     return getEditAndDelete(model, context);
   }
 
@@ -252,6 +276,7 @@ class GoalDetails extends StatelessWidget {
   }
 
   Widget goalStatus() {
+    if (receive) return Text("");
     if (goal.isAchieved) {
       return Row(children: [
         Icon(

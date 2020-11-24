@@ -269,88 +269,88 @@ _friends = friends;
       );
     }
     if (query.isNotEmpty && filtiredUsers.isNotEmpty) {
-       return  Column(
-        children: [
-          Padding(padding: const EdgeInsets.only(top: 150.0)),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text("Lets find some friend \n Enter a name",
-                  style: TextStyle(fontSize: width * 0.07, color: Colors.grey),
-                  textAlign: TextAlign.center),
-            ),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Icon(
-                Icons.search_outlined,
-                color: Colors.teal[100],
-                size: 100,
-              ),
-            ),
-          )
-        ],
-      );
-      // return ListView.builder(
-      //     itemCount: filtiredUsers.length,
-      //     itemBuilder: (context, index) {
-      //       var user = filtiredUsers[index];
-      //       // Widget fIcon =whichIcon(context,_firstoreService.getUser().uid, user.uid,user);
-      //       return Card(
-      //           //card Property
-      //           elevation: 20,
-      //           shape: RoundedRectangleBorder(
-      //             borderRadius: BorderRadius.circular(20.0),
-      //           ),
-      //           child: Padding(
-      //             padding: EdgeInsets.all(width * 0.008),
-      //             child: ListTile(
-      //               contentPadding: EdgeInsets.fromLTRB(
-      //                   width * 0.05, height * 0.02, 0.0, height * 0.01),
-      //               title: Row(
-      //                 children: [
-      //                   SizedBox(width: width * 0.03),
-      //                   Text(
-      //                     user.name,
-      //                     style: TextStyle(
-      //                       color: Colors.black87,
-      //                       fontWeight: FontWeight.w400,
-      //                       fontSize: 18,
-      //                     ),
-      //                   ),
-      //                   Spacer(),
-      //                   whichIcon(context, _firebaseAuthService.currentUser.uid,
-      //                       user.uid, user),
-      //                 ],
-      //               ),
-      //               leading: Container(
-      //                 width: width * 0.15,
-      //                 height: width * 0.15,
-      //                 padding: EdgeInsets.fromLTRB(
-      //                     0.0, height * 0.008, 0.0, height * 0.008),
-      //                 decoration: BoxDecoration(
-      //                   image: DecorationImage(
-      //                     image: NetworkImage(user.picURL),
-      //                     fit: BoxFit.cover,
-      //                   ),
-      //                   borderRadius: BorderRadius.circular(100),
-      //                   boxShadow: [
-      //                     new BoxShadow(
-      //                       color: Colors.black26,
-      //                       offset: new Offset(0.0, -8.0),
-      //                       blurRadius: 40.0,
-      //                       spreadRadius: 1.0,
-      //                     )
-      //                   ],
-      //                 ),
-      //               ),
-      //               onTap: () {
-      //                 //Navigator.pushNamed(context, "goalDetails", arguments: goal);
-      //               },
-      //             ),
-      //           ));
-      //     });
+      //  return  Column(
+      //   children: [
+      //     Padding(padding: const EdgeInsets.only(top: 150.0)),
+      //     Center(
+      //       child: Padding(
+      //         padding: const EdgeInsets.all(8),
+      //         child: Text("Lets find some friend \n Enter a name",
+      //             style: TextStyle(fontSize: width * 0.07, color: Colors.grey),
+      //             textAlign: TextAlign.center),
+      //       ),
+      //     ),
+      //     Center(
+      //       child: Padding(
+      //         padding: const EdgeInsets.all(8),
+      //         child: Icon(
+      //           Icons.search_outlined,
+      //           color: Colors.teal[100],
+      //           size: 100,
+      //         ),
+      //       ),
+      //     )
+      //   ],
+      // );
+      return ListView.builder(
+          itemCount: filtiredUsers.length,
+          itemBuilder: (context, index) {
+            var user = filtiredUsers[index];
+            // Widget fIcon =whichIcon(context,_firstoreService.getUser().uid, user.uid,user);
+            return Card(
+                //card Property
+                elevation: 20,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(width * 0.008),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.fromLTRB(
+                        width * 0.05, height * 0.02, 0.0, height * 0.01),
+                    title: Row(
+                      children: [
+                        SizedBox(width: width * 0.03),
+                        Text(
+                          user.name,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                          ),
+                        ),
+                        Spacer(),
+                        whichIcon(context, _firebaseAuthService.currentUser.uid,
+                            user.uid, user),
+                      ],
+                    ),
+                    leading: Container(
+                      width: width * 0.15,
+                      height: width * 0.15,
+                      padding: EdgeInsets.fromLTRB(
+                          0.0, height * 0.008, 0.0, height * 0.008),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(user.picURL),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(100),
+                        boxShadow: [
+                          new BoxShadow(
+                            color: Colors.black26,
+                            offset: new Offset(0.0, -8.0),
+                            blurRadius: 40.0,
+                            spreadRadius: 1.0,
+                          )
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      //Navigator.pushNamed(context, "goalDetails", arguments: goal);
+                    },
+                  ),
+                ));
+          });
     }
     return Container();
   }

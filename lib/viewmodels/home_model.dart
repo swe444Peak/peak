@@ -33,7 +33,7 @@ class HomeModel extends ChangeNotifier {
 
   void readTasks() {
     setState(ViewState.Busy);
-    _firstoreService.getGoals().listen((goalData) {
+    _firstoreService.getGoals(null).listen((goalData) {
       List<Goal> updatedGoals = goalData;
       if (updatedGoals != null) {
         if (updatedGoals.length > 0) {

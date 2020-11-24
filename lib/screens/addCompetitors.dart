@@ -154,11 +154,12 @@ class AddCompetitorsState extends State<AddCompetitors> {
                                         itemCount: widget.addedFriends.length,
                                         itemBuilder: (context, index) {
                                           return Container(
-                                            padding: EdgeInsets.fromLTRB(
-                                                0.0,
-                                                height * 0.008,
-                                                0.0,
-                                                height * 0.008),
+                                            margin: EdgeInsets.symmetric(vertical: height * 0.008,horizontal: height * 0.008),
+                                            // padding: EdgeInsets.fromLTRB(
+                                            //     0.0,
+                                            //     height * 0.008,
+                                            //     0.0,
+                                            //     height * 0.008),
                                             width: width * 0.15,
                                             height: width * 0.15,
                                             decoration: BoxDecoration(
@@ -166,10 +167,10 @@ class AddCompetitorsState extends State<AddCompetitors> {
                                                 image: NetworkImage(widget
                                                     .addedFriends[index]
                                                     .picURL),
-                                                fit: BoxFit.contain,
+                                                fit: BoxFit.fill,
                                               ),
                                               borderRadius:
-                                                  BorderRadius.circular(100),
+                                                  BorderRadius.circular(200),
                                               // boxShadow: [
                                               //   new BoxShadow(
                                               //     color: Colors.black26,

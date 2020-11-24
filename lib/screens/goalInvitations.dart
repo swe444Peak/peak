@@ -190,7 +190,15 @@ class ReceiverStatus extends StatelessWidget {
         ),
         child: ListTile(
           title: Text(user.name),
-          subtitle: Text("Status: ${invitation.status.toShortString()}"),
+          subtitle: Row(
+            children: [
+              Icon(
+                Icons.brightness_1,
+                color: ((invitation.status == InvationStatus.Accepted )? Colors.green : ((invitation.status == InvationStatus.Declined )? Colors.red : Colors.yellow)),
+              ),
+              Text(invitation.status.toShortString()),
+            ],
+          ),
           leading: Container(
             padding:
                 EdgeInsets.fromLTRB(0.0, height * 0.008, 0.0, height * 0.008),

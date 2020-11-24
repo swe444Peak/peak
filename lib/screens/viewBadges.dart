@@ -59,7 +59,7 @@ class ViewBadges extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.black54,
-                              fontSize: width * 0.025,
+                              fontSize: width * 0.030,
                             ),
                           ),
                         ],

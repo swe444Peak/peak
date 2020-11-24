@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:peak/screens/viewBadges.dart';
+import 'package:peak/screens/viewProfileInfo.dart';
 import 'package:peak/screens/viewProgress.dart';
 import 'package:peak/services/firebaseAuthService.dart';
 
@@ -125,19 +126,7 @@ class ProfilePage extends StatelessWidget {
                             margin: EdgeInsetsDirectional.only(top:height*0.05),
                             height: height*0.55,
                             padding: EdgeInsets.symmetric(horizontal: width *0.1),
-                            child: ListView(
-                              padding: EdgeInsets.all(0.0),
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(top: width * 0.05),
-                                  child: ViewProgress(),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: width * 0.05),
-                                  child: ViewBadges(),
-                                ),
-                              ],
-                            ),
+                            child: ProfileInfo(),
                           ),
                         ],
                       ),

@@ -49,114 +49,117 @@ class HomeModel extends ChangeNotifier {
           _incompletedTasks = [];
           _tasks = [];
           _goals.forEach((goal) {
-            goal.tasks.forEach((task) {
-              var type = task.taskType.toShortString().toLowerCase();
-              var currentTask;
-              switch (type) {
-                case "once":
-                  currentTask = task as OnceTask;
-                  if (isAtSameDate(currentTask.date, today)) {
-                    if (currentTask.done) {
-                      _completedTasks.add({
-                        "goal": goal.goalName,
-                        "task": currentTask,
-                        "status": true,
-                        "goalId": goal.docID,
-                        "type": type,
-                      });
-                    } else {
-                      _incompletedTasks.add({
-                        "goal": goal.goalName,
-                        "task": currentTask,
-                        "status": false,
-                        "goalId": goal.docID,
-                        "type": type,
-                      });
+            if (goal.deadline.compareTo(DateTime(DateTime.now().year,
+                    DateTime.now().month, DateTime.now().day)) >=
+                0)
+              goal.tasks.forEach((task) {
+                var type = task.taskType.toShortString().toLowerCase();
+                var currentTask;
+                switch (type) {
+                  case "once":
+                    currentTask = task as OnceTask;
+                    if (isAtSameDate(currentTask.date, today)) {
+                      if (currentTask.done) {
+                        _completedTasks.add({
+                          "goal": goal.goalName,
+                          "task": currentTask,
+                          "status": true,
+                          "goalId": goal.docID,
+                          "type": type,
+                        });
+                      } else {
+                        _incompletedTasks.add({
+                          "goal": goal.goalName,
+                          "task": currentTask,
+                          "status": false,
+                          "goalId": goal.docID,
+                          "type": type,
+                        });
+                      }
                     }
-                  }
-                  break;
-                case "daily":
-                  currentTask = task as DailyTask;
-                  bool comp = false;
-                  currentTask.doneDates.forEach((date) {
-                    if (isAtSameDate(date, today)) {
-                      comp = true;
-                      _completedTasks.add({
-                        "goal": goal.goalName,
-                        "task": currentTask,
-                        "status": true,
-                        "goalId": goal.docID,
-                        "type": type,
-                      }); //end add
-                    } //end if same
-                  }); //end forEach
-                  if (comp) break;
-                  _incompletedTasks.add({
-                    "goal": goal.goalName,
-                    "task": currentTask,
-                    "status": false,
-                    "goalId": goal.docID,
-                    "type": type,
-                  });
-                  break;
-                case "weekly":
-                  currentTask = task as WeeklyTask;
-                  bool comp = false;
-                  currentTask.doneDates.forEach((date) {
-                    if (isAtSameDate(date, today)) {
-                      comp = true;
-                      _completedTasks.add({
-                        "goal": goal.goalName,
-                        "task": currentTask,
-                        "status": true,
-                        "goalId": goal.docID,
-                        "type": type,
-                      }); //end add
-                    } //end if same
-                  }); //end forEach
-                  if (comp) break;
-                  currentTask.dates.forEach((date) {
-                    if (isAtSameDate(date, today)) {
-                      _incompletedTasks.add({
-                        "goal": goal.goalName,
-                        "task": currentTask,
-                        "status": false,
-                        "goalId": goal.docID,
-                        "type": type,
-                      }); //end add
-                    } //end if same
-                  }); //end forEach
-                  break;
-                case "monthly":
-                  currentTask = task as MonthlyTask;
-                  bool comp = false;
-                  currentTask.doneDates.forEach((date) {
-                    if (isAtSameDate(date, today)) {
-                      comp = true;
-                      _completedTasks.add({
-                        "goal": goal.goalName,
-                        "task": currentTask,
-                        "status": true,
-                        "goalId": goal.docID,
-                        "type": type,
-                      }); //end add
-                    } //end if same
-                  }); //end forEach
-                  if (comp) break;
-                  currentTask.dates.forEach((date) {
-                    if (isAtSameDate(date, today)) {
-                      _incompletedTasks.add({
-                        "goal": goal.goalName,
-                        "task": currentTask,
-                        "status": false,
-                        "goalId": goal.docID,
-                        "type": type,
-                      }); //end add
-                    } //end if same
-                  }); //end forEach
-                  break;
-              } //end switch
-            }); //end forEach task
+                    break;
+                  case "daily":
+                    currentTask = task as DailyTask;
+                    bool comp = false;
+                    currentTask.doneDates.forEach((date) {
+                      if (isAtSameDate(date, today)) {
+                        comp = true;
+                        _completedTasks.add({
+                          "goal": goal.goalName,
+                          "task": currentTask,
+                          "status": true,
+                          "goalId": goal.docID,
+                          "type": type,
+                        }); //end add
+                      } //end if same
+                    }); //end forEach
+                    if (comp) break;
+                    _incompletedTasks.add({
+                      "goal": goal.goalName,
+                      "task": currentTask,
+                      "status": false,
+                      "goalId": goal.docID,
+                      "type": type,
+                    });
+                    break;
+                  case "weekly":
+                    currentTask = task as WeeklyTask;
+                    bool comp = false;
+                    currentTask.doneDates.forEach((date) {
+                      if (isAtSameDate(date, today)) {
+                        comp = true;
+                        _completedTasks.add({
+                          "goal": goal.goalName,
+                          "task": currentTask,
+                          "status": true,
+                          "goalId": goal.docID,
+                          "type": type,
+                        }); //end add
+                      } //end if same
+                    }); //end forEach
+                    if (comp) break;
+                    currentTask.dates.forEach((date) {
+                      if (isAtSameDate(date, today)) {
+                        _incompletedTasks.add({
+                          "goal": goal.goalName,
+                          "task": currentTask,
+                          "status": false,
+                          "goalId": goal.docID,
+                          "type": type,
+                        }); //end add
+                      } //end if same
+                    }); //end forEach
+                    break;
+                  case "monthly":
+                    currentTask = task as MonthlyTask;
+                    bool comp = false;
+                    currentTask.doneDates.forEach((date) {
+                      if (isAtSameDate(date, today)) {
+                        comp = true;
+                        _completedTasks.add({
+                          "goal": goal.goalName,
+                          "task": currentTask,
+                          "status": true,
+                          "goalId": goal.docID,
+                          "type": type,
+                        }); //end add
+                      } //end if same
+                    }); //end forEach
+                    if (comp) break;
+                    currentTask.dates.forEach((date) {
+                      if (isAtSameDate(date, today)) {
+                        _incompletedTasks.add({
+                          "goal": goal.goalName,
+                          "task": currentTask,
+                          "status": false,
+                          "goalId": goal.docID,
+                          "type": type,
+                        }); //end add
+                      } //end if same
+                    }); //end forEach
+                    break;
+                } //end switch
+              }); //end forEach task
           }); //end forEach goal
           compin();
         } //end if
@@ -167,7 +170,7 @@ class HomeModel extends ChangeNotifier {
     }, onError: (error) => print(error));
   }
 
-  Future updateTask(Task task, String docId, bool status) async{
+  Future updateTask(Task task, String docId, bool status) async {
     var type = task.taskType.toShortString().toLowerCase();
     switch (type) {
       case "once":
@@ -280,10 +283,12 @@ class HomeModel extends ChangeNotifier {
 
     return progress;
   }
-  
 
-  bool updateBadge(String name, {bool decrement = false,}) {
-    if(name.compareTo("50% Total Progress")==0 && clacToatlProgress() < 50){
+  bool updateBadge(
+    String name, {
+    bool decrement = false,
+  }) {
+    if (name.compareTo("50% Total Progress") == 0 && clacToatlProgress() < 50) {
       return false;
     }
     user = _firebaseAuthService.currentUser;
@@ -301,9 +306,9 @@ class HomeModel extends ChangeNotifier {
       dates: List.from(oldBadge.dates),
     );
     bool update;
-    if(decrement){
-      update = newBadge.updateStatus(increment:false);
-    }else{
+    if (decrement) {
+      update = newBadge.updateStatus(increment: false);
+    } else {
       update = newBadge.updateStatus();
     }
     if (update) {

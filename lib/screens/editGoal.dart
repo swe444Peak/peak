@@ -6,6 +6,7 @@ import 'package:peak/screens/shared/base.dart';
 import 'package:peak/services/notification.dart';
 import 'package:peak/viewmodels/editGoal_model.dart';
 import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'editTask.dart';
 
 class EditGoal extends StatefulWidget {
@@ -22,7 +23,7 @@ class _EditGoalState extends State<EditGoal> {
   TextEditingController _dueDatecontroller = TextEditingController();
   DateTime _dateTime;
   List<Task> tasks = [];
-
+  final ScrollController _scrollController = ScrollController();
   setError(value) => setState(() => _error = value);
   List<Task> tasksBeforeEdit = [];
   final GlobalKey<EditTaskState> editTaskState = GlobalKey<EditTaskState>();
@@ -60,155 +61,158 @@ class _EditGoalState extends State<EditGoal> {
           title: "edit Goal",
           child: Column(
             children: [
-              showAlert(),
               Container(
                 padding: EdgeInsets.fromLTRB(
                     width * 0.06, 0.0, width * 0.06, height * 0.03),
-                child: ListView(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  children: [
-                    Card(
-                      elevation: 20,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(width * 0.06),
-                        child: TextField(
-                          controller: _goalnamecontroller,
-                          decoration: InputDecoration(
-                            labelText: 'Goal Name',
-                            errorText: model.goalName.error,
+                child: Scrollbar(
+                  controller: _scrollController,
+                                  child: ListView(
+                                    controller: _scrollController,
+                              padding: EdgeInsets.fromLTRB(0.0,0.0,width*0.03,0.0),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: [
+                      Card(
+                        elevation: 20,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(width * 0.06),
+                          child: TextField(
+                            controller: _goalnamecontroller,
+                            decoration: InputDecoration(
+                              labelText: 'Goal Name',
+                              errorText: model.goalName.error,
+                            ),
+                            style: TextStyle(
+                              fontSize: width * 0.04,
+                              color: Colors.grey[700],
+                            ),
+                            onChanged: (value) => model.setGoalName(value),
                           ),
-                          style: TextStyle(
-                            fontSize: width * 0.04,
-                            color: Colors.grey[700],
-                          ),
-                          onChanged: (value) => model.setGoalName(value),
                         ),
                       ),
-                    ),
-                    Card(
-                      elevation: 20,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(width * 0.06),
-                        child: TextField(
-                          controller: _dueDatecontroller,
-                          decoration: InputDecoration(
-                            labelText: "Due Date",
-                            errorText: model.dueDate.error,
-                            icon: Icon(Icons.calendar_today),
+                      Card(
+                        elevation: 20,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(width * 0.06),
+                          child: TextField(
+                            controller: _dueDatecontroller,
+                            decoration: InputDecoration(
+                              labelText: "Due Date",
+                              errorText: model.dueDate.error,
+                              icon: Icon(Icons.calendar_today),
+                            ),
+                            style: TextStyle(
+                                fontSize: width * 0.04, color: Colors.grey[700]),
+                            readOnly: true,
+                            onTap: () {
+                              setState(() {
+                                _datePicker(context);
+                                model.setDueDate(_dateTime.toString());
+                              });
+                            },
                           ),
-                          style: TextStyle(
-                              fontSize: width * 0.04, color: Colors.grey[700]),
-                          readOnly: true,
-                          onTap: () {
-                            setState(() {
-                              _datePicker(context);
-                              model.setDueDate(_dateTime.toString());
-                            });
-                          },
                         ),
                       ),
-                    ),
-                    EditTask(editTaskState, widget.goal.tasks, width, height,
-                        setError, _dateTime),
-                    RaisedButton(
-                      splashColor: Colors.teal,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                      ),
-                      color: Colors.white,
-                      onPressed: () {
-                        bool valid = isValid();
-                        if (valid && model.isValid) {
-                          if (tasks.length > 0) {
-                            model.updateGoal(
-                              _goalnamecontroller.text,
-                              widget.goal.creationDate,
-                              _dateTime,
-                              tasks,
-                              widget.goal.docID,
-                              widget.goal.eventId,
-                              widget.goal.creatorId,
-                              widget.goal.competitors
-                            );
-                            for (var item in tasks) {
-                              switch (item.taskType.toShortString()) {
-                                case 'once':
-                                  OnceTask oTask = item as OnceTask;
-                                  notifyManeger.showNotificationOnce(
-                                      'Reminder To', item.taskName, oTask.date);
-                                  print("Once");
-                                  print(oTask.date);
-                                  break;
-                                case 'daily':
-                                  print("Daily");
-                                  notifyManeger.showDailyNotification(
-                                      'Daily Reminder',
-                                      item.taskName,
-                                      _dateTime);
+                      EditTask(editTaskState, widget.goal.tasks, width, height,
+                          setError, _dateTime),
+                      RaisedButton(
+                        splashColor: Colors.teal,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
+                        color: Colors.white,
+                        onPressed: () {
+                          bool valid = isValid();
+                          if (valid && model.isValid) {
+                            if (tasks.length > 0) {
+                              model.updateGoal(
+                                _goalnamecontroller.text,
+                                widget.goal.creationDate,
+                                _dateTime,
+                                tasks,
+                                widget.goal.docID,
+                                widget.goal.eventId,
+                                widget.goal.creatorId,
+                                widget.goal.competitors
+                              );
+                              for (var item in tasks) {
+                                switch (item.taskType.toShortString()) {
+                                  case 'once':
+                                    OnceTask oTask = item as OnceTask;
+                                    notifyManeger.showNotificationOnce(
+                                        'Reminder To', item.taskName, oTask.date);
+                                    print("Once");
+                                    print(oTask.date);
+                                    break;
+                                  case 'daily':
+                                    print("Daily");
+                                    notifyManeger.showDailyNotification(
+                                        'Daily Reminder',
+                                        item.taskName,
+                                        _dateTime);
 
-                                  break;
-                                case 'weekly':
-                                  WeeklyTask wTask = item as WeeklyTask;
-                                  notifyManeger.showTaskNotification(
-                                      'Weekly Reminder',
-                                      item.taskName,
-                                      wTask.dates);
-                                  break;
-                                case 'monthly':
-                                  //add dates list
-                                  MonthlyTask mTask = item as MonthlyTask;
-                                  notifyManeger.showTaskNotification(
-                                      'Monthly Reminder',
-                                      item.taskName,
-                                      mTask.dates);
-                                  break;
-                                default:
-                                  print(
-                                      'Somthing went WRONG in set notification');
+                                    break;
+                                  case 'weekly':
+                                    WeeklyTask wTask = item as WeeklyTask;
+                                    notifyManeger.showTaskNotification(
+                                        'Weekly Reminder',
+                                        item.taskName,
+                                        wTask.dates);
+                                    break;
+                                  case 'monthly':
+                                    //add dates list
+                                    MonthlyTask mTask = item as MonthlyTask;
+                                    notifyManeger.showTaskNotification(
+                                        'Monthly Reminder',
+                                        item.taskName,
+                                        mTask.dates);
+                                    break;
+                                  default:
+                                    print(
+                                        'Somthing went WRONG in set notification');
+                                }
                               }
-                            }
-                            Navigator.pushNamed(context, 'goalsList');
+                              Navigator.pushNamed(context, 'goalsList');
 
-                            notifyManeger.showDeadlineNotification(
-                                'Deadline Reminder',
-                                'The deadline for ' +
-                                    _goalnamecontroller.text +
-                                    ' goal is Tomorrow',
-                                _dateTime);
-                          } else {
-                            setState(() {
-                              _error = "a goal should have at lest one task";
-                            });
-                          }
-                        } else {
-                          if (model.goalName.error == null &&
-                              model.goalName.value == null) {
-                            model.setGoalName("");
-                          }
-                          if (model.dueDate.error == null &&
-                              model.dueDate.value == null) {
-                            model.setDueDate("");
-                          }
-                          if (!valid) {
-                            setState(() {
+                              notifyManeger.showDeadlineNotification(
+                                  'Deadline Reminder',
+                                  'The deadline for ' +
+                                      _goalnamecontroller.text +
+                                      ' goal is Tomorrow',
+                                  _dateTime);
+                            } else {
                               _error =
-                                  "Oops, it looks like you have invalid tasks! try to edit or delete them";
-                            });
+                                              "a goal should have at lest one task";
+                                          showColoredToast(_error);
+                            }
+                          } else {
+                            if (model.goalName.error == null &&
+                                model.goalName.value == null) {
+                              model.setGoalName("");
+                            }
+                            if (model.dueDate.error == null &&
+                                model.dueDate.value == null) {
+                              model.setDueDate("");
+                            }
+                            if (!valid) {
+                              _error =
+                                              "Oops, it looks like you have invalid tasks! try to edit or delete them";
+                                          showColoredToast(_error);
+                            }
                           }
-                        }
-                      },
-                      textColor: Colors.black,
-                      child:
-                          Text('Edit Goal', style: TextStyle(fontSize: 19.0)),
-                    ),
-                  ],
+                        },
+                        textColor: Colors.black,
+                        child:
+                            Text('Edit Goal', style: TextStyle(fontSize: 19.0)),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -290,4 +294,15 @@ class _EditGoalState extends State<EditGoal> {
       height: 0,
     );
   }
+
+  
+  void showColoredToast(String msg) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_SHORT,
+        backgroundColor: Colors.amberAccent[400],
+        textColor: Colors.white);
+  }
+
+
 }

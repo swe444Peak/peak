@@ -41,6 +41,7 @@ class AddTaskState extends State<AddTask> {
   @override
   Widget build(BuildContext context) {
     return new ListView(
+        padding: EdgeInsets.all(0),
         shrinkWrap: true, physics: ScrollPhysics(), children: tasksList);
   }
 

@@ -263,6 +263,9 @@ class _EditProfileState extends State<EditProfile> {
                                                       //       context, "name");
                                                       Navigator.pushNamed(
                                                           context, 'profile');
+                                                      updateConfirmDailog(
+                                                          context,
+                                                          "your profile was Updated successfully");
                                                     }
                                                     return AuthExceptionHandler
                                                         .generateExceptionMessage(
@@ -301,7 +304,7 @@ class _EditProfileState extends State<EditProfile> {
           content: Column(
             children: [
               SizedBox(height: 10),
-              Text("your $content was Updated successfully"),
+              Text(content),
             ],
           ),
           actions: [

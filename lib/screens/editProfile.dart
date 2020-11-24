@@ -51,7 +51,7 @@ class _EditProfileState extends State<EditProfile> {
     final double circleRadius = 250.0;
     final double circleBorderWidth = 10;
     var pic = _fireService.currentUser.picURL;
-
+    var oldName = _fireService.currentUser.name;
     return StreamProvider<PeakUser>.value(
         initialData: PeakUser(uid: "", name: ""),
         value: DatabaseServices().userData(user.uid),
@@ -232,18 +232,21 @@ class _EditProfileState extends State<EditProfile> {
                                                     0.0),
                                                 child: CustomButton(() async {
                                                   try {
-                                                    var exist =
-                                                        await model.isexist(
-                                                            model.name.value);
+                                                    if (oldName !=
+                                                        model.name.value) {
+                                                      var exist =
+                                                          await model.isexist(
+                                                              model.name.value);
 
-                                                    if (exist) {
-                                                      print("in exception");
+                                                      if (exist) {
+                                                        print("in exception");
 
-                                                      setState(() {
-                                                        _error =
-                                                            "username already exists";
-                                                      });
-                                                      throw new UsernameExistsException();
+                                                        setState(() {
+                                                          _error =
+                                                              "username already exists";
+                                                        });
+                                                        throw new UsernameExistsException();
+                                                      }
                                                     }
 
                                                     if (model.isValid) {

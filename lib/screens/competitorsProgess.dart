@@ -33,7 +33,7 @@ class _CompetitorsProgressState extends State<CompetitorsProgress> {
                 child: ExpansionTile(
                   backgroundColor: Colors.white,
                   leading: Icon(Icons.people),
-                  trailing: Text((model.comps.length - 1).toString()),
+                  trailing: Text((model.comps.length).toString()),
                   title: Text("Competitors"),
                   children: List<Widget>.generate(
                     competitorsCards(model, widget.cuid).length,
@@ -47,7 +47,8 @@ class _CompetitorsProgressState extends State<CompetitorsProgress> {
   List<Widget> competitorsCards(model, cuid) {
     widgets = [];
     model.comps.forEach((comp) {
-      if (comp.user.uid != cuid) widgets.add(CompetitorCard(comp));
+      // if (comp.user.uid != cuid)
+      widgets.add(CompetitorCard(comp));
     });
     //widgets.add(Icon(Icons.add));
     return widgets;

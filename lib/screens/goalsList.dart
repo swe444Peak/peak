@@ -64,16 +64,28 @@ class GoalsListPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        IconButton(
-                            iconSize: width * 0.188,
-                            icon: Text(
-                              "Invitations",
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: width * 0.04),
-                            ),
-                            onPressed: () {
-                              Navigator.pushNamed(context, "goalInvitations");
-                            })
+                        // IconButton(
+                        //     iconSize: width * 0.188,
+                        //     icon: Text(
+                        //       "Invitations",
+                        //       style: TextStyle(
+                        //           color: Colors.white, fontSize: width * 0.04),
+                        //     ),
+                        //     onPressed: () {
+                        //       Navigator.pushNamed(context, "goalInvitations");
+                        //     })
+                        RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Color(0xff152a55))),
+                          onPressed: () {
+                            Navigator.pushNamed(context, "goalInvitations");
+                          },
+                          color: Colors.white,
+                          textColor: Color(0xff152a55),
+                          child: Text("Invitations",
+                              style: TextStyle(fontSize: width * 0.04)),
+                        ),
                       ],
                     ),
                     Flexible(child: goalsList(model, width, height)),
